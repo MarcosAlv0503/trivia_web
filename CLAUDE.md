@@ -1,0 +1,75 @@
+# CLAUDE.md — trivia-ajolote (nombre provisional)
+
+Referencia permanente para las sesiones de ambos desarrolladores. Si algo de aquí choca con el código, avisa.
+
+## Visión
+
+- Trivia web moderna, colorida y adictiva (referencia de experiencia: ruleta de categorías, animaciones, feedback inmediato, partidas cortas). Identidad visual **propia**: nada copiado (assets, nombres, estética). "Trivial Pursuit" y "Preguntados" son marcas registradas y **no pueden aparecer** en el producto.
+- Mascota: ajolote de diseño original.
+- Cuenta obligatoria con login social (Google, Discord; Apple y Facebook más adelante).
+- Modos (local y online): **Preguntas rápidas** (rondas cortas con temporizador), **Duelo por turnos** (asíncrono, días), **Tablero clásico**, minijuegos futuros.
+- Local: un dispositivo por turnos; los jugadores añadidos son **invitados** (solo nombre y avatar) que pertenecen a la cuenta del anfitrión. Futuro: modo TV (pantalla común + móviles como mando).
+- Online: amigos y, más adelante, emparejamiento aleatorio.
+- Multidioma desde el día uno (UI y preguntas): `es` (por defecto) y `en`.
+- Categorías iniciales: Geografía, Historia, Ciencia y Naturaleza, Arte y Literatura, Entretenimiento, Deportes, Tecnología. Son **datos en BD**, nunca un enum en código.
+- Preguntas generadas con IA fuera de este repo; la BD admite importación masiva y estado de revisión.
+- Monetización futura: premium sin anuncios, cosméticos, dos monedas (Monedas jugando / Gemas de pago). **Sin cajas de botín aleatorias de pago** (regulación española): todo compra directa.
+
+## Reglas de trabajo (obligatorias)
+
+1. **Diseño, UX, jugabilidad, economía, textos visibles, flujo de pantallas y estética → pregunta.** No inventes reglas ni decisiones visuales importantes. Agrupa preguntas, sé concreto, ofrece opciones con recomendación.
+2. **Backend e infraestructura → decide tú** (lo más lógico, seguro y responsable). Explícalo en 1–2 líneas en el resumen; si es estructural, añádelo a "Decisiones".
+3. **Cíñete a la fase actual**, tareas en orden. No adelantes, prepares ni refactorices pensando en fases futuras, salvo que sea **imprescindible** para no bloquearlas (p. ej. modelo de datos caro de cambiar); en ese caso, mínimo y explicado. Al terminar una fase: resumen y esperar confirmación.
+4. **Revisión crítica constante** (errores, seguridad, rendimiento, incoherencias con este documento):
+   - Errores dentro de la tarea → corregir y mencionar.
+   - Errores fuera de la tarea/fase → no tocar; reportar ubicación y gravedad.
+   - Mejoras menores dentro de la tarea (claridad, tipado, nombres, simplificaciones sin cambio de comportamiento) → aplicar.
+   - Mejoras importantes (funcionalidades, arquitectura, dependencias, UX, otra fase) → proponer con motivo, coste e impacto, y esperar luz verde.
+
+## Stack
+
+| Área | Elección |
+|---|---|
+| Frontend | Next.js (App Router) + TypeScript strict + Tailwind CSS + Motion |
+| Backend | Supabase: Postgres, Auth, Realtime, Storage, Edge Functions |
+| i18n | `next-intl` |
+| Paquetes | `pnpm` workspaces (monorepo) |
+| Tests | Vitest (lógica de juego y lógica crítica de servidor) |
+| CI | GitHub Actions: lint, typecheck, test, build en cada PR |
+| Hosting | Vercel + Supabase Cloud |
+| Pagos (futuro) | Stripe tras una capa agnóstica del proveedor (para IAP móvil, p. ej. RevenueCat) |
+| Móvil (futuro) | Capacitor o Expo reutilizando lógica compartida (por decidir) |
+
+Supabase local con la CLI (`supabase start`, requiere Docker). Migraciones versionadas en `supabase/migrations`; tipos TS generados desde la BD.
+
+## Principios de arquitectura
+
+- **Servidor autoritativo:** el cliente nunca recibe la respuesta correcta antes de contestar; las preguntas se sirven sin marca de correcta. Respuestas, puntuaciones, resultados, monedas y gemas se validan/calculan en servidor (RPC de Postgres o Edge Functions). El cliente solo muestra.
+- **Seguridad Supabase:** RLS en **todas** las tablas con políticas mínimas. La `service_role` key nunca en el cliente. Ningún secreto en el repo (`.env.example`).
+- **Lógica de juego desacoplada:** reglas de cada modo en `packages/game-core`, TS puro (sin React ni Supabase) y con tests. Se reutiliza en web, móvil y modo TV; local y online comparten reglas, cambia solo el transporte.
+- **Preparado para móvil:** mobile-first; nada de lógica de negocio atada a APIs exclusivas del navegador ni a Server Components cuando debe estar en el backend; la web debe poder funcionar como PWA.
+- **Economía (futuro):** saldos con ledger de transacciones; solo el servidor modifica saldos; compras reales confirmadas solo vía webhook del proveedor.
+- **i18n:** ningún texto visible hardcodeado. Preguntas y respuestas con traducciones en BD; si una pregunta no existe en el idioma del jugador, no se muestra.
+- **Preguntas:** categoría, dificultad, estado (`draft` | `approved` | `rejected`), origen (`ai` | `manual` | `user`) y traducciones. Script de importación masiva JSON.
+- **Privacidad (RGPD):** mínimos datos personales; borrado de cuenta (también lo exige Apple).
+
+## Flujo Git (somos dos)
+
+- `main` siempre estable. **Nunca** commit ni push directo a `main`.
+- Una rama por tarea: `feat/...`, `fix/...`, `chore/...`. PRs pequeñas revisadas por el otro dev.
+- Commits pequeños y frecuentes con Conventional Commits.
+- Al empezar cada sesión: comprobar rama y sincronizar con `main` (pull/rebase).
+- Código organizado por feature (`auth`, `profile`, `questions`, `game/quick`, `game/duel`...).
+- Migraciones: siempre con la CLI (timestamp), **nunca** editar una ya mergeada, y avisar en el resumen cuando una tarea incluya migraciones.
+
+## Hoja de ruta
+
+- **Fase 0 — Cimientos (ACTUAL):** monorepo pnpm (`apps/web`, `packages/game-core`, `supabase/`); Next.js + TS strict + Tailwind + Motion + `next-intl` (es/en); Supabase local y cliente `@supabase/ssr`; ESLint, Prettier, Vitest, CI; `.env.example` y `README.md` de arranque; este `CLAUDE.md`.
+- **Fase 1 — Cuentas y base visual:** login Google y Discord (Apple/Facebook preparados); perfil (username único, avatar de set básico, idioma); invitados locales; sistema visual base con ajolote placeholder (**preguntar antes de fijar estética**).
+- **Fase 2 — Preguntas y "Preguntas rápidas":** modelo de categorías/preguntas/traducciones; RPC segura para servir y validar; seed es/en; script de importación JSON; modo rápido en solitario y local por turnos (temporizador, puntuación, resultados); reglas en `game-core` con tests.
+- **Fase 3 — Online con amigos:** amigos (búsqueda, solicitudes, lista); duelo asíncrono contra un amigo; notificaciones in-app de turno (**preguntar reglas exactas antes**).
+- **Futuro (no implementar sin que se pida):** emparejamiento y online en tiempo real, tablero clásico, economía/tienda/cosméticos, Stripe, anuncios con consentimiento, rachas/niveles/logros/rankings, panel admin y pipeline IA, más categorías y modos flexibles, minijuegos, modo TV, app móvil y push.
+
+## Decisiones
+
+<!-- Decisiones estructurales de backend/infra: fecha, decisión y motivo en 1–2 líneas. -->
