@@ -28,17 +28,17 @@ Referencia permanente para las sesiones de ambos desarrolladores. Si algo de aqu
 
 ## Stack
 
-| Área | Elección |
-|---|---|
-| Frontend | Next.js (App Router) + TypeScript strict + Tailwind CSS + Motion |
-| Backend | Supabase: Postgres, Auth, Realtime, Storage, Edge Functions |
-| i18n | `next-intl` |
-| Paquetes | `pnpm` workspaces (monorepo) |
-| Tests | Vitest (lógica de juego y lógica crítica de servidor) |
-| CI | GitHub Actions: lint, typecheck, test, build en cada PR |
-| Hosting | Vercel + Supabase Cloud |
+| Área           | Elección                                                                         |
+| -------------- | -------------------------------------------------------------------------------- |
+| Frontend       | Next.js (App Router) + TypeScript strict + Tailwind CSS + Motion                 |
+| Backend        | Supabase: Postgres, Auth, Realtime, Storage, Edge Functions                      |
+| i18n           | `next-intl`                                                                      |
+| Paquetes       | `pnpm` workspaces (monorepo)                                                     |
+| Tests          | Vitest (lógica de juego y lógica crítica de servidor)                            |
+| CI             | GitHub Actions: lint, typecheck, test, build en cada PR                          |
+| Hosting        | Vercel + Supabase Cloud                                                          |
 | Pagos (futuro) | Stripe tras una capa agnóstica del proveedor (para IAP móvil, p. ej. RevenueCat) |
-| Móvil (futuro) | Capacitor o Expo reutilizando lógica compartida (por decidir) |
+| Móvil (futuro) | Capacitor o Expo reutilizando lógica compartida (por decidir)                    |
 
 Supabase local con la CLI (`supabase start`, requiere Docker). Migraciones versionadas en `supabase/migrations`; tipos TS generados desde la BD.
 
@@ -73,3 +73,10 @@ Supabase local con la CLI (`supabase start`, requiere Docker). Migraciones versi
 ## Decisiones
 
 <!-- Decisiones estructurales de backend/infra: fecha, decisión y motivo en 1–2 líneas. -->
+
+- **2026-10-15 — Idioma sin prefijo en la URL.** Locale por cookie `NEXT_LOCALE` > `Accept-Language` > `es` (`apps/web/src/i18n/request.ts`). Más simple con login obligatorio y para empaquetar como app.
+- **2026-10-15 — Paquetes `@trivia/*` sin compilar.** `game-core` exporta su código fuente TS y Next lo transpila (`transpilePackages`). Scope neutro, independiente del nombre final.
+- **2026-10-15 — Supabase CLI como devDependency** (`pnpm exec supabase ...`), sin instalación global. Claves nuevas de Supabase: `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` en cliente; la secret key solo en servidor.
+- **2026-10-15 — Sesión refrescada en `src/proxy.ts`** (convención de Next 16, antes `middleware`), aplicando las cabeceras anti-caché que devuelve `@supabase/ssr`.
+- **2026-10-15 — Versiones:** Node 24, TypeScript 6.0 (typescript-eslint aún no soporta TS 7) y ESLint 9 (los plugins de `eslint-config-next` aún no soportan ESLint 10). Se mantiene la edad mínima de publicación por defecto de pnpm (protección de cadena de suministro) y `allowBuilds` explícito en `pnpm-workspace.yaml`.
+- **2026-10-15 — Finales de línea LF** forzados (`.gitattributes` + Prettier) para evitar diffs fantasma entre Windows y otros sistemas.
