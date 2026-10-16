@@ -1,6 +1,6 @@
 -- Preguntas, importación y RPC del modo rápido. Se ejecuta con `pnpm db:test`; todo se deshace al final.
 begin;
-select plan(36);
+select plan(37);
 
 -- Fixtures (como postgres) -------------------------------------------------------------------------
 -- Las preguntas que ya hubiera (p. ej. el seed local) se retiran para que el test no dependa del contenido.
@@ -55,6 +55,16 @@ select is(
   (select answers[1] from public.question_translations t join public.questions q on q.id = t.question_id
    where q.external_id = 't-es-1'),
   'Bien', 'la respuesta correcta se guarda la primera'
+);
+
+-- Puntuación: 10 por acierto, +5 en menos de 3 s, si no +2 en menos de la mitad del tiempo (7,5 s).
+select is(
+  array[
+    public.answer_points(true, 2999, 15000), public.answer_points(true, 3000, 15000),
+    public.answer_points(true, 7499, 15000), public.answer_points(true, 7500, 15000),
+    public.answer_points(false, 100, 15000)
+  ],
+  array[15, 12, 12, 10, 0], 'tramos de bonificación por rapidez'
 );
 
 -- Acceso directo prohibido ---------------------------------------------------------------------------
@@ -112,9 +122,9 @@ select set_config('test.a', public.answer_quick_question(
   current_setting('test.solo')::uuid, 0, current_setting('test.correct')::integer)::text, true);
 select ok(
   (current_setting('test.a')::jsonb ->> 'isCorrect')::boolean
-    and (current_setting('test.a')::jsonb ->> 'points')::integer between 140 and 150
+    and (current_setting('test.a')::jsonb ->> 'points')::integer = 15
     and current_setting('test.a')::jsonb ->> 'correctIndex' = current_setting('test.correct'),
-  'acierto rápido: ~150 puntos y revela la correcta'
+  'acierto en menos de 3 s: 15 puntos y revela la correcta'
 );
 select throws_like(
   $$ select public.answer_quick_question(current_setting('test.solo')::uuid, 0, 0) $$,
