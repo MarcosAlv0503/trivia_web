@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { buttonClassName } from "@/components/button";
 import { signInWithProvider } from "./actions";
 import { enabledProviders } from "./providers";
 
@@ -8,7 +9,7 @@ export function LoginButtons() {
     <div className="flex w-full max-w-xs flex-col gap-3">
       {enabledProviders.map((provider) => (
         <form key={provider.id} action={signInWithProvider.bind(null, provider.id)}>
-          <button type="submit" className="w-full rounded-xl border px-4 py-3 font-semibold">
+          <button type="submit" className={buttonClassName("primary", "w-full")}>
             {t("signInWith", { provider: provider.label })}
           </button>
         </form>

@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { buttonClassName } from "@/components/button";
 import { LOCALE_NAMES, locales } from "@/i18n/config";
 import { saveProfile, type FormState } from "./actions";
 import { Avatar } from "./avatar";
@@ -20,7 +21,7 @@ export function ProfileForm({ mode, avatarIds, initial }: Props) {
   return (
     <form action={formAction} className="flex w-full max-w-md flex-col gap-6">
       <label className="flex flex-col gap-1">
-        <span className="font-semibold">{t("username")}</span>
+        <span className="font-display text-lg font-bold">{t("username")}</span>
         <input
           name="username"
           defaultValue={initial.username}
@@ -30,15 +31,15 @@ export function ProfileForm({ mode, avatarIds, initial }: Props) {
           pattern="[A-Za-z0-9_]{3,20}"
           autoComplete="off"
           aria-describedby="username-hint"
-          className="rounded-xl border px-3 py-2"
+          className="rounded-2xl bg-surface-2 px-4 py-2.5 text-lg font-bold sticker"
         />
-        <span id="username-hint" className="text-sm opacity-70">
+        <span id="username-hint" className="text-sm text-fg-muted">
           {t("usernameHint")}
         </span>
       </label>
 
       <fieldset>
-        <legend className="mb-2 font-semibold">{t("avatar")}</legend>
+        <legend className="mb-2 font-display text-lg font-bold">{t("avatar")}</legend>
         <div className="grid grid-cols-4 gap-3 sm:grid-cols-6">
           {avatarIds.map((id, index) => (
             <label key={id} className="cursor-pointer">
@@ -54,7 +55,7 @@ export function ProfileForm({ mode, avatarIds, initial }: Props) {
               <Avatar
                 id={id}
                 size={56}
-                className="rounded-full ring-offset-2 peer-checked:ring-4 peer-checked:ring-current peer-focus-visible:ring-4"
+                className="rounded-full ring-offset-2 ring-offset-bg peer-checked:ring-4 peer-checked:ring-accent peer-focus-visible:ring-4 peer-focus-visible:ring-fg"
               />
             </label>
           ))}
@@ -62,12 +63,13 @@ export function ProfileForm({ mode, avatarIds, initial }: Props) {
       </fieldset>
 
       <fieldset>
-        <legend className="mb-2 font-semibold">{t("language")}</legend>
+        <legend className="mb-2 font-display text-lg font-bold">{t("language")}</legend>
         <div className="flex gap-4">
           {locales.map((locale) => (
             <label key={locale} className="flex items-center gap-2">
               <input
                 type="radio"
+                className="size-5 accent-accent"
                 name="locale"
                 value={locale}
                 defaultChecked={locale === (initial.locale ?? currentLocale)}
@@ -79,16 +81,12 @@ export function ProfileForm({ mode, avatarIds, initial }: Props) {
       </fieldset>
 
       {state.error && (
-        <p role="alert" className="text-red-600">
+        <p role="alert" className="font-bold text-ko">
           {t(`errors.${state.error}`)}
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="rounded-xl border px-4 py-3 font-semibold"
-      >
+      <button type="submit" disabled={pending} className={buttonClassName("play", "w-full")}>
         {pending ? t("saving") : mode === "create" ? t("create") : t("save")}
       </button>
     </form>
