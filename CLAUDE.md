@@ -53,20 +53,19 @@ Supabase local con la CLI (`supabase start`, requiere Docker). Migraciones versi
 - **Preguntas:** categoría, dificultad, estado (`draft` | `approved` | `rejected`), origen (`ai` | `manual` | `user`) y traducciones. Script de importación masiva JSON.
 - **Privacidad (RGPD):** mínimos datos personales; borrado de cuenta (también lo exige Apple).
 
-## Flujo Git (somos dos)
+## Flujo Git
 
-- `main` siempre estable. **Nunca** commit ni push directo a `main`.
-- Una rama por tarea: `feat/...`, `fix/...`, `chore/...`. PRs pequeñas revisadas por el otro dev.
+- **Por ahora trabaja un solo dev en un solo ordenador:** commits directos a `main` (decidido el 2026-10-16). Cuando se incorpore el segundo dev se vuelve a rama por tarea + PR revisada.
+- `main` debe seguir pasando lint, typecheck, test y build en cada commit.
 - Commits pequeños y frecuentes con Conventional Commits.
-- Al empezar cada sesión: comprobar rama y sincronizar con `main` (pull/rebase).
 - Código organizado por feature (`auth`, `profile`, `questions`, `game/quick`, `game/duel`...).
 - Migraciones: siempre con la CLI (timestamp), **nunca** editar una ya mergeada, y avisar en el resumen cuando una tarea incluya migraciones.
 
 ## Hoja de ruta
 
 - **Fase 0 — Cimientos (HECHA, mergeada):** monorepo pnpm (`apps/web`, `packages/game-core`, `supabase/`); Next.js + TS strict + Tailwind + Motion + `next-intl` (es/en); Supabase local y cliente `@supabase/ssr`; ESLint, Prettier, Vitest, CI; `.env.example` y `README.md` de arranque; este `CLAUDE.md`.
-- **Fase 1 — Cuentas y base visual (ACTUAL, tareas hechas; pendiente de revisión y cierre):** login Google y Discord (Apple/Facebook preparados); perfil (username único, avatar de set básico, idioma); invitados locales; sistema visual base con ajolote placeholder (**preguntar antes de fijar estética**).
-- **Fase 2 — Preguntas y "Preguntas rápidas":** modelo de categorías/preguntas/traducciones; RPC segura para servir y validar; seed es/en; script de importación JSON; modo rápido en solitario y local por turnos (temporizador, puntuación, resultados); reglas en `game-core` con tests.
+- **Fase 1 — Cuentas y base visual (HECHA, en `main`):** login Google y Discord (Apple/Facebook preparados); perfil (username único, avatar de set básico, idioma); invitados locales; sistema visual base con ajolote placeholder (**preguntar antes de fijar estética**).
+- **Fase 2 — Preguntas y "Preguntas rápidas" (ACTUAL):** modelo de categorías/preguntas/traducciones; RPC segura para servir y validar; seed es/en; script de importación JSON; modo rápido en solitario y local por turnos (temporizador, puntuación, resultados); reglas en `game-core` con tests.
 - **Fase 3 — Online con amigos:** amigos (búsqueda, solicitudes, lista); duelo asíncrono contra un amigo; notificaciones in-app de turno (**preguntar reglas exactas antes**).
 - **Futuro (no implementar sin que se pida):** emparejamiento y online en tiempo real, tablero clásico, economía/tienda/cosméticos, Stripe, anuncios con consentimiento, rachas/niveles/logros/rankings, panel admin y pipeline IA, más categorías y modos flexibles, minijuegos, modo TV, app móvil y push.
 
@@ -74,10 +73,8 @@ Supabase local con la CLI (`supabase start`, requiere Docker). Migraciones versi
 
 Actualizar al cerrar cada sesión.
 
-- **PRs de la Fase 1, apiladas; mergear en este orden:** `feat/auth` → `feat/profile` → `feat/guests` → `feat/design-system`. Cada una parte de la anterior; al mergear una, la siguiente apunta a `main`. `feat/profile` y `feat/guests` incluyen migraciones.
 - **Discord:** login desactivado hasta tener credenciales. Para activarlo: credenciales en `supabase/.env` (pasos en el README), `enabled = true` en `supabase/config.toml` y en `apps/web/src/features/auth/providers.ts`.
 - **Sesión dedicada a estilos y front:** probar más opciones estéticas sobre la base aprobada. Los tokens están en `apps/web/src/app/globals.css` y el muestrario de componentes en `/dev/ui` (solo en desarrollo).
-- **Propuesta sin responder:** levantar Supabase en el CI y testear las políticas RLS en cada PR (+2–3 min de CI).
 - **Invitados:** en la BD sin interfaz; la interfaz llega con la preparación de la partida local (Fase 2).
 - **Colores de categoría aprobados** (irán en la tabla de categorías en la Fase 2): Geografía `#2ECC8F`, Historia `#D9964A`, Ciencia y Naturaleza `#2EC4E6`, Arte y Literatura `#9B7BFF`, Entretenimiento `#FF7A45`, Deportes `#F5C431`, Tecnología `#5C7CFA`.
 
