@@ -15,6 +15,7 @@ Lee [CLAUDE.md](CLAUDE.md) antes de contribuir (reglas, arquitectura y flujo Git
 ```sh
 pnpm install
 pnpm db:start                         # levanta Supabase en Docker; muestra URL y claves
+pnpm db:seed                          # carga las preguntas de ejemplo (es/en)
 cp .env.example apps/web/.env.local   # rellena con los valores de `pnpm exec supabase status`
 pnpm dev                              # http://localhost:3000
 ```
@@ -55,8 +56,19 @@ Para producción se añadirá en ambos proveedores la URL de callback de Supabas
 | `pnpm lint` / `pnpm typecheck` / `pnpm test` / `pnpm build` | Lo mismo que ejecuta el CI                      |
 | `pnpm format`                                               | Formatea con Prettier                           |
 | `pnpm db:reset`                                             | Recrea la BD local aplicando migraciones y seed |
+| `pnpm db:seed`                                              | Importa `supabase/seed/questions.json` en local |
+| `pnpm db:test`                                              | Tests pgTAP de RLS y RPC (`supabase/tests`)     |
 | `pnpm db:types`                                             | Regenera los tipos TS desde la BD local         |
 
 ## Migraciones
 
-Créalas siempre con la CLI: `pnpm exec supabase migration new <nombre>`. Nunca edites una migración ya mergeada. Tras cambiar el esquema, ejecuta `pnpm db:types` y commitea el resultado.
+Créalas siempre con la CLI: `pnpm exec supabase migration new <nombre>`. Nunca edites una migración ya subida a `main`. Tras cambiar el esquema, ejecuta `pnpm db:types` y commitea el resultado.
+
+## Importar preguntas
+
+```sh
+node scripts/import-questions.mts preguntas.json --local     # a Supabase local
+SUPABASE_URL=... SUPABASE_SECRET_KEY=... node scripts/import-questions.mts preguntas.json   # a otro entorno
+```
+
+Formato: un array como el de `supabase/seed/questions.json` (`externalId` único, `category`, `difficulty` `easy|medium|hard`, `status` `draft|approved|rejected`, `source` `ai|manual|user` y `translations` con `prompt`, `correct` y `wrong` por idioma). Reimportar un `externalId` lo actualiza. Solo se juegan las preguntas `approved`.

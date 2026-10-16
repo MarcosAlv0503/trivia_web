@@ -28,3 +28,21 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+
+  # Políticas RLS y RPC del juego probadas contra un Postgres real (pgTAP en supabase/tests).
+  database:
+    runs-on: ubuntu-latest
+    env:
+      # config.toml referencia estas variables; en CI basta con valores de relleno (solo arranca Postgres).
+      SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID: ci
+      SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET: ci
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec supabase db start
+      - run: pnpm db:test

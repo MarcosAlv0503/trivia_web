@@ -45,6 +45,58 @@ export type Database = {
         };
         Relationships: [];
       };
+      categories: {
+        Row: {
+          color: string;
+          created_at: string;
+          id: string;
+          is_active: boolean;
+          sort_order: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          color: string;
+          created_at?: string;
+          id: string;
+          is_active?: boolean;
+          sort_order?: number;
+        };
+        Update: {
+          color?: string;
+          created_at?: string;
+          id?: string;
+          is_active?: boolean;
+          sort_order?: number;
+        };
+        Relationships: [];
+      };
+      category_translations: {
+        Row: {
+          category_id: string;
+          locale: string;
+          name: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          category_id: string;
+          locale: string;
+          name: string;
+        };
+        Update: {
+          category_id?: string;
+          locale?: string;
+          name?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "category_translations_category_id_fkey";
+            columns: ["category_id"];
+            isOneToOne: false;
+            referencedRelation: "categories";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       guests: {
         Row: {
           avatar_id: string;
@@ -117,12 +169,210 @@ export type Database = {
           },
         ];
       };
+      question_translations: {
+        Row: {
+          answers: string[];
+          locale: string;
+          prompt: string;
+          question_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          answers: string[];
+          locale: string;
+          prompt: string;
+          question_id: string;
+        };
+        Update: {
+          answers?: string[];
+          locale?: string;
+          prompt?: string;
+          question_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "question_translations_question_id_fkey";
+            columns: ["question_id"];
+            isOneToOne: false;
+            referencedRelation: "questions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      questions: {
+        Row: {
+          category_id: string;
+          created_at: string;
+          difficulty: string;
+          external_id: string;
+          id: string;
+          source: string;
+          status: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          category_id: string;
+          created_at?: string;
+          difficulty: string;
+          external_id: string;
+          id?: string;
+          source: string;
+          status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          category_id?: string;
+          created_at?: string;
+          difficulty?: string;
+          external_id?: string;
+          id?: string;
+          source?: string;
+          status?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "questions_category_id_fkey";
+            columns: ["category_id"];
+            isOneToOne: false;
+            referencedRelation: "categories";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      quick_match_players: {
+        Row: {
+          avatar_id: string;
+          match_id: string;
+          name: string;
+          seat: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          avatar_id: string;
+          match_id: string;
+          name: string;
+          seat: number;
+        };
+        Update: {
+          avatar_id?: string;
+          match_id?: string;
+          name?: string;
+          seat?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "quick_match_players_avatar_id_fkey";
+            columns: ["avatar_id"];
+            isOneToOne: false;
+            referencedRelation: "avatars";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "quick_match_players_match_id_fkey";
+            columns: ["match_id"];
+            isOneToOne: false;
+            referencedRelation: "quick_matches";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      quick_match_rounds: {
+        Row: {
+          answer_order: number[];
+          answered_at: string | null;
+          chosen: number | null;
+          is_correct: boolean | null;
+          match_id: string;
+          points: number | null;
+          position: number;
+          question_id: string;
+          served_at: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          answer_order: number[];
+          answered_at?: string | null;
+          chosen?: number | null;
+          is_correct?: boolean | null;
+          match_id: string;
+          points?: number | null;
+          position: number;
+          question_id: string;
+          served_at?: string | null;
+        };
+        Update: {
+          answer_order?: number[];
+          answered_at?: string | null;
+          chosen?: number | null;
+          is_correct?: boolean | null;
+          match_id?: string;
+          points?: number | null;
+          position?: number;
+          question_id?: string;
+          served_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "quick_match_rounds_match_id_fkey";
+            columns: ["match_id"];
+            isOneToOne: false;
+            referencedRelation: "quick_matches";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "quick_match_rounds_question_id_fkey";
+            columns: ["question_id"];
+            isOneToOne: false;
+            referencedRelation: "questions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      quick_matches: {
+        Row: {
+          created_at: string;
+          difficulty: string;
+          finished_at: string | null;
+          id: string;
+          locale: string;
+          owner_id: string;
+          player_count: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          difficulty: string;
+          finished_at?: string | null;
+          id?: string;
+          locale: string;
+          owner_id: string;
+          player_count: number;
+        };
+        Update: {
+          created_at?: string;
+          difficulty?: string;
+          finished_at?: string | null;
+          id?: string;
+          locale?: string;
+          owner_id?: string;
+          player_count?: number;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
+      answer_quick_question: {
+        Args: { choice: number; match_id: string; question_position: number };
+        Returns: Json;
+      };
       delete_own_account: { Args: Record<PropertyKey, never>; Returns: undefined };
+      get_quick_match: { Args: { match_id: string }; Returns: Json };
+      import_questions: { Args: { items: Json }; Returns: number };
       is_username_available: { Args: { candidate: string }; Returns: boolean };
       remember_guest: {
         Args: { guest_avatar_id: string; guest_name: string };
@@ -140,6 +390,11 @@ export type Database = {
           isOneToOne: true;
           isSetofReturn: false;
         };
+      };
+      serve_quick_question: { Args: { match_id: string }; Returns: Json };
+      start_quick_match: {
+        Args: { guest_ids?: string[]; match_difficulty: string };
+        Returns: string;
       };
     };
     Enums: {
