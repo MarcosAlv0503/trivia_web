@@ -1,10 +1,13 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { QUICK } from "@trivia/game-core";
+import { DUEL, QUICK } from "@trivia/game-core";
 import { buttonClassName } from "@/components/button";
 import { LoginButtons } from "@/features/auth/login-buttons";
 import { SignOutButton } from "@/features/auth/sign-out-button";
+import { DuelList } from "@/features/duel/duel-list";
+import type { DuelSummary } from "@/features/duel/types";
+import type { FriendLists } from "@/features/friends/types";
 import { HomeIntro } from "@/features/home/home-intro";
 import { Avatar } from "@/features/profile/avatar";
 import { getAuthContext, getOwnProfile } from "@/features/profile/queries";
@@ -33,18 +36,39 @@ export default async function HomePage({
 
   const profile = await getOwnProfile();
   if (!profile) redirect("/onboarding");
-  const [t, tQuick] = await Promise.all([getTranslations("Home"), getTranslations("Quick")]);
+  const { supabase } = await getAuthContext();
+  const [t, tQuick, tDuel, { data: duels }, { data: friends }] = await Promise.all([
+    getTranslations("Home"),
+    getTranslations("Quick"),
+    getTranslations("Duel"),
+    supabase.rpc("list_duels"),
+    supabase.rpc("list_friends"),
+  ]);
+  const incoming = (friends as unknown as FriendLists | null)?.incoming.length ?? 0;
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col items-center gap-8 p-6">
-      <Link
-        href="/profile"
-        className="flex items-center gap-2 self-end rounded-full bg-surface py-1 pr-4 pl-1 sticker"
-        aria-label={t("profileLink")}
-      >
-        <Avatar id={profile.avatar_id} size={36} />
-        <span className="font-display font-bold">{profile.username}</span>
-      </Link>
+      <div className="flex w-full items-center justify-between gap-3">
+        <Link
+          href="/friends"
+          className="flex items-center gap-2 rounded-full bg-surface px-4 py-2 font-display font-bold sticker"
+        >
+          👥 {t("friends")}
+          {incoming > 0 && (
+            <span className="grid min-w-6 place-items-center rounded-full bg-accent px-1.5 text-sm text-accent-ink">
+              {incoming}
+            </span>
+          )}
+        </Link>
+        <Link
+          href="/profile"
+          className="flex items-center gap-2 rounded-full bg-surface py-1 pr-4 pl-1 sticker"
+          aria-label={t("profileLink")}
+        >
+          <Avatar id={profile.avatar_id} size={36} />
+          <span className="font-display font-bold">{profile.username}</span>
+        </Link>
+      </div>
       <HomeIntro />
 
       {/* Una tarjeta por modo de juego. */}
@@ -61,6 +85,23 @@ export default async function HomePage({
         <Link href="/play/quick" className={buttonClassName("play", "self-end")}>
           {tQuick("play")}
         </Link>
+      </section>
+
+      <section className="flex w-full flex-col gap-3 rounded-card bg-surface p-5 sticker">
+        <h2 className="text-2xl font-bold">⚔ {tDuel("title")}</h2>
+        <p className="font-bold text-fg-muted">
+          {tDuel("summary", { rounds: DUEL.rounds })}
+          <br />
+          {tDuel("tagline")}
+        </p>
+        <Link href="/friends" className={buttonClassName("play", "self-end text-xl")}>
+          {tDuel("challengeFriend")}
+        </Link>
+      </section>
+
+      <section className="flex w-full flex-col gap-2">
+        <h2 className="text-xl font-bold">{t("duelsTitle")}</h2>
+        <DuelList duels={(duels as unknown as DuelSummary[] | null) ?? []} />
       </section>
 
       <SignOutButton />

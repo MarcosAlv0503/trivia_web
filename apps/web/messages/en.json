@@ -6,7 +6,10 @@
   "Home": {
     "title": "Trivia <accent>Ajolote</accent>",
     "subtitle": "Put your knowledge to the test!",
-    "profileLink": "My profile"
+    "profileLink": "My profile",
+    "friends": "Friends",
+    "duelsTitle": "Your duels",
+    "noDuels": "No duels yet. Challenge a friend!"
   },
   "Auth": {
     "signInWith": "Sign in with {provider}",
@@ -87,5 +90,78 @@
     "exit": "Exit",
     "exitConfirm": "Leave the game? You’ll lose your progress.",
     "keepPlaying": "Keep playing"
+  },
+  "Friends": {
+    "title": "Friends",
+    "back": "Back",
+    "search": "Search players",
+    "searchHint": "Type at least 3 letters of the username",
+    "noResults": "No players with that name.",
+    "add": "Add",
+    "requested": "Request sent",
+    "friend": "Friend",
+    "accept": "Accept",
+    "reject": "Decline",
+    "cancel": "Cancel",
+    "incoming": "Requests received",
+    "outgoing": "Requests sent",
+    "list": "Your friends",
+    "empty": "No friends yet. Search for someone by name!",
+    "challenge": "Challenge",
+    "challengeTitle": "Choose the difficulty",
+    "challengeGo": "Challenge!",
+    "remove": "Remove",
+    "removeConfirm": "Remove {name} from your friends? Ongoing duels will be cancelled.",
+    "removeYes": "Yes, remove",
+    "error": "Something went wrong. Please try again."
+  },
+  "Duel": {
+    "title": "Turn-based Duel",
+    "summary": "{rounds} rounds · category wheel",
+    "tagline": "Challenge a friend and play at your own pace",
+    "challengeFriend": "Challenge a friend",
+    "you": "You",
+    "round": "R{round}",
+    "roundOf": "Round {round} of {total}",
+    "spin": "Spin the wheel",
+    "play": "Play round {round}",
+    "waiting": "Waiting for {name} · {hours} h left",
+    "yourTurn": "Your turn!",
+    "waitingShort": "Waiting",
+    "decline": "Decline duel",
+    "surrender": "Give up",
+    "surrenderConfirm": "Give up? It will count as a loss.",
+    "surrenderYes": "Yes, give up",
+    "keepPlaying": "Keep playing",
+    "win": "You won!",
+    "loss": "You lost",
+    "draw": "It’s a tie!",
+    "cancelled": "Duel cancelled",
+    "reasons": {
+      "timeout": "The turn deadline passed",
+      "surrender": "Gave up",
+      "declined": "Duel declined",
+      "unfriended": "You’re no longer friends"
+    },
+    "listWin": "Won {me}–{them}",
+    "listLoss": "Lost {me}–{them}",
+    "listDraw": "Tie {me}–{them}",
+    "listCancelled": "Cancelled",
+    "rematch": "Rematch",
+    "home": "Home",
+    "back": "Back",
+    "errors": {
+      "notFound": "We couldn’t find this duel.",
+      "notFriends": "You can only challenge your friends.",
+      "notEnoughQuestions": "There aren’t enough questions for this duel.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "Notifications": {
+    "friend_request": "{name} sent you a friend request",
+    "friend_accepted": "{name} accepted your friend request",
+    "duel_turn": "It’s your turn in your duel against {name}!",
+    "duel_finished": "Your duel against {name} is over",
+    "close": "Close"
   }
 }

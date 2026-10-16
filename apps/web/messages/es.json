@@ -6,7 +6,10 @@
   "Home": {
     "title": "Trivia <accent>Ajolote</accent>",
     "subtitle": "¡Pon a prueba lo que sabes!",
-    "profileLink": "Mi perfil"
+    "profileLink": "Mi perfil",
+    "friends": "Amigos",
+    "duelsTitle": "Tus duelos",
+    "noDuels": "Aún no tienes duelos. ¡Reta a un amigo!"
   },
   "Auth": {
     "signInWith": "Entrar con {provider}",
@@ -87,5 +90,78 @@
     "exit": "Salir",
     "exitConfirm": "¿Salir de la partida? Perderás el progreso.",
     "keepPlaying": "Seguir jugando"
+  },
+  "Friends": {
+    "title": "Amigos",
+    "back": "Volver",
+    "search": "Buscar jugadores",
+    "searchHint": "Escribe al menos 3 letras del nombre de usuario",
+    "noResults": "No hay jugadores con ese nombre.",
+    "add": "Añadir",
+    "requested": "Solicitud enviada",
+    "friend": "Amigo",
+    "accept": "Aceptar",
+    "reject": "Rechazar",
+    "cancel": "Cancelar",
+    "incoming": "Solicitudes recibidas",
+    "outgoing": "Solicitudes enviadas",
+    "list": "Tus amigos",
+    "empty": "Todavía no tienes amigos. ¡Busca a alguien por su nombre!",
+    "challenge": "Retar",
+    "challengeTitle": "Elige la dificultad",
+    "challengeGo": "¡Retar!",
+    "remove": "Eliminar",
+    "removeConfirm": "¿Eliminar a {name} de tus amigos? Los duelos en curso se cancelarán.",
+    "removeYes": "Sí, eliminar",
+    "error": "Algo ha fallado. Inténtalo de nuevo."
+  },
+  "Duel": {
+    "title": "Duelo por turnos",
+    "summary": "{rounds} rondas · ruleta de categorías",
+    "tagline": "Reta a un amigo y jugad a vuestro ritmo",
+    "challengeFriend": "Retar a un amigo",
+    "you": "Tú",
+    "round": "R{round}",
+    "roundOf": "Ronda {round} de {total}",
+    "spin": "Girar la ruleta",
+    "play": "Jugar ronda {round}",
+    "waiting": "Esperando a {name} · quedan {hours} h",
+    "yourTurn": "¡Te toca!",
+    "waitingShort": "Esperando",
+    "decline": "Rechazar duelo",
+    "surrender": "Rendirse",
+    "surrenderConfirm": "¿Rendirte? Contará como derrota.",
+    "surrenderYes": "Sí, rendirme",
+    "keepPlaying": "Seguir jugando",
+    "win": "¡Has ganado!",
+    "loss": "Has perdido",
+    "draw": "¡Empate!",
+    "cancelled": "Duelo cancelado",
+    "reasons": {
+      "timeout": "Se acabó el plazo del turno",
+      "surrender": "Rendición",
+      "declined": "Duelo rechazado",
+      "unfriended": "Ya no sois amigos"
+    },
+    "listWin": "Ganaste {me}–{them}",
+    "listLoss": "Perdiste {me}–{them}",
+    "listDraw": "Empate {me}–{them}",
+    "listCancelled": "Cancelado",
+    "rematch": "Revancha",
+    "home": "Inicio",
+    "back": "Volver",
+    "errors": {
+      "notFound": "No hemos encontrado este duelo.",
+      "notFriends": "Solo puedes retar a tus amigos.",
+      "notEnoughQuestions": "No hay suficientes preguntas para este duelo.",
+      "generic": "Algo ha fallado. Inténtalo de nuevo."
+    }
+  },
+  "Notifications": {
+    "friend_request": "{name} te ha enviado una solicitud de amistad",
+    "friend_accepted": "{name} ha aceptado tu solicitud de amistad",
+    "duel_turn": "¡Te toca en tu duelo contra {name}!",
+    "duel_finished": "Tu duelo contra {name} ha terminado",
+    "close": "Cerrar"
   }
 }

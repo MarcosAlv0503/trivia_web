@@ -8,14 +8,12 @@ import { phaseAfterReveal, roundOf, seatOf } from "@trivia/game-core";
 import { buttonClassName } from "@/components/button";
 import { Mascot } from "@/components/mascot";
 import { QuestionCard } from "@/components/question-card";
+import { AnswerFeedback, REVEAL_MS } from "@/features/game/answer-feedback";
+import { useQuestionTimer } from "@/features/game/use-question-timer";
 import { Avatar } from "@/features/profile/avatar";
 import { createClient } from "@/lib/supabase/client";
 import { QuickResults } from "./quick-results";
 import type { AnswerResult, QuickMatch, QuickPlayer, ServedQuestion } from "./types";
-
-// Tiempo que se muestra la respuesta correcta antes de avanzar solo.
-const REVEAL_MS = 2000;
-const TICK_MS = 250;
 
 type Phase = "loading" | "handoff" | "question" | "reveal" | "results" | "error";
 
@@ -27,7 +25,6 @@ export function QuickGame({ matchId }: { matchId: string }) {
   const [error, setError] = useState<"notFound" | "generic">("generic");
   const [match, setMatch] = useState<QuickMatch | null>(null);
   const [question, setQuestion] = useState<ServedQuestion | null>(null);
-  const [timeLeftMs, setTimeLeftMs] = useState(0);
   const [chosen, setChosen] = useState<number>();
   const [result, setResult] = useState<AnswerResult | null>(null);
   // Evita enviar dos respuestas (doble toque, o toque justo cuando se agota el tiempo).
@@ -56,7 +53,6 @@ export function QuickGame({ matchId }: { matchId: string }) {
     const served = data as unknown as ServedQuestion;
     answering.current = false;
     setQuestion(served);
-    setTimeLeftMs(served.timeLimitMs - served.elapsedMs);
     setChosen(undefined);
     setResult(null);
     setPhase("question");
@@ -107,17 +103,7 @@ export function QuickGame({ matchId }: { matchId: string }) {
     void start();
   }, []);
 
-  const onTick = useEffectEvent((deadline: number) => {
-    const left = deadline - performance.now();
-    setTimeLeftMs(Math.max(0, left));
-    if (left <= 0) void answer(null);
-  });
-  useEffect(() => {
-    if (phase !== "question" || !question) return;
-    const deadline = performance.now() + question.timeLimitMs - question.elapsedMs;
-    const id = setInterval(() => onTick(deadline), TICK_MS);
-    return () => clearInterval(id);
-  }, [phase, question]);
+  const timeLeftMs = useQuestionTimer(question, phase === "question", () => void answer(null));
 
   const afterReveal = useEffectEvent(async () => {
     if (!match || !result) return;
@@ -232,21 +218,7 @@ export function QuickGame({ matchId }: { matchId: string }) {
         timerLabel={t("timer")}
       />
 
-      <div aria-live="polite" className="min-h-10 text-center">
-        {result && (
-          <motion.p
-            initial={{ scale: 0.6, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className={`font-display text-2xl font-bold ${result.isCorrect ? "text-ok" : "text-ko"}`}
-          >
-            {result.isCorrect
-              ? `${t("correct")} ${t("points", { points: result.points })}`
-              : chosen === undefined
-                ? t("timeUp")
-                : t("wrong")}
-          </motion.p>
-        )}
-      </div>
+      <AnswerFeedback result={result} timedOut={chosen === undefined} />
     </main>
   );
 }

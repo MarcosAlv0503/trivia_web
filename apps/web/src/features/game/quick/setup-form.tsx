@@ -2,8 +2,9 @@
 
 import { useActionState, useState } from "react";
 import { useTranslations } from "next-intl";
-import { DIFFICULTIES, QUICK, type Difficulty } from "@trivia/game-core";
+import { QUICK, type Difficulty } from "@trivia/game-core";
 import { buttonClassName } from "@/components/button";
+import { DifficultyPicker } from "@/features/game/difficulty-picker";
 import { Avatar } from "@/features/profile/avatar";
 import { AvatarPicker } from "@/features/profile/avatar-picker";
 import { startQuickMatch, type StartState } from "./actions";
@@ -39,23 +40,7 @@ export function SetupForm({ host, recentGuests, avatarIds }: Props) {
     <form action={formAction} className="flex w-full max-w-md flex-col gap-6">
       <fieldset>
         <legend className="mb-2 font-display text-lg font-bold">{t("difficulty")}</legend>
-        <div className="grid grid-cols-3 gap-2">
-          {DIFFICULTIES.map((d) => (
-            <label key={d} className="cursor-pointer">
-              <input
-                type="radio"
-                name="difficulty"
-                value={d}
-                checked={difficulty === d}
-                onChange={() => setDifficulty(d)}
-                className="peer sr-only"
-              />
-              <span className="block rounded-2xl bg-surface-2 px-2 py-2.5 text-center font-display font-bold sticker peer-checked:bg-accent peer-checked:text-accent-ink peer-focus-visible:ring-4 peer-focus-visible:ring-fg">
-                {t(`difficulties.${d}`)}
-              </span>
-            </label>
-          ))}
-        </div>
+        <DifficultyPicker name="difficulty" value={difficulty} onChange={setDifficulty} />
       </fieldset>
 
       <fieldset className="flex flex-col gap-2">

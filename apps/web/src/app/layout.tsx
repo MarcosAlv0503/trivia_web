@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Fredoka, Nunito } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
+import { NotificationToasts } from "@/features/notifications/notification-toasts";
+import { getAuthContext } from "@/features/profile/queries";
 import "./globals.css";
 
 // next/font descarga las fuentes al compilar y las sirve desde nuestro dominio (sin peticiones a Google).
@@ -14,11 +16,14 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const locale = await getLocale();
+  const [locale, { claims }] = await Promise.all([getLocale(), getAuthContext()]);
   return (
     <html lang={locale} className={`${fredoka.variable} ${nunito.variable}`}>
       <body className="min-h-dvh antialiased">
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          {children}
+          {claims && <NotificationToasts userId={claims.sub} />}
+        </NextIntlClientProvider>
       </body>
     </html>
   );

@@ -1,0 +1,63 @@
+import type { Difficulty } from "@trivia/game-core";
+
+// Forma de lo que devuelven las RPC del duelo (los tipos generados solo dicen `Json`).
+
+export type DuelCategory = { id: string; name: string; color: string };
+export type DuelAction = "spin" | "answer" | "wait" | "done";
+export type DuelResult = "win" | "loss" | "draw" | "cancelled" | null;
+export type DuelEndReason =
+  "completed" | "timeout" | "surrender" | "declined" | "unfriended" | null;
+
+export type DuelPlayer = { id: string; username: string; avatarId: string; score: number };
+
+export type Duel = {
+  id: string;
+  difficulty: Difficulty;
+  status: "active" | "finished";
+  endReason: DuelEndReason;
+  result: DuelResult;
+  turnNumber: number;
+  deadline: string;
+  nextAction: DuelAction;
+  canDecline: boolean;
+  me: DuelPlayer;
+  opponent: DuelPlayer;
+  rounds: {
+    round: number;
+    category: DuelCategory;
+    myPoints: number | null;
+    opponentPoints: number | null;
+  }[];
+  categories: DuelCategory[];
+};
+
+export type DuelSummary = {
+  id: string;
+  status: "active" | "finished";
+  nextAction: DuelAction;
+  result: DuelResult;
+  endReason: DuelEndReason;
+  round: number;
+  deadline: string;
+  opponent: { username: string; avatarId: string };
+  myScore: number;
+  opponentScore: number;
+};
+
+export type DuelQuestion = {
+  round: number;
+  slot: number;
+  timeLimitMs: number;
+  elapsedMs: number;
+  category: DuelCategory;
+  prompt: string;
+  answers: string[];
+};
+
+export type DuelAnswerResult = {
+  correctIndex: number;
+  isCorrect: boolean;
+  points: number;
+  turnEnded: boolean;
+  finished: boolean;
+};
