@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { phaseAfterReveal, rankPlayers, roundOf, seatOf } from "./quick";
+import { phaseAfterReveal, rankPlayers, roundOf, seatOf, speedTier } from "./quick";
 
 describe("turnos", () => {
   it("alterna asientos y avanza la ronda cuando han jugado todos", () => {
@@ -41,5 +41,11 @@ describe("rankPlayers", () => {
       ["c", 2],
       ["d", 4],
     ]);
+  });
+});
+
+describe("speedTier", () => {
+  it("distingue acierto normal, rápido y muy rápido", () => {
+    expect([15, 12, 10, 0].map(speedTier)).toEqual(["veryFast", "fast", "normal", null]);
   });
 });

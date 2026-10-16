@@ -5,6 +5,7 @@ import { buttonClassName } from "@/components/button";
 import { Mascot } from "@/components/mascot";
 import { QuestionCard } from "@/components/question-card";
 import { Wheel } from "@/components/wheel";
+import { AnswerFeedback } from "@/features/game/answer-feedback";
 import { Avatar } from "@/features/profile/avatar";
 
 // Datos de ejemplo solo para desarrollo (sin i18n a propósito). Los colores de categoría
@@ -45,6 +46,8 @@ export function Showcase() {
   const [selected, setSelected] = useState<string>();
   const [target, setTarget] = useState<number | null>(null);
   const [spinning, setSpinning] = useState(false);
+  // `id` cambia en cada pulsación para volver a montar la animación aunque se repita el mismo caso.
+  const [feedback, setFeedback] = useState<{ id: number; points: number } | null>(null);
 
   function spin() {
     setSpinning(true);
@@ -121,6 +124,32 @@ export function Showcase() {
             {target !== null && !spinning ? `Ha tocado: ${CATEGORIES[target]!.label}` : " "}
           </p>
         </div>
+      </section>
+
+      <section className="grid gap-4">
+        <h2 className="text-2xl font-bold">Mensaje de acierto</h2>
+        <div className="flex flex-wrap gap-3">
+          {[
+            ["Normal (+10)", 10],
+            ["Rápido (+12)", 12],
+            ["Muy rápido (+15)", 15],
+            ["Fallo", 0],
+          ].map(([label, points]) => (
+            <button
+              key={label}
+              type="button"
+              className={buttonClassName("secondary")}
+              onClick={() => setFeedback({ id: Date.now(), points: Number(points) })}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <AnswerFeedback
+          key={feedback?.id}
+          result={feedback && { isCorrect: feedback.points > 0, points: feedback.points }}
+          timedOut={false}
+        />
       </section>
 
       <section className="grid gap-4">

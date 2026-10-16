@@ -8,6 +8,21 @@ export const QUICK = {
   secondsPerQuestion: 15,
 } as const;
 
+/** Espejo de la función SQL `answer_points` (compartida por el modo rápido y el duelo). */
+export const SCORING = {
+  correct: 10,
+  veryFastBonus: 5,
+  fastBonus: 2,
+} as const;
+
+/** Nivel de rapidez de un acierto según sus puntos; `null` si no fue acierto. */
+export function speedTier(points: number) {
+  if (points >= SCORING.correct + SCORING.veryFastBonus) return "veryFast";
+  if (points >= SCORING.correct + SCORING.fastBonus) return "fast";
+  if (points >= SCORING.correct) return "normal";
+  return null;
+}
+
 export const DIFFICULTIES = ["easy", "medium", "hard"] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
 
