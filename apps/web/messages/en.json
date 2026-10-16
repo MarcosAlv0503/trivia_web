@@ -117,11 +117,11 @@
   },
   "Duel": {
     "title": "Turn-based Duel",
-    "summary": "{rounds} rounds · category wheel",
+    "summary": "3 or 6 rounds · category wheel",
     "tagline": "Challenge a friend and play at your own pace",
     "challengeFriend": "Challenge a friend",
     "you": "You",
-    "round": "R{round}",
+    "round": "{round}",
     "roundOf": "Round {round} of {total}",
     "spin": "Spin the wheel",
     "play": "Play round {round}",
@@ -154,8 +154,11 @@
       "notFound": "We couldn’t find this duel.",
       "notFriends": "You can only challenge your friends.",
       "notEnoughQuestions": "There aren’t enough questions for this duel.",
-      "generic": "Something went wrong. Please try again."
-    }
+      "generic": "Something went wrong. Please try again.",
+      "tooManyDuels": "You already have {max} duels in progress. Finish one before starting another."
+    },
+    "rounds": "Rounds",
+    "roundsOption": "{count} rounds"
   },
   "Notifications": {
     "friend_request": "{name} sent you a friend request",

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { DUEL } from "@trivia/game-core";
 import { Avatar } from "@/features/profile/avatar";
 import type { DuelSummary } from "./types";
 
@@ -37,7 +36,7 @@ export function DuelList({ duels }: { duels: DuelSummary[] }) {
               {duel.status === "active" ? (
                 <>
                   <span className="ml-auto text-sm font-bold text-fg-muted">
-                    {duel.round}/{DUEL.rounds}
+                    {duel.round}/{duel.roundCount}
                   </span>
                   {myTurn ? (
                     <span className="rounded-full bg-accent px-3 py-0.5 text-sm font-extrabold text-accent-ink">

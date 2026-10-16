@@ -1,4 +1,4 @@
-import type { Difficulty } from "@trivia/game-core";
+import type { Difficulty, DuelRounds } from "@trivia/game-core";
 
 // Forma de lo que devuelven las RPC del duelo (los tipos generados solo dicen `Json`).
 
@@ -13,6 +13,7 @@ export type DuelPlayer = { id: string; username: string; avatarId: string; score
 export type Duel = {
   id: string;
   difficulty: Difficulty;
+  roundCount: DuelRounds;
   status: "active" | "finished";
   endReason: DuelEndReason;
   result: DuelResult;
@@ -38,6 +39,7 @@ export type DuelSummary = {
   result: DuelResult;
   endReason: DuelEndReason;
   round: number;
+  roundCount: DuelRounds;
   deadline: string;
   opponent: { username: string; avatarId: string };
   myScore: number;

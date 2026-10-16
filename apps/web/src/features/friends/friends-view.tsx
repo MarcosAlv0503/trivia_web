@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import type { Difficulty } from "@trivia/game-core";
+import { DUEL, type Difficulty, type DuelRounds } from "@trivia/game-core";
 import { buttonClassName } from "@/components/button";
-import { startDuel } from "@/features/duel/start-duel";
-import { DifficultyPicker } from "@/features/game/difficulty-picker";
+import { startDuel, type StartDuelError } from "@/features/duel/start-duel";
+import { DifficultyPicker, SegmentedPicker } from "@/features/game/difficulty-picker";
 import { Avatar } from "@/features/profile/avatar";
 import { createClient } from "@/lib/supabase/client";
 import type { FriendLists, Player, SearchResult } from "./types";
@@ -177,7 +177,7 @@ export function FriendsView({ lists }: { lists: FriendLists }) {
   );
 }
 
-/** Amigo con las acciones Retar (eligiendo dificultad) y Eliminar (con confirmación). */
+/** Amigo con las acciones Retar (eligiendo dificultad y rondas) y Eliminar (con confirmación). */
 function FriendRow({
   player,
   busy,
@@ -193,12 +193,13 @@ function FriendRow({
   const [supabase] = useState(createClient);
   const [mode, setMode] = useState<"idle" | "challenge" | "remove">("idle");
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
+  const [rounds, setRounds] = useState<DuelRounds>(DUEL.defaultRounds);
   const [starting, setStarting] = useState(false);
-  const [error, setError] = useState<"notFriends" | "generic">();
+  const [error, setError] = useState<StartDuelError>();
 
   async function challenge() {
     setStarting(true);
-    const started = await startDuel(supabase, player.id, difficulty);
+    const started = await startDuel(supabase, player.id, difficulty, rounds);
     if ("id" in started) {
       router.push(`/duel/${started.id}`);
       return;
@@ -241,9 +242,19 @@ function FriendRow({
             value={difficulty}
             onChange={setDifficulty}
           />
+          <p className="font-bold">{tDuel("rounds")}</p>
+          <SegmentedPicker
+            name={`rounds-${player.id}`}
+            value={rounds}
+            onChange={setRounds}
+            options={DUEL.roundOptions.map((count) => ({
+              value: count,
+              label: tDuel("roundsOption", { count }),
+            }))}
+          />
           {error && (
             <p role="alert" className="font-bold text-ko">
-              {tDuel(`errors.${error}`)}
+              {tDuel(`errors.${error}`, { max: DUEL.maxActivePerPair })}
             </p>
           )}
           <div className="flex gap-2">

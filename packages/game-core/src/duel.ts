@@ -3,10 +3,14 @@
 
 /** Espejo de las reglas de la migración: si cambian allí, cambian aquí. */
 export const DUEL = {
-  rounds: 6,
+  roundOptions: [3, 6],
+  defaultRounds: 6,
   questionsPerRound: 3,
   turnHours: 48,
+  maxActivePerPair: 3,
 } as const;
+
+export type DuelRounds = (typeof DUEL.roundOptions)[number];
 
 /** Horas que quedan hasta el plazo del turno, redondeando hacia arriba (0 si ya pasó). */
 export function hoursLeft(deadline: Date, now: Date) {

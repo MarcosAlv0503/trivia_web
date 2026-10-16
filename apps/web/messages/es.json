@@ -117,11 +117,11 @@
   },
   "Duel": {
     "title": "Duelo por turnos",
-    "summary": "{rounds} rondas · ruleta de categorías",
+    "summary": "3 o 6 rondas · ruleta de categorías",
     "tagline": "Reta a un amigo y jugad a vuestro ritmo",
     "challengeFriend": "Retar a un amigo",
     "you": "Tú",
-    "round": "R{round}",
+    "round": "{round}",
     "roundOf": "Ronda {round} de {total}",
     "spin": "Girar la ruleta",
     "play": "Jugar ronda {round}",
@@ -154,8 +154,11 @@
       "notFound": "No hemos encontrado este duelo.",
       "notFriends": "Solo puedes retar a tus amigos.",
       "notEnoughQuestions": "No hay suficientes preguntas para este duelo.",
-      "generic": "Algo ha fallado. Inténtalo de nuevo."
-    }
+      "generic": "Algo ha fallado. Inténtalo de nuevo.",
+      "tooManyDuels": "Ya tenéis {max} duelos en curso. Terminad alguno antes de empezar otro."
+    },
+    "rounds": "Rondas",
+    "roundsOption": "{count} rondas"
   },
   "Notifications": {
     "friend_request": "{name} te ha enviado una solicitud de amistad",

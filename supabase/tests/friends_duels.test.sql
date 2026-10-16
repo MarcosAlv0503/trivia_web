@@ -2,7 +2,7 @@
 -- El flujo de juego se ejecuta como postgres con el usuario simulado en request.jwt.claims (las RPC usan
 -- auth.uid()); los permisos se comprueban con el rol authenticated.
 begin;
-select plan(33);
+select plan(37);
 
 -- Fixtures -----------------------------------------------------------------------------------------
 update public.questions set status = 'rejected';
@@ -192,6 +192,36 @@ select is(
    where e ->> 'id' = current_setting('test.late')),
   'win', 'quien no juega su turno a tiempo pierde'
 );
+
+-- Duelo de 3 rondas ---------------------------------------------------------------------------------
+select set_config('test.short', public.start_duel('00000000-0000-0000-0000-00000000000b', 'easy', 3)::text, true);
+select pg_temp.play_turn(current_setting('test.short')::uuid);
+select pg_temp.as_user('bob'); select pg_temp.play_turn(current_setting('test.short')::uuid);
+select pg_temp.as_user('alice'); select pg_temp.play_turn(current_setting('test.short')::uuid);
+select pg_temp.as_user('bob'); select pg_temp.play_turn(current_setting('test.short')::uuid);
+select is(
+  (select status from public.duels where id = current_setting('test.short')::uuid), 'finished',
+  'un duelo de 3 rondas termina tras 4 turnos'
+);
+select is(
+  (select count(*)::integer from public.duel_plays where duel_id = current_setting('test.short')::uuid), 18,
+  '3 rondas × 3 preguntas para cada jugador'
+);
+select throws_ok(
+  $$ select public.start_duel('00000000-0000-0000-0000-00000000000a', 'easy', 4) $$,
+  '23514', null, 'solo se admiten 3 o 6 rondas'
+);
+
+-- Límite de 3 duelos activos por pareja (cuenten como retador o como rival).
+select public.start_duel('00000000-0000-0000-0000-00000000000a', 'easy');
+select pg_temp.as_user('alice');
+select public.start_duel('00000000-0000-0000-0000-00000000000b', 'easy');
+select public.start_duel('00000000-0000-0000-0000-00000000000b', 'easy');
+select throws_like(
+  $$ select public.start_duel('00000000-0000-0000-0000-00000000000b', 'easy') $$,
+  'ya tenéis 3 duelos en curso', 'como mucho 3 duelos activos entre dos jugadores'
+);
+select public.surrender_duel(id) from public.duels where status = 'active';
 
 -- Rechazar, rendirse y eliminar amigo ----------------------------------------------------------------
 select set_config('test.declined', public.start_duel('00000000-0000-0000-0000-00000000000b', 'easy')::text, true);

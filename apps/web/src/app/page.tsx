@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { DUEL, QUICK } from "@trivia/game-core";
+import { QUICK } from "@trivia/game-core";
 import { buttonClassName } from "@/components/button";
 import { LoginButtons } from "@/features/auth/login-buttons";
 import { SignOutButton } from "@/features/auth/sign-out-button";
@@ -90,7 +90,7 @@ export default async function HomePage({
       <section className="flex w-full flex-col gap-3 rounded-card bg-surface p-5 sticker">
         <h2 className="text-2xl font-bold">⚔ {tDuel("title")}</h2>
         <p className="font-bold text-fg-muted">
-          {tDuel("summary", { rounds: DUEL.rounds })}
+          {tDuel("summary")}
           <br />
           {tDuel("tagline")}
         </p>

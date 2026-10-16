@@ -204,6 +204,7 @@ export type Database = {
           finished_at: string | null;
           id: string;
           opponent_id: string;
+          round_count: number;
           status: string;
           turn_deadline: string;
           turn_number: number;
@@ -218,6 +219,7 @@ export type Database = {
           finished_at?: string | null;
           id?: string;
           opponent_id: string;
+          round_count?: number;
           status?: string;
           turn_deadline?: string;
           turn_number?: number;
@@ -231,6 +233,7 @@ export type Database = {
           finished_at?: string | null;
           id?: string;
           opponent_id?: string;
+          round_count?: number;
           status?: string;
           turn_deadline?: string;
           turn_number?: number;
@@ -633,6 +636,7 @@ export type Database = {
           finished_at: string | null;
           id: string;
           opponent_id: string;
+          round_count: number;
           status: string;
           turn_deadline: string;
           turn_number: number;
@@ -673,7 +677,10 @@ export type Database = {
       serve_duel_question: { Args: { duel_id: string }; Returns: Json };
       serve_quick_question: { Args: { match_id: string }; Returns: Json };
       spin_duel_round: { Args: { duel_id: string }; Returns: Json };
-      start_duel: { Args: { duel_difficulty: string; opponent: string }; Returns: string };
+      start_duel: {
+        Args: { duel_difficulty: string; duel_round_count?: number; opponent: string };
+        Returns: string;
+      };
       start_quick_match: {
         Args: { guest_ids?: string[]; match_difficulty: string };
         Returns: string;

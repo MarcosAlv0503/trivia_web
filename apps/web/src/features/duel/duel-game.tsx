@@ -25,7 +25,7 @@ import type { Duel, DuelAnswerResult, DuelQuestion } from "./types";
 const AFTER_SPIN_MS = 900;
 
 type Phase = "loading" | "overview" | "spinning" | "question" | "reveal" | "error";
-type ErrorKey = "notFound" | "notFriends" | "notEnoughQuestions" | "generic";
+type ErrorKey = "notFound" | "notFriends" | "tooManyDuels" | "notEnoughQuestions" | "generic";
 
 /** Conduce el duelo: el servidor decide categoría, preguntas, puntos y turnos; aquí solo se muestra. */
 export function DuelGame({ duelId }: { duelId: string }) {
@@ -116,7 +116,7 @@ export function DuelGame({ duelId }: { duelId: string }) {
   async function rematch() {
     if (!duel) return;
     setBusy(true);
-    const started = await startDuel(supabase, duel.opponent.id, duel.difficulty);
+    const started = await startDuel(supabase, duel.opponent.id, duel.difficulty, duel.roundCount);
     if ("id" in started) {
       router.push(`/duel/${started.id}`);
       return;
@@ -187,7 +187,7 @@ export function DuelGame({ duelId }: { duelId: string }) {
     return (
       <Centered>
         <p className="font-bold text-fg-muted">
-          {t("roundOf", { round: duel.turnNumber, total: DUEL.rounds })}
+          {t("roundOf", { round: duel.turnNumber, total: duel.roundCount })}
         </p>
         <Wheel
           segments={duel.categories.map((c) => ({ id: c.id, label: c.name, color: c.color }))}
@@ -206,7 +206,7 @@ export function DuelGame({ duelId }: { duelId: string }) {
       <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 p-4 sm:p-6">
         <div className="flex items-center justify-between gap-3">
           <span className="font-bold text-fg-muted">
-            {t("roundOf", { round: question.round, total: DUEL.rounds })}
+            {t("roundOf", { round: question.round, total: duel.roundCount })}
           </span>
           <span className="flex items-center gap-2 font-display font-bold">
             {t("you")} {duel.me.score} · {duel.opponent.score}
@@ -221,7 +221,7 @@ export function DuelGame({ duelId }: { duelId: string }) {
           selectedId={chosen === undefined ? undefined : String(chosen)}
           correctId={result ? String(result.correctIndex) : undefined}
           onAnswer={(id) => void answer(Number(id))}
-          timerLabel={t("roundOf", { round: question.round, total: DUEL.rounds })}
+          timerLabel={t("roundOf", { round: question.round, total: duel.roundCount })}
         />
         <AnswerFeedback result={result} timedOut={chosen === undefined} />
       </main>
@@ -230,7 +230,7 @@ export function DuelGame({ duelId }: { duelId: string }) {
 
   // Resumen del duelo.
   const active = duel.status === "active";
-  const rounds = Array.from({ length: DUEL.rounds }, (_, i) =>
+  const rounds = Array.from({ length: duel.roundCount }, (_, i) =>
     duel.rounds.find((r) => r.round === i + 1),
   );
 
@@ -286,7 +286,7 @@ export function DuelGame({ duelId }: { duelId: string }) {
 
       {actionError && (
         <p role="alert" className="text-center font-bold text-ko">
-          {t(`errors.${actionError}`)}
+          {t(`errors.${actionError}`, { max: DUEL.maxActivePerPair })}
         </p>
       )}
 
