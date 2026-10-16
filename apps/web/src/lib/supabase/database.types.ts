@@ -23,13 +23,124 @@ export type Database = {
   };
   public: {
     Tables: {
-      [_ in never]: never;
+      avatars: {
+        Row: {
+          created_at: string;
+          id: string;
+          is_active: boolean;
+          sort_order: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          id: string;
+          is_active?: boolean;
+          sort_order?: number;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          is_active?: boolean;
+          sort_order?: number;
+        };
+        Relationships: [];
+      };
+      guests: {
+        Row: {
+          avatar_id: string;
+          created_at: string;
+          id: string;
+          last_used_at: string;
+          name: string;
+          owner_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          avatar_id: string;
+          created_at?: string;
+          id?: string;
+          last_used_at?: string;
+          name: string;
+          owner_id?: string;
+        };
+        Update: {
+          avatar_id?: string;
+          created_at?: string;
+          id?: string;
+          last_used_at?: string;
+          name?: string;
+          owner_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "guests_avatar_id_fkey";
+            columns: ["avatar_id"];
+            isOneToOne: false;
+            referencedRelation: "avatars";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      profiles: {
+        Row: {
+          avatar_id: string;
+          created_at: string;
+          id: string;
+          locale: string;
+          updated_at: string;
+          username: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          avatar_id: string;
+          created_at?: string;
+          id: string;
+          locale: string;
+          updated_at?: string;
+          username: string;
+        };
+        Update: {
+          avatar_id?: string;
+          created_at?: string;
+          id?: string;
+          locale?: string;
+          updated_at?: string;
+          username?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "profiles_avatar_id_fkey";
+            columns: ["avatar_id"];
+            isOneToOne: false;
+            referencedRelation: "avatars";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      delete_own_account: { Args: Record<PropertyKey, never>; Returns: undefined };
+      is_username_available: { Args: { candidate: string }; Returns: boolean };
+      remember_guest: {
+        Args: { guest_avatar_id: string; guest_name: string };
+        Returns: {
+          avatar_id: string;
+          created_at: string;
+          id: string;
+          last_used_at: string;
+          name: string;
+          owner_id: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "guests";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
     };
     Enums: {
       [_ in never]: never;

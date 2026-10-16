@@ -53,22 +53,30 @@ Supabase local con la CLI (`supabase start`, requiere Docker). Migraciones versi
 - **Preguntas:** categoría, dificultad, estado (`draft` | `approved` | `rejected`), origen (`ai` | `manual` | `user`) y traducciones. Script de importación masiva JSON.
 - **Privacidad (RGPD):** mínimos datos personales; borrado de cuenta (también lo exige Apple).
 
-## Flujo Git (somos dos)
+## Flujo Git
 
-- `main` siempre estable. **Nunca** commit ni push directo a `main`.
-- Una rama por tarea: `feat/...`, `fix/...`, `chore/...`. PRs pequeñas revisadas por el otro dev.
+- **Por ahora trabaja un solo dev en un solo ordenador:** commits directos a `main` (decidido el 2026-10-16). Cuando se incorpore el segundo dev se vuelve a rama por tarea + PR revisada.
+- `main` debe seguir pasando lint, typecheck, test y build en cada commit.
 - Commits pequeños y frecuentes con Conventional Commits.
-- Al empezar cada sesión: comprobar rama y sincronizar con `main` (pull/rebase).
 - Código organizado por feature (`auth`, `profile`, `questions`, `game/quick`, `game/duel`...).
 - Migraciones: siempre con la CLI (timestamp), **nunca** editar una ya mergeada, y avisar en el resumen cuando una tarea incluya migraciones.
 
 ## Hoja de ruta
 
-- **Fase 0 — Cimientos (ACTUAL):** monorepo pnpm (`apps/web`, `packages/game-core`, `supabase/`); Next.js + TS strict + Tailwind + Motion + `next-intl` (es/en); Supabase local y cliente `@supabase/ssr`; ESLint, Prettier, Vitest, CI; `.env.example` y `README.md` de arranque; este `CLAUDE.md`.
-- **Fase 1 — Cuentas y base visual:** login Google y Discord (Apple/Facebook preparados); perfil (username único, avatar de set básico, idioma); invitados locales; sistema visual base con ajolote placeholder (**preguntar antes de fijar estética**).
-- **Fase 2 — Preguntas y "Preguntas rápidas":** modelo de categorías/preguntas/traducciones; RPC segura para servir y validar; seed es/en; script de importación JSON; modo rápido en solitario y local por turnos (temporizador, puntuación, resultados); reglas en `game-core` con tests.
+- **Fase 0 — Cimientos (HECHA, mergeada):** monorepo pnpm (`apps/web`, `packages/game-core`, `supabase/`); Next.js + TS strict + Tailwind + Motion + `next-intl` (es/en); Supabase local y cliente `@supabase/ssr`; ESLint, Prettier, Vitest, CI; `.env.example` y `README.md` de arranque; este `CLAUDE.md`.
+- **Fase 1 — Cuentas y base visual (HECHA, en `main`):** login Google y Discord (Apple/Facebook preparados); perfil (username único, avatar de set básico, idioma); invitados locales; sistema visual base con ajolote placeholder (**preguntar antes de fijar estética**).
+- **Fase 2 — Preguntas y "Preguntas rápidas" (ACTUAL):** modelo de categorías/preguntas/traducciones; RPC segura para servir y validar; seed es/en; script de importación JSON; modo rápido en solitario y local por turnos (temporizador, puntuación, resultados); reglas en `game-core` con tests.
 - **Fase 3 — Online con amigos:** amigos (búsqueda, solicitudes, lista); duelo asíncrono contra un amigo; notificaciones in-app de turno (**preguntar reglas exactas antes**).
 - **Futuro (no implementar sin que se pida):** emparejamiento y online en tiempo real, tablero clásico, economía/tienda/cosméticos, Stripe, anuncios con consentimiento, rachas/niveles/logros/rankings, panel admin y pipeline IA, más categorías y modos flexibles, minijuegos, modo TV, app móvil y push.
+
+## Estado y pendientes
+
+Actualizar al cerrar cada sesión.
+
+- **Discord:** login desactivado hasta tener credenciales. Para activarlo: credenciales en `supabase/.env` (pasos en el README), `enabled = true` en `supabase/config.toml` y en `apps/web/src/features/auth/providers.ts`.
+- **Sesión dedicada a estilos y front:** probar más opciones estéticas sobre la base aprobada. Los tokens están en `apps/web/src/app/globals.css` y el muestrario de componentes en `/dev/ui` (solo en desarrollo).
+- **Invitados:** en la BD sin interfaz; la interfaz llega con la preparación de la partida local (Fase 2).
+- **Colores de categoría aprobados** (irán en la tabla de categorías en la Fase 2): Geografía `#2ECC8F`, Historia `#D9964A`, Ciencia y Naturaleza `#2EC4E6`, Arte y Literatura `#9B7BFF`, Entretenimiento `#FF7A45`, Deportes `#F5C431`, Tecnología `#5C7CFA`.
 
 ## Decisiones
 
@@ -82,3 +90,7 @@ Supabase local con la CLI (`supabase start`, requiere Docker). Migraciones versi
 - **2026-10-15 — Finales de línea LF** forzados (`.gitattributes` + Prettier) para evitar diffs fantasma entre Windows y otros sistemas.
 - **2026-10-16 — Auth solo social.** Registro por email desactivado en Supabase. Proveedores en `supabase/config.toml` (secretos en `supabase/.env`) y en `apps/web/src/features/auth/providers.ts`; Apple y Facebook ya configurados pero desactivados. Flujo OAuth con PKCE: server action → Supabase → `/auth/callback`.
 - **2026-10-16 — Denegación por defecto en `src/proxy.ts`.** Sin sesión solo son accesibles `/` y `/auth/*`; cualquier ruta nueva queda protegida automáticamente.
+- **2026-10-16 — Perfil = onboarding completado.** La fila de `profiles` se crea en `/onboarding`; sin ella, las páginas redirigen allí. El idioma del perfil se copia a la cookie `NEXT_LOCALE` al iniciar sesión y al guardar, para no consultar la BD en cada petición.
+- **2026-10-16 — Patrón de permisos en tablas.** `revoke all` a `anon`/`authenticated` + `grant` solo de las columnas editables + RLS por `auth.uid()`. Las funciones `security definer` llevan `set search_path = ''` y `execute` solo para `authenticated`.
+- **2026-10-16 — Catálogo de avatares en BD** (`public.avatars`, ids estables); el dibujo vive en `features/profile/avatar.tsx` indexado por id. El borrado de cuenta es la RPC `delete_own_account` (cascada desde `auth.users`), sin usar la secret key.
+- **2026-10-16 — Sistema visual en tokens.** Colores, fuentes y estilo "pegatina" solo en `globals.css` (`@theme` de Tailwind v4); Fredoka (titulares) y Nunito (texto) vía `next/font`, servidas desde nuestro dominio. Componentes compartidos en `apps/web/src/components/` (presentacionales: no deciden nada del juego). Los colores de categoría vienen con los datos, no de los tokens.

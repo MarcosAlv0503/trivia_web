@@ -4,12 +4,39 @@
     "description": "Juego de preguntas y respuestas"
   },
   "Home": {
-    "title": "Trivia Ajolote",
-    "subtitle": "Muy pronto: ¡pon a prueba lo que sabes!"
+    "title": "Trivia <accent>Ajolote</accent>",
+    "subtitle": "Muy pronto: ¡pon a prueba lo que sabes!",
+    "profileLink": "Mi perfil"
   },
   "Auth": {
     "signInWith": "Entrar con {provider}",
     "signOut": "Cerrar sesión",
     "error": "No se pudo iniciar sesión. Inténtalo de nuevo."
+  },
+  "Profile": {
+    "onboardingTitle": "Crea tu perfil",
+    "onboardingSubtitle": "Así te verán los demás jugadores.",
+    "editTitle": "Tu perfil",
+    "back": "Volver",
+    "username": "Nombre de usuario",
+    "usernameHint": "De 3 a 20 caracteres: letras sin tildes, números y _",
+    "avatar": "Avatar",
+    "avatarOption": "Avatar {number}",
+    "language": "Idioma",
+    "create": "Empezar",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "errors": {
+      "usernameInvalid": "El nombre de usuario no es válido.",
+      "usernameTaken": "Ese nombre de usuario ya está cogido.",
+      "generic": "Algo ha fallado. Inténtalo de nuevo."
+    }
+  },
+  "Account": {
+    "deleteTitle": "Borrar cuenta",
+    "deleteWarning": "Se borrarán tu cuenta, tu perfil y todos tus datos. No se puede deshacer.",
+    "deleteButton": "Borrar mi cuenta",
+    "confirmButton": "Sí, borrar definitivamente",
+    "cancel": "Cancelar"
   }
 }

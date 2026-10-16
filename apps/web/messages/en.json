@@ -4,12 +4,39 @@
     "description": "Question and answer game"
   },
   "Home": {
-    "title": "Trivia Ajolote",
-    "subtitle": "Coming soon: put your knowledge to the test!"
+    "title": "Trivia <accent>Ajolote</accent>",
+    "subtitle": "Coming soon: put your knowledge to the test!",
+    "profileLink": "My profile"
   },
   "Auth": {
     "signInWith": "Sign in with {provider}",
     "signOut": "Sign out",
     "error": "Couldn't sign you in. Please try again."
+  },
+  "Profile": {
+    "onboardingTitle": "Create your profile",
+    "onboardingSubtitle": "This is how other players will see you.",
+    "editTitle": "Your profile",
+    "back": "Back",
+    "username": "Username",
+    "usernameHint": "3 to 20 characters: letters without accents, numbers and _",
+    "avatar": "Avatar",
+    "avatarOption": "Avatar {number}",
+    "language": "Language",
+    "create": "Let's go",
+    "save": "Save",
+    "saving": "Saving…",
+    "errors": {
+      "usernameInvalid": "That username isn't valid.",
+      "usernameTaken": "That username is already taken.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "Account": {
+    "deleteTitle": "Delete account",
+    "deleteWarning": "Your account, profile and all your data will be deleted. This can't be undone.",
+    "deleteButton": "Delete my account",
+    "confirmButton": "Yes, delete permanently",
+    "cancel": "Cancel"
   }
 }
