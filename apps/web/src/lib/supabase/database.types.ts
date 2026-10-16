@@ -45,6 +45,42 @@ export type Database = {
         };
         Relationships: [];
       };
+      guests: {
+        Row: {
+          avatar_id: string;
+          created_at: string;
+          id: string;
+          last_used_at: string;
+          name: string;
+          owner_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          avatar_id: string;
+          created_at?: string;
+          id?: string;
+          last_used_at?: string;
+          name: string;
+          owner_id?: string;
+        };
+        Update: {
+          avatar_id?: string;
+          created_at?: string;
+          id?: string;
+          last_used_at?: string;
+          name?: string;
+          owner_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "guests_avatar_id_fkey";
+            columns: ["avatar_id"];
+            isOneToOne: false;
+            referencedRelation: "avatars";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       profiles: {
         Row: {
           avatar_id: string;
@@ -88,6 +124,23 @@ export type Database = {
     Functions: {
       delete_own_account: { Args: Record<PropertyKey, never>; Returns: undefined };
       is_username_available: { Args: { candidate: string }; Returns: boolean };
+      remember_guest: {
+        Args: { guest_avatar_id: string; guest_name: string };
+        Returns: {
+          avatar_id: string;
+          created_at: string;
+          id: string;
+          last_used_at: string;
+          name: string;
+          owner_id: string;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "guests";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
     };
     Enums: {
       [_ in never]: never;
