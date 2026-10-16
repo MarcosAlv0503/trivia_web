@@ -4,7 +4,7 @@ import type { Provider } from "@supabase/supabase-js";
 // `enabled = true` en supabase/config.toml y aquí.
 export const AUTH_PROVIDERS = [
   { id: "google", label: "Google", enabled: true },
-  { id: "discord", label: "Discord", enabled: true },
+  { id: "discord", label: "Discord", enabled: false },
   { id: "apple", label: "Apple", enabled: false },
   { id: "facebook", label: "Facebook", enabled: false },
 ] as const satisfies readonly { id: Provider; label: string; enabled: boolean }[];

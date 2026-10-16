@@ -327,7 +327,8 @@ client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"
 secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
 
 [auth.external.discord]
-enabled = true
+# Desactivado hasta tener credenciales de Discord (ver Pendientes en CLAUDE.md).
+enabled = false
 client_id = "env(SUPABASE_AUTH_EXTERNAL_DISCORD_CLIENT_ID)"
 # Nunca subas el secreto: va en supabase/.env (ver .env.example).
 secret = "env(SUPABASE_AUTH_EXTERNAL_DISCORD_SECRET)"
