@@ -5,7 +5,7 @@
   },
   "Home": {
     "title": "Trivia <accent>Ajolote</accent>",
-    "subtitle": "Muy pronto: ¡pon a prueba lo que sabes!",
+    "subtitle": "¡Pon a prueba lo que sabes!",
     "profileLink": "Mi perfil"
   },
   "Auth": {
@@ -38,5 +38,54 @@
     "deleteButton": "Borrar mi cuenta",
     "confirmButton": "Sí, borrar definitivamente",
     "cancel": "Cancelar"
+  },
+  "Quick": {
+    "title": "Preguntas rápidas",
+    "summary": "{questions} preguntas · {seconds} s",
+    "tagline": "Solo o con amigos en este dispositivo",
+    "play": "¡Jugar!",
+    "back": "Volver",
+    "difficulty": "Dificultad",
+    "difficulties": {
+      "easy": "Fácil",
+      "medium": "Normal",
+      "hard": "Difícil"
+    },
+    "players": "Jugadores ({count}/{max})",
+    "you": "tú",
+    "remove": "Quitar a {name}",
+    "addPlayer": "Añadir jugador",
+    "guestName": "Nombre",
+    "add": "Añadir",
+    "cancel": "Cancelar",
+    "recent": "Recientes",
+    "start": "¡Empezar!",
+    "starting": "Preparando…",
+    "errors": {
+      "notEnoughQuestions": "Aún no hay suficientes preguntas de esta dificultad para tantos jugadores.",
+      "nameTaken": "Ya hay un jugador con ese nombre.",
+      "notFound": "No hemos encontrado esta partida.",
+      "generic": "Algo ha fallado. Inténtalo de nuevo."
+    },
+    "retry": "Reintentar",
+    "timer": "Tiempo restante",
+    "round": "Ronda {round} de {total}",
+    "correct": "¡Correcto!",
+    "wrong": "¡Fallaste!",
+    "timeUp": "¡Se acabó el tiempo!",
+    "points": "+{points}",
+    "handoff": "Pasa el dispositivo a",
+    "ready": "¡Vamos!",
+    "results": "Resultados",
+    "finished": "¡Partida terminada!",
+    "winner": "¡Gana {name}!",
+    "tie": "¡Empate!",
+    "score": "{points} pts",
+    "correctCount": "{count} de {total} aciertos",
+    "rematch": "Revancha",
+    "home": "Inicio",
+    "exit": "Salir",
+    "exitConfirm": "¿Salir de la partida? Perderás el progreso.",
+    "keepPlaying": "Seguir jugando"
   }
 }

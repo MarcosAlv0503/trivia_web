@@ -65,7 +65,7 @@ Supabase local con la CLI (`supabase start`, requiere Docker). Migraciones versi
 
 - **Fase 0 — Cimientos (HECHA, mergeada):** monorepo pnpm (`apps/web`, `packages/game-core`, `supabase/`); Next.js + TS strict + Tailwind + Motion + `next-intl` (es/en); Supabase local y cliente `@supabase/ssr`; ESLint, Prettier, Vitest, CI; `.env.example` y `README.md` de arranque; este `CLAUDE.md`.
 - **Fase 1 — Cuentas y base visual (HECHA, en `main`):** login Google y Discord (Apple/Facebook preparados); perfil (username único, avatar de set básico, idioma); invitados locales; sistema visual base con ajolote placeholder (**preguntar antes de fijar estética**).
-- **Fase 2 — Preguntas y "Preguntas rápidas" (ACTUAL):** modelo de categorías/preguntas/traducciones; RPC segura para servir y validar; seed es/en; script de importación JSON; modo rápido en solitario y local por turnos (temporizador, puntuación, resultados); reglas en `game-core` con tests.
+- **Fase 2 — Preguntas y "Preguntas rápidas" (ACTUAL, tareas hechas; pendiente de prueba en navegador y confirmación):** modelo de categorías/preguntas/traducciones; RPC segura para servir y validar; seed es/en; script de importación JSON; modo rápido en solitario y local por turnos (temporizador, puntuación, resultados); reglas en `game-core` con tests.
 - **Fase 3 — Online con amigos:** amigos (búsqueda, solicitudes, lista); duelo asíncrono contra un amigo; notificaciones in-app de turno (**preguntar reglas exactas antes**).
 - **Futuro (no implementar sin que se pida):** emparejamiento y online en tiempo real, tablero clásico, economía/tienda/cosméticos, Stripe, anuncios con consentimiento, rachas/niveles/logros/rankings, panel admin y pipeline IA, más categorías y modos flexibles, minijuegos, modo TV, app móvil y push.
 
@@ -74,9 +74,10 @@ Supabase local con la CLI (`supabase start`, requiere Docker). Migraciones versi
 Actualizar al cerrar cada sesión.
 
 - **Discord:** login desactivado hasta tener credenciales. Para activarlo: credenciales en `supabase/.env` (pasos en el README), `enabled = true` en `supabase/config.toml` y en `apps/web/src/features/auth/providers.ts`.
+- **Reglas del modo rápido aprobadas (2026-10-16):** 7 preguntas por jugador × 15 s; acierto 100 + hasta 50 por rapidez; categorías mezcladas al azar; dificultad elegible (Fácil/Normal/Difícil); local hasta 6 jugadores alternando por pregunta, con pantalla de pase y mini marcador; revelación 2 s y avance automático; resultados con ranking y revancha.
+- **Seed:** 126 preguntas (6 por categoría y dificultad: justo para 6 jugadores). Tras `pnpm db:reset` se recargan solas; tras `pnpm db:start` en una BD nueva, `pnpm db:seed`.
 - **Sesión dedicada a estilos y front:** probar más opciones estéticas sobre la base aprobada. Los tokens están en `apps/web/src/app/globals.css` y el muestrario de componentes en `/dev/ui` (solo en desarrollo).
-- **Invitados:** en la BD sin interfaz; la interfaz llega con la preparación de la partida local (Fase 2).
-- **Colores de categoría aprobados** (irán en la tabla de categorías en la Fase 2): Geografía `#2ECC8F`, Historia `#D9964A`, Ciencia y Naturaleza `#2EC4E6`, Arte y Literatura `#9B7BFF`, Entretenimiento `#FF7A45`, Deportes `#F5C431`, Tecnología `#5C7CFA`.
+- **Colores de categoría aprobados** (ya en la tabla `categories`): Geografía `#2ECC8F`, Historia `#D9964A`, Ciencia y Naturaleza `#2EC4E6`, Arte y Literatura `#9B7BFF`, Entretenimiento `#FF7A45`, Deportes `#F5C431`, Tecnología `#5C7CFA`.
 
 ## Decisiones
 

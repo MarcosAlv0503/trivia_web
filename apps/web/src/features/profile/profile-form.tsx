@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { buttonClassName } from "@/components/button";
 import { LOCALE_NAMES, locales } from "@/i18n/config";
 import { saveProfile, type FormState } from "./actions";
-import { Avatar } from "./avatar";
+import { AvatarPicker } from "./avatar-picker";
 
 type Props = {
   mode: "create" | "edit";
@@ -40,26 +40,7 @@ export function ProfileForm({ mode, avatarIds, initial }: Props) {
 
       <fieldset>
         <legend className="mb-2 font-display text-lg font-bold">{t("avatar")}</legend>
-        <div className="grid grid-cols-4 gap-3 sm:grid-cols-6">
-          {avatarIds.map((id, index) => (
-            <label key={id} className="cursor-pointer">
-              <input
-                type="radio"
-                name="avatarId"
-                value={id}
-                defaultChecked={id === initial.avatarId}
-                required
-                className="peer sr-only"
-                aria-label={t("avatarOption", { number: index + 1 })}
-              />
-              <Avatar
-                id={id}
-                size={56}
-                className="rounded-full ring-offset-2 ring-offset-bg peer-checked:ring-4 peer-checked:ring-accent peer-focus-visible:ring-4 peer-focus-visible:ring-fg"
-              />
-            </label>
-          ))}
-        </div>
+        <AvatarPicker name="avatarId" avatarIds={avatarIds} defaultValue={initial.avatarId} />
       </fieldset>
 
       <fieldset>

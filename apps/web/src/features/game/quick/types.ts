@@ -1,0 +1,37 @@
+import type { Difficulty } from "@trivia/game-core";
+
+// Forma de lo que devuelven las RPC del modo rápido (los tipos generados solo dicen `Json`).
+
+export type QuickPlayer = {
+  seat: number;
+  name: string;
+  avatarId: string;
+  score: number;
+  correct: number;
+};
+
+export type QuickMatch = {
+  id: string;
+  difficulty: Difficulty;
+  total: number;
+  /** Siguiente posición por jugar; `null` si la partida ha terminado. */
+  nextPosition: number | null;
+  players: QuickPlayer[];
+};
+
+export type ServedQuestion = {
+  position: number;
+  seat: number;
+  timeLimitMs: number;
+  elapsedMs: number;
+  category: { id: string; name: string; color: string };
+  prompt: string;
+  answers: string[];
+};
+
+export type AnswerResult = {
+  correctIndex: number;
+  isCorrect: boolean;
+  points: number;
+  finished: boolean;
+};

@@ -31,7 +31,8 @@ export function QuestionCard({
   timerLabel,
 }: Props) {
   const reduceMotion = useReducedMotion();
-  const answered = selectedId !== undefined;
+  // Bloqueada al elegir o al revelar la correcta (también si se agotó el tiempo sin elegir).
+  const answered = selectedId !== undefined || correctId !== undefined;
 
   return (
     <div className="grid gap-4 rounded-card bg-surface p-5 sticker">

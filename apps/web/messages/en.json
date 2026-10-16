@@ -5,7 +5,7 @@
   },
   "Home": {
     "title": "Trivia <accent>Ajolote</accent>",
-    "subtitle": "Coming soon: put your knowledge to the test!",
+    "subtitle": "Put your knowledge to the test!",
     "profileLink": "My profile"
   },
   "Auth": {
@@ -38,5 +38,54 @@
     "deleteButton": "Delete my account",
     "confirmButton": "Yes, delete permanently",
     "cancel": "Cancel"
+  },
+  "Quick": {
+    "title": "Quick Questions",
+    "summary": "{questions} questions · {seconds} s",
+    "tagline": "Solo or with friends on this device",
+    "play": "Play!",
+    "back": "Back",
+    "difficulty": "Difficulty",
+    "difficulties": {
+      "easy": "Easy",
+      "medium": "Normal",
+      "hard": "Hard"
+    },
+    "players": "Players ({count}/{max})",
+    "you": "you",
+    "remove": "Remove {name}",
+    "addPlayer": "Add player",
+    "guestName": "Name",
+    "add": "Add",
+    "cancel": "Cancel",
+    "recent": "Recent",
+    "start": "Start!",
+    "starting": "Getting ready…",
+    "errors": {
+      "notEnoughQuestions": "There aren’t enough questions at this difficulty for that many players yet.",
+      "nameTaken": "There’s already a player with that name.",
+      "notFound": "We couldn’t find this game.",
+      "generic": "Something went wrong. Please try again."
+    },
+    "retry": "Try again",
+    "timer": "Time left",
+    "round": "Round {round} of {total}",
+    "correct": "Correct!",
+    "wrong": "Wrong!",
+    "timeUp": "Time’s up!",
+    "points": "+{points}",
+    "handoff": "Pass the device to",
+    "ready": "Let’s go!",
+    "results": "Results",
+    "finished": "Game over!",
+    "winner": "{name} wins!",
+    "tie": "It’s a tie!",
+    "score": "{points} pts",
+    "correctCount": "{count} of {total} correct",
+    "rematch": "Rematch",
+    "home": "Home",
+    "exit": "Exit",
+    "exitConfirm": "Leave the game? You’ll lose your progress.",
+    "keepPlaying": "Keep playing"
   }
 }
