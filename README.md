@@ -21,6 +21,28 @@ pnpm dev                              # http://localhost:3000
 
 Supabase Studio queda en http://127.0.0.1:54323. Para pararlo: `pnpm db:stop`.
 
+## Login social en local
+
+Sin credenciales la web arranca, pero los botones de login fallarán. Basta con un juego de credenciales compartido entre los dos (pásalo por un canal privado, nunca por el repo).
+
+1. `cp supabase/.env.example supabase/.env`
+2. **Google** — [Google Cloud Console](https://console.cloud.google.com/):
+   1. Crea un proyecto (p. ej. `trivia-ajolote`).
+   2. _Google Auth Platform → Branding_: nombre de la app y email de soporte. _Audience_: tipo **External**, y añade como _test users_ los emails de los dos desarrolladores (mientras la app esté en modo prueba solo ellos pueden entrar).
+   3. _Data access_: deja los scopes por defecto (`openid`, `email`, `profile`).
+   4. _Clients → Create client → Web application_:
+      - Authorized JavaScript origins: `http://localhost:3000`
+      - Authorized redirect URIs: `http://127.0.0.1:54321/auth/v1/callback`
+   5. Copia _Client ID_ y _Client secret_ en `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` / `_SECRET`.
+3. **Discord** — [Developer Portal](https://discord.com/developers/applications):
+   1. _New Application_.
+   2. _OAuth2 → Redirects_: añade `http://127.0.0.1:54321/auth/v1/callback`.
+   3. Copia _Client ID_ y _Client Secret_ (botón _Reset Secret_) en `SUPABASE_AUTH_EXTERNAL_DISCORD_CLIENT_ID` / `_SECRET`.
+4. Reinicia Supabase: `pnpm db:stop && pnpm db:start`.
+5. Abre la web en **http://localhost:3000** (no `127.0.0.1`: las cookies de sesión dependen del host).
+
+Para producción se añadirá en ambos proveedores la URL de callback de Supabase Cloud (`https://<ref>.supabase.co/auth/v1/callback`).
+
 ## Scripts
 
 | Comando                                                     | Qué hace                                        |

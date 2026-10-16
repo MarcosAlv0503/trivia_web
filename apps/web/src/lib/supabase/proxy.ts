@@ -29,7 +29,7 @@ export async function updateSession(request: NextRequest) {
   });
 
   // No ejecutar código entre createServerClient y getClaims(): provoca cierres de sesión aleatorios.
-  await supabase.auth.getClaims();
+  const { data } = await supabase.auth.getClaims();
 
-  return response;
+  return { response, isAuthenticated: Boolean(data?.claims) };
 }

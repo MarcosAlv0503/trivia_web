@@ -6,5 +6,10 @@
   "Home": {
     "title": "Trivia Ajolote",
     "subtitle": "Coming soon: put your knowledge to the test!"
+  },
+  "Auth": {
+    "signInWith": "Sign in with {provider}",
+    "signOut": "Sign out",
+    "error": "Couldn't sign you in. Please try again."
   }
 }

@@ -6,5 +6,10 @@
   "Home": {
     "title": "Trivia Ajolote",
     "subtitle": "Muy pronto: ¡pon a prueba lo que sabes!"
+  },
+  "Auth": {
+    "signInWith": "Entrar con {provider}",
+    "signOut": "Cerrar sesión",
+    "error": "No se pudo iniciar sesión. Inténtalo de nuevo."
   }
 }
