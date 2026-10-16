@@ -97,6 +97,172 @@ export type Database = {
           },
         ];
       };
+      duel_plays: {
+        Row: {
+          answer_order: number[];
+          answered_at: string | null;
+          chosen: number | null;
+          duel_id: string;
+          is_correct: boolean | null;
+          locale: string;
+          player_id: string;
+          points: number | null;
+          question_id: string;
+          round: number;
+          served_at: string | null;
+          slot: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          answer_order: number[];
+          answered_at?: string | null;
+          chosen?: number | null;
+          duel_id: string;
+          is_correct?: boolean | null;
+          locale: string;
+          player_id: string;
+          points?: number | null;
+          question_id: string;
+          round: number;
+          served_at?: string | null;
+          slot: number;
+        };
+        Update: {
+          answer_order?: number[];
+          answered_at?: string | null;
+          chosen?: number | null;
+          duel_id?: string;
+          is_correct?: boolean | null;
+          locale?: string;
+          player_id?: string;
+          points?: number | null;
+          question_id?: string;
+          round?: number;
+          served_at?: string | null;
+          slot?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "duel_plays_duel_id_round_fkey";
+            columns: ["duel_id", "round"];
+            isOneToOne: false;
+            referencedRelation: "duel_rounds";
+            referencedColumns: ["duel_id", "round"];
+          },
+          {
+            foreignKeyName: "duel_plays_question_id_fkey";
+            columns: ["question_id"];
+            isOneToOne: false;
+            referencedRelation: "questions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      duel_rounds: {
+        Row: {
+          category_id: string;
+          created_at: string;
+          duel_id: string;
+          round: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          category_id: string;
+          created_at?: string;
+          duel_id: string;
+          round: number;
+        };
+        Update: {
+          category_id?: string;
+          created_at?: string;
+          duel_id?: string;
+          round?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "duel_rounds_category_id_fkey";
+            columns: ["category_id"];
+            isOneToOne: false;
+            referencedRelation: "categories";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "duel_rounds_duel_id_fkey";
+            columns: ["duel_id"];
+            isOneToOne: false;
+            referencedRelation: "duels";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      duels: {
+        Row: {
+          challenger_id: string;
+          created_at: string;
+          difficulty: string;
+          end_reason: string | null;
+          finished_at: string | null;
+          id: string;
+          opponent_id: string;
+          status: string;
+          turn_deadline: string;
+          turn_number: number;
+          winner_id: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          challenger_id: string;
+          created_at?: string;
+          difficulty: string;
+          end_reason?: string | null;
+          finished_at?: string | null;
+          id?: string;
+          opponent_id: string;
+          status?: string;
+          turn_deadline?: string;
+          turn_number?: number;
+          winner_id?: string | null;
+        };
+        Update: {
+          challenger_id?: string;
+          created_at?: string;
+          difficulty?: string;
+          end_reason?: string | null;
+          finished_at?: string | null;
+          id?: string;
+          opponent_id?: string;
+          status?: string;
+          turn_deadline?: string;
+          turn_number?: number;
+          winner_id?: string | null;
+        };
+        Relationships: [];
+      };
+      friendships: {
+        Row: {
+          accepted_at: string | null;
+          addressee_id: string;
+          created_at: string;
+          requester_id: string;
+          status: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          accepted_at?: string | null;
+          addressee_id: string;
+          created_at?: string;
+          requester_id: string;
+          status?: string;
+        };
+        Update: {
+          accepted_at?: string | null;
+          addressee_id?: string;
+          created_at?: string;
+          requester_id?: string;
+          status?: string;
+        };
+        Relationships: [];
+      };
       guests: {
         Row: {
           avatar_id: string;
@@ -132,6 +298,34 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      notifications: {
+        Row: {
+          actor_name: string;
+          created_at: string;
+          duel_id: string | null;
+          id: number;
+          kind: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          actor_name: string;
+          created_at?: string;
+          duel_id?: string | null;
+          id?: never;
+          kind: string;
+          user_id: string;
+        };
+        Update: {
+          actor_name?: string;
+          created_at?: string;
+          duel_id?: string | null;
+          id?: never;
+          kind?: string;
+          user_id?: string;
+        };
+        Relationships: [];
       };
       profiles: {
         Row: {
@@ -366,14 +560,95 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      answer_duel_question: {
+        Args: { choice: number; duel_id: string; question_round: number; question_slot: number };
+        Returns: Json;
+      };
       answer_quick_question: {
         Args: { choice: number; match_id: string; question_position: number };
         Returns: Json;
       };
+      are_friends: { Args: { a: string; b: string }; Returns: boolean };
+      can_decline_duel: {
+        Args: {
+          d: Omit<
+            Database["public"]["Tables"]["duels"]["Row"],
+            Database["public"]["Tables"]["duels"]["ComputedFields"]
+          >;
+          uid: string;
+        };
+        Returns: boolean;
+      };
+      current_player_id: { Args: Record<PropertyKey, never>; Returns: string };
+      decline_duel: { Args: { duel_id: string }; Returns: undefined };
       delete_own_account: { Args: Record<PropertyKey, never>; Returns: undefined };
+      duel_candidates: {
+        Args: {
+          locale_a: string;
+          locale_b: string;
+          target: Omit<
+            Database["public"]["Tables"]["duels"]["Row"],
+            Database["public"]["Tables"]["duels"]["ComputedFields"]
+          >;
+        };
+        Returns: {
+          category_id: string;
+          question_id: string;
+        }[];
+      };
+      duel_next_action: {
+        Args: {
+          d: Omit<
+            Database["public"]["Tables"]["duels"]["Row"],
+            Database["public"]["Tables"]["duels"]["ComputedFields"]
+          >;
+          uid: string;
+        };
+        Returns: string;
+      };
+      duel_result: {
+        Args: {
+          d: Omit<
+            Database["public"]["Tables"]["duels"]["Row"],
+            Database["public"]["Tables"]["duels"]["ComputedFields"]
+          >;
+          uid: string;
+        };
+        Returns: string;
+      };
+      expire_duels: { Args: { uid: string }; Returns: undefined };
+      get_duel: { Args: { duel_id: string }; Returns: Json };
       get_quick_match: { Args: { match_id: string }; Returns: Json };
       import_questions: { Args: { items: Json }; Returns: number };
       is_username_available: { Args: { candidate: string }; Returns: boolean };
+      list_duels: { Args: Record<PropertyKey, never>; Returns: Json };
+      list_friends: { Args: Record<PropertyKey, never>; Returns: Json };
+      lock_active_duel: {
+        Args: { target: string; uid: string };
+        Returns: {
+          challenger_id: string;
+          created_at: string;
+          difficulty: string;
+          end_reason: string | null;
+          finished_at: string | null;
+          id: string;
+          opponent_id: string;
+          status: string;
+          turn_deadline: string;
+          turn_number: number;
+          winner_id: string | null;
+        };
+        SetofOptions: {
+          from: "*";
+          to: "duels";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      notify: {
+        Args: { actor: string; notification_kind: string; related_duel?: string; target: string };
+        Returns: undefined;
+      };
       remember_guest: {
         Args: { guest_avatar_id: string; guest_name: string };
         Returns: {
@@ -391,11 +666,19 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      remove_friend: { Args: { other: string }; Returns: undefined };
+      respond_friend_request: { Args: { accept: boolean; requester: string }; Returns: undefined };
+      search_players: { Args: { query: string }; Returns: Json };
+      send_friend_request: { Args: { target: string }; Returns: string };
+      serve_duel_question: { Args: { duel_id: string }; Returns: Json };
       serve_quick_question: { Args: { match_id: string }; Returns: Json };
+      spin_duel_round: { Args: { duel_id: string }; Returns: Json };
+      start_duel: { Args: { duel_difficulty: string; opponent: string }; Returns: string };
       start_quick_match: {
         Args: { guest_ids?: string[]; match_difficulty: string };
         Returns: string;
       };
+      surrender_duel: { Args: { duel_id: string }; Returns: undefined };
     };
     Enums: {
       [_ in never]: never;
