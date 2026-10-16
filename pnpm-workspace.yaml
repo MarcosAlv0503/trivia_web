@@ -1,0 +1,10 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Solo estos paquetes pueden ejecutar scripts de instalación.
+allowBuilds:
+  supabase: true # descarga el binario de la CLI
+  "@parcel/watcher": false
+  "@swc/core": false
+  unrs-resolver: false
