@@ -21,6 +21,10 @@ pnpm dev                              # http://localhost:3000
 
 Supabase Studio queda en http://127.0.0.1:54323. Para pararlo: `pnpm db:stop`.
 
+Tras reiniciar el equipo: abre Docker Desktop, espera a que arranque y ejecuta `pnpm db:start` antes de `pnpm dev`. Si al iniciar sesión ves `ERR_CONNECTION_REFUSED` en `127.0.0.1:54321`, es que Supabase no está en marcha.
+
+Muestrario de componentes (solo en desarrollo, con sesión iniciada): http://localhost:3000/dev/ui
+
 ## Login social en local
 
 Sin credenciales la web arranca, pero los botones de login fallarán. Basta con un juego de credenciales compartido entre los dos (pásalo por un canal privado, nunca por el repo).

@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { useTranslations } from "next-intl";
+import { buttonClassName } from "@/components/button";
 import { deleteAccount, type FormState } from "./actions";
 
 export function DeleteAccount() {
@@ -11,29 +12,25 @@ export function DeleteAccount() {
   const [state, formAction, pending] = useActionState<FormState>(deleteAccount, {});
 
   return (
-    <section className="flex w-full max-w-md flex-col gap-3 border-t pt-6">
-      <h2 className="font-semibold">{t("deleteTitle")}</h2>
+    <section className="flex w-full max-w-md flex-col gap-3 border-t-2 border-surface-2 pt-6">
+      <h2 className="font-display text-lg font-bold">{t("deleteTitle")}</h2>
       {confirming ? (
         <form action={formAction} className="flex flex-col gap-3">
           <p>{t("deleteWarning")}</p>
           <div className="flex gap-3">
-            <button
-              type="submit"
-              disabled={pending}
-              className="rounded-xl border border-red-600 px-4 py-2 text-red-600"
-            >
+            <button type="submit" disabled={pending} className={buttonClassName("danger")}>
               {t("confirmButton")}
             </button>
             <button
               type="button"
               onClick={() => setConfirming(false)}
-              className="rounded-xl border px-4 py-2"
+              className={buttonClassName("secondary")}
             >
               {t("cancel")}
             </button>
           </div>
           {state.error && (
-            <p role="alert" className="text-red-600">
+            <p role="alert" className="font-bold text-ko">
               {tProfile(`errors.${state.error}`)}
             </p>
           )}
@@ -42,7 +39,7 @@ export function DeleteAccount() {
         <button
           type="button"
           onClick={() => setConfirming(true)}
-          className="self-start rounded-xl border border-red-600 px-4 py-2 text-red-600"
+          className={buttonClassName("danger", "self-start")}
         >
           {t("deleteButton")}
         </button>

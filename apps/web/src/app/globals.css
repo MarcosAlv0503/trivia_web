@@ -1,1 +1,71 @@
 @import "tailwindcss";
+
+/*
+ * Sistema visual base (Fase 1): tema único "Laguna", acento rosa ajolote y estilo "pegatina".
+ * Todos los colores y fuentes salen de aquí: para probar otra estética basta con cambiar estos tokens.
+ * Los colores de categoría NO van aquí: las categorías son datos (BD) y traen su propio color.
+ */
+
+@theme inline {
+  /* Variables que inyecta next/font en <html> (ver app/layout.tsx). */
+  --font-display: var(--font-fredoka), ui-rounded, system-ui, sans-serif;
+  --font-sans: var(--font-nunito), ui-rounded, system-ui, sans-serif;
+}
+
+@theme {
+  --color-bg: #0b2735;
+  --color-bg-deep: #071b26;
+  --color-surface: #133b4f;
+  --color-surface-2: #1b4d66;
+  --color-fg: #eaf7f7;
+  --color-fg-muted: #9cc3c9;
+  --color-ink: #2b2140; /* texto oscuro sobre colores vivos */
+  --color-accent: #ff8fb8; /* rosa ajolote */
+  --color-accent-ink: #3a0f22;
+  --color-play: #f5c431;
+  --color-sticker: #071b26; /* borde y sombra de las piezas tipo pegatina */
+  --color-ok: #3be07a;
+  --color-ko: #ff4d5e;
+
+  --radius-card: 18px;
+  --shadow-sticker: 0 5px 0 var(--color-sticker);
+  --shadow-sticker-pressed: 0 1px 0 var(--color-sticker);
+}
+
+/* Pieza tipo pegatina: borde grueso + sombra plana. */
+@utility sticker {
+  border: 3px solid var(--color-sticker);
+  box-shadow: var(--shadow-sticker);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background:
+      radial-gradient(
+          120% 60% at 50% 0%,
+          var(--color-surface) 0%,
+          var(--color-bg) 45%,
+          var(--color-bg-deep) 100%
+        )
+        fixed,
+      var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+}
