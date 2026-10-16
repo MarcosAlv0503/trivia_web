@@ -1,8 +1,10 @@
 -- Preguntas, importación y RPC del modo rápido. Se ejecuta con `pnpm db:test`; todo se deshace al final.
 begin;
-select plan(35);
+select plan(36);
 
 -- Fixtures (como postgres) -------------------------------------------------------------------------
+-- Las preguntas que ya hubiera (p. ej. el seed local) se retiran para que el test no dependa del contenido.
+update public.questions set status = 'rejected';
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-00000000000a', 'alice@test.local'),
   ('00000000-0000-0000-0000-00000000000b', 'bob@test.local'),
@@ -168,6 +170,20 @@ select is(
   (select count(*)::integer from public.quick_match_rounds r join public.questions q on q.id = r.question_id
    where r.match_id = current_setting('test.solo')::uuid and (q.status <> 'approved' or q.external_id like 't-en-%')),
   0, 'solo salen preguntas aprobadas en el idioma de la partida'
+);
+
+-- Preguntas ya vistas: las dos siguientes partidas (sin jugar) usan las 7 que alice aún no ha visto.
+-- Si contaran las asignadas sin servir, la tercera repetiría las de la primera partida.
+set local role authenticated;
+select set_config('test.solo2', public.start_quick_match('easy')::text, true);
+select set_config('test.solo3', public.start_quick_match('easy')::text, true);
+reset role;
+select is(
+  (select count(*)::integer from public.quick_match_rounds as a
+   join public.quick_match_rounds as b on b.question_id = a.question_id
+   where a.match_id = current_setting('test.solo')::uuid
+     and b.match_id in (current_setting('test.solo2')::uuid, current_setting('test.solo3')::uuid)),
+  0, 'se evitan las preguntas ya vistas y no cuentan las que no se sirvieron'
 );
 
 -- Partida local con invitado -------------------------------------------------------------------------
