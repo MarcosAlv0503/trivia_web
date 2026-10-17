@@ -66,8 +66,22 @@ Supabase local con la CLI (`supabase start`, requiere Docker). Migraciones versi
 - **Fase 0 — Cimientos (HECHA, mergeada):** monorepo pnpm (`apps/web`, `packages/game-core`, `supabase/`); Next.js + TS strict + Tailwind + Motion + `next-intl` (es/en); Supabase local y cliente `@supabase/ssr`; ESLint, Prettier, Vitest, CI; `.env.example` y `README.md` de arranque; este `CLAUDE.md`.
 - **Fase 1 — Cuentas y base visual (HECHA, en `main`):** login Google y Discord (Apple/Facebook preparados); perfil (username único, avatar de set básico, idioma); invitados locales; sistema visual base con ajolote placeholder (**preguntar antes de fijar estética**).
 - **Fase 2 — Preguntas y "Preguntas rápidas" (HECHA, en `main`):** modelo de categorías/preguntas/traducciones; RPC segura para servir y validar; seed es/en; script de importación JSON; modo rápido en solitario y local por turnos (temporizador, puntuación, resultados); reglas en `game-core` con tests.
-- **Fase 3 — Online con amigos (ACTUAL, tareas hechas; pendiente de prueba en navegador y confirmación):** amigos (búsqueda, solicitudes, lista); duelo asíncrono contra un amigo; notificaciones in-app de turno (**preguntar reglas exactas antes**).
-- **Futuro (no implementar sin que se pida):** emparejamiento y online en tiempo real, tablero clásico, economía/tienda/cosméticos, Stripe, anuncios con consentimiento, rachas/niveles/logros/rankings, panel admin y pipeline IA, más categorías y modos flexibles, minijuegos, modo TV, app móvil y push.
+- **Fase 3 — Online con amigos (HECHA, probada el 2026-10-17):** amigos (búsqueda, solicitudes, lista); duelo asíncrono contra un amigo; notificaciones in-app de turno.
+- **Fase 4 — Lista para la beta cerrada (ACTUAL).** Tareas en orden:
+  1. Contenido: preguntas de "actualidad" con caducidad; procesos automáticos de generación, traducción y revisión periódica; panel de revisión (solo admin); botón "reportar pregunta". Objetivo ≥1.500 preguntas aprobadas por idioma.
+  2. PWA instalable + push web (turno de duelo, plazo a punto de vencer).
+  3. Sesión de estilos y front + sonido y vibración + accesibilidad (icono por categoría además del color, tamaño de texto, teclado).
+  4. Moderación de nombres de usuario y límites de peticiones en RPC sensibles.
+  5. Legal/RGPD: privacidad, términos, consentimiento, edad mínima.
+  6. Producción: Vercel + Supabase Cloud, copias, monitorización de errores, analítica con consentimiento (retención D1/D7).
+  7. Beta cerrada con 20–50 personas.
+- **Fase 5 — Hábito y progresión:** XP y niveles con títulos; racha diaria con "regeneración" (recuperarla con un reto extra en 24 h); reto diario compartible (mismas preguntas para todos, resultado en cuadritos de color de categoría); logros; "¿Sabías que…?" y % de acierto global; estadísticas por categoría y modo práctica; modo Aguante (hasta fallar 3); cara a cara con cada amigo.
+- **Fase 6 — Competición y comunidad:** ligas semanales (~30 por XP, ascenso/descenso); duelo contra desconocido (emparejamiento asíncrono); reto por enlace; invitar por enlace/código; reacciones predefinidas en duelos (sin chat libre); valorar preguntas; rankings; eventos temáticos.
+- **Fase 7 — Economía jugable (sin dinero real):** Monedas con ledger; comodines (en solitario, o en duelo con el mismo cupo para ambos); morfos y accesorios del ajolote; Laguna personal decorable y visitable; tienda de compra directa; recompensa diaria fija o gratuita (nunca con Gemas).
+- **Fase 8 — Lanzamiento público y monetización:** app en tiendas (Capacitor o Expo, por decidir) con push nativo; Apple (obligatorio en iOS) y Facebook; Gemas tras la capa de pagos (Stripe / RevenueCat, confirmación por webhook); premium sin anuncios; anuncios con consentimiento, preferiblemente recompensados y opcionales; pase de temporada de compra directa.
+- **Fase 9 — Fiesta y tiempo real:** salas en vivo con código (hasta 8); modo TV; tablero clásico con identidad propia; minijuegos (cronología, ¿más o menos?, verdadero/falso relámpago, mapa).
+- **Continuo:** más categorías y preguntas; taller de preguntas de usuarios con revisión.
+- **No implementar nada de una fase posterior sin que se pida.**
 
 ## Estado y pendientes
 
@@ -78,6 +92,7 @@ Actualizar al cerrar cada sesión.
 - **Reglas del duelo aprobadas (2026-10-16):** 3 o 6 rondas (lo elige quien reta; 6 por defecto); máximo 3 duelos activos entre dos jugadores; en cada ronda uno gira la ruleta (categoría al azar, puede repetirse) y ambos responden las mismas 3 preguntas; puntuación del modo rápido; gana quien suma más (a igualdad, empate). Turnos alternos de 48 h (quien no juega a tiempo pierde). Dificultad elegida por quien reta; el duelo empieza al momento y el rival puede rechazarlo antes de responder. Rendirse = derrota; revancha; eliminar amigo cancela los duelos en curso. Sin límite de duelos simultáneos. Amigos: búsqueda por prefijo (≥3 letras, 10 resultados) y solicitudes. Avisos: lista "Tus duelos" en la portada + aviso emergente en vivo.
 - **Seed:** 126 preguntas (6 por categoría y dificultad: justo para 6 jugadores). Tras `pnpm db:reset` se recargan solas; tras `pnpm db:start` en una BD nueva, `pnpm db:seed`.
 - **Sesión dedicada a estilos y front:** probar más opciones estéticas sobre la base aprobada. Los tokens están en `apps/web/src/app/globals.css` y el muestrario de componentes en `/dev/ui` (solo en desarrollo).
+- **Roadmap aprobado (2026-10-17):** beta cerrada antes de la progresión; tablero después del lanzamiento público; comodines solo en solitario o con el mismo cupo en duelo; morfos y Laguna como eje de colección; push web en la Fase 4. Los textos "¿Sabías que…?" se dejan para más adelante.
 - **Colores de categoría aprobados** (ya en la tabla `categories`): Geografía `#2ECC8F`, Historia `#D9964A`, Ciencia y Naturaleza `#2EC4E6`, Arte y Literatura `#9B7BFF`, Entretenimiento `#FF7A45`, Deportes `#F5C431`, Tecnología `#5C7CFA`.
 
 ## Decisiones
