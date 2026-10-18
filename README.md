@@ -125,3 +125,8 @@ Configuración en local (una vez; `pnpm db:reset` borra el paso 3):
 4. Sirve la función: `pnpm exec supabase functions serve --env-file supabase/functions/.env` (déjalo abierto).
 
 En producción: `supabase functions deploy push`, las variables del paso 2 con `supabase secrets set`, y en el Vault la URL pública (`https://<proyecto>.supabase.co/functions/v1/push`).
+
+## Moderación y límites
+
+- **Nombres de usuario:** no se admiten los que contienen un término de `public.blocked_username_terms` (se comparan en minúsculas, sin `_` y con los números que imitan letras). Para ampliar la lista: `insert into public.blocked_username_terms (term) values ('…');`. Los perfiles que ya existían no cambian; para encontrarlos: `select username from public.profiles where not public.is_username_allowed(username);`.
+- **Límites de peticiones** (por cuenta, error con hint `rate_limited`): solicitudes de amistad 20/h, duelos 20/h, partidas rápidas 60/h, búsquedas de jugadores 30/min, comprobaciones de nombre 30/min, cambios de nombre 5/día y reportes de preguntas 30/día. Están en las migraciones `…175651_username_moderation_and_rate_limits.sql` y `…173937_question_reports_and_admin.sql`.

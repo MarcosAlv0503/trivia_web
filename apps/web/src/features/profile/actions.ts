@@ -6,7 +6,9 @@ import { isLocale, LOCALE_COOKIE, LOCALE_COOKIE_OPTIONS } from "@/i18n/config";
 import { getAuthContext, getOwnProfile } from "./queries";
 import { isValidUsername } from "./username";
 
-export type FormState = { error?: "usernameInvalid" | "usernameTaken" | "generic" };
+export type FormState = {
+  error?: "usernameInvalid" | "usernameTaken" | "usernameNotAllowed" | "rateLimited" | "generic";
+};
 
 /** Crea el perfil (onboarding) o lo actualiza. La BD vuelve a validarlo todo con CHECKs, RLS y triggers. */
 export async function saveProfile(_prev: FormState, formData: FormData): Promise<FormState> {
@@ -23,7 +25,11 @@ export async function saveProfile(_prev: FormState, formData: FormData): Promise
   const { error } = (await getOwnProfile())
     ? await supabase.from("profiles").update(values).eq("id", claims.sub)
     : await supabase.from("profiles").insert({ id: claims.sub, ...values });
-  if (error) return { error: error.code === "23505" ? "usernameTaken" : "generic" };
+  if (error) {
+    if (error.code === "23505") return { error: "usernameTaken" };
+    if (error.hint === "username_not_allowed") return { error: "usernameNotAllowed" };
+    return { error: error.hint === "rate_limited" ? "rateLimited" : "generic" };
+  }
 
   (await cookies()).set(LOCALE_COOKIE, locale, LOCALE_COOKIE_OPTIONS);
   redirect("/");

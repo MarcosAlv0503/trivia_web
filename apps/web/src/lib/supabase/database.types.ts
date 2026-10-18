@@ -61,6 +61,19 @@ export type Database = {
         };
         Relationships: [];
       };
+      blocked_username_terms: {
+        Row: {
+          term: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          term: string;
+        };
+        Update: {
+          term?: string;
+        };
+        Relationships: [];
+      };
       categories: {
         Row: {
           color: string;
@@ -657,6 +670,28 @@ export type Database = {
         };
         Relationships: [];
       };
+      rate_limits: {
+        Row: {
+          action: string;
+          hits: number;
+          user_id: string;
+          window_start: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          action: string;
+          hits: number;
+          user_id: string;
+          window_start: string;
+        };
+        Update: {
+          action?: string;
+          hits?: number;
+          user_id?: string;
+          window_start?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -693,6 +728,10 @@ export type Database = {
           uid: string;
         };
         Returns: boolean;
+      };
+      check_rate_limit: {
+        Args: { limited_action: string; max_hits: number; per: string };
+        Returns: undefined;
       };
       current_player_id: { Args: Record<PropertyKey, never>; Returns: string };
       decline_duel: { Args: { duel_id: string }; Returns: undefined };
@@ -751,6 +790,7 @@ export type Database = {
         };
         Returns: boolean;
       };
+      is_username_allowed: { Args: { candidate: string }; Returns: boolean };
       is_username_available: { Args: { candidate: string }; Returns: boolean };
       list_duels: { Args: Record<PropertyKey, never>; Returns: Json };
       list_friends: { Args: Record<PropertyKey, never>; Returns: Json };

@@ -32,6 +32,8 @@
     "errors": {
       "usernameInvalid": "El nombre de usuario no es válido.",
       "usernameTaken": "Ese nombre de usuario ya está cogido.",
+      "usernameNotAllowed": "Ese nombre de usuario no está permitido. Elige otro.",
+      "rateLimited": "Has cambiado de nombre demasiadas veces hoy. Inténtalo mañana.",
       "generic": "Algo ha fallado. Inténtalo de nuevo."
     },
     "adminLink": "Panel de revisión de preguntas"

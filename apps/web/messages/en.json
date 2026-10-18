@@ -32,6 +32,8 @@
     "errors": {
       "usernameInvalid": "That username isn't valid.",
       "usernameTaken": "That username is already taken.",
+      "usernameNotAllowed": "That username isn't allowed. Please choose another one.",
+      "rateLimited": "You've changed your username too many times today. Try again tomorrow.",
       "generic": "Something went wrong. Please try again."
     },
     "adminLink": "Question review panel"
