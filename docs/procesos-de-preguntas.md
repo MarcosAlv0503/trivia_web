@@ -47,7 +47,7 @@ generar ──► borrador ──► revisar ──┬──► aprobada ──�
 | `.claude/skills/questions-generate/criteria.md` | **Criterios de calidad comunes a los tres procesos** |
 | `scripts/questions.mts` | Comandos `pnpm questions …` y umbrales de revisión |
 | `scripts/lib/supabase-admin.mts` | Conexión a Supabase con la clave secreta |
-| `supabase/migrations/20261018150834_question_pipeline.sql` y `…151706_question_untranslatable.sql` | Funciones de la BD: `import_questions`, `export_questions`, `review_questions`, `mark_untranslatable` e `is_playable` |
+| `supabase/migrations/20261018150834_question_pipeline.sql`, `…151706_question_untranslatable.sql` y `…173937_question_reports_and_admin.sql` | Funciones de la BD: `import_questions`, `export_questions`, `review_questions`, `mark_untranslatable`, `is_playable`, reportes y panel |
 | `.content/` | Archivos de trabajo de cada ejecución. **Ignorada por git.** |
 
 > ⚠️ **El repositorio es público.** Las preguntas llevan sus respuestas, así que **nunca** se suben al repo: los procesos escriben en la base de datos, y sus archivos temporales van a `.content/`. El único contenido en el repo es el seed de desarrollo (`supabase/seed/questions.json`).
@@ -159,18 +159,22 @@ Para ver las preguntas en sí: **Supabase Studio** local (<http://127.0.0.1:5432
 
 ---
 
-## 6. Revisión humana (mientras no exista el panel)
+## 6. Revisión humana: el panel `/admin`
 
-Las preguntas que dos revisiones no resolvieron quedan en borrador con `needs_human = true` y el motivo en `review_note`. No se juegan. Más adelante tendrán un panel de revisión; hasta entonces:
+Las preguntas que dos revisiones no resolvieron quedan en borrador con `needs_human = true` y el motivo en `review_note`. No se juegan. Se revisan en el **panel de revisión** de la web (`/admin`, enlace al final del perfil), que muestra:
 
-1. Pídeselo a Claude en el chat: _"Enséñame las preguntas con needs_human y su nota"_. También puedes verlas en Studio, filtrando `needs_human` = `true`.
-2. Decide cada una. Claude escribe `.content/human.json` con tus veredictos, en el mismo formato que la revisión (`approve`, `reject` o `approve` con `fixed`; ver `.claude/skills/questions-review/SKILL.md`), y ejecuta:
+- las pendientes de revisión humana, primero;
+- las que tienen **reportes de jugadores** sin resolver, con el motivo y el idioma en que se vieron.
 
-```sh
-pnpm questions apply-reviews .content/human.json
-```
+Para cada una: **Aprobar**, **Rechazar** o **Corregir** (cambiar textos y dificultad, y aprobar). Las correcciones pasan las mismas validaciones que la importación. Cualquier veredicto, del panel o de `/questions-review`, cierra los reportes de esa pregunta.
 
-Aplicar un veredicto quita la marca `needs_human`.
+Solo pueden entrar los administradores (README > "Panel de revisión"). Sin panel a mano, el camino antiguo sigue sirviendo: Claude escribe `.content/human.json` con tus veredictos en el formato de la revisión y ejecuta `pnpm questions apply-reviews .content/human.json`.
+
+### Reportes de jugadores
+
+Al ver la respuesta correcta, el jugador puede pulsar **Reportar pregunta** y elegir un motivo: `wrong_answer` (la correcta está mal), `ambiguous` (confusa o con varias válidas), `typo` (errata o mala traducción) u `offensive`. Un reporte por jugador y pregunta, y como mucho 30 al día por cuenta.
+
+Una pregunta reportada **sigue jugándose**: la siguiente ejecución de `/questions-review` la revisa la primera (motivo `reportada: …`). Si la revisión automática duda, pasa a revisión humana como cualquier otra.
 
 ---
 
@@ -229,6 +233,7 @@ Un idioma nuevo afecta a la web entera: `CLAUDE.md` exige que ningún texto visi
    | `quick_matches` | `quick_matches_locale_check` |
    | `duel_plays` | `duel_plays_locale_check` |
    | `questions` | `questions_untranslatable_check` (columna `untranslatable`) |
+   | `question_reports` | `question_reports_locale_check` |
 
 2. **Nombres de las categorías** en el idioma nuevo: en la misma migración, un `insert` en `category_translations` por categoría. Sin ellos, las preguntas de esa categoría no se sirven en ese idioma.
 3. **Web:**

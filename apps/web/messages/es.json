@@ -33,7 +33,8 @@
       "usernameInvalid": "El nombre de usuario no es válido.",
       "usernameTaken": "Ese nombre de usuario ya está cogido.",
       "generic": "Algo ha fallado. Inténtalo de nuevo."
-    }
+    },
+    "adminLink": "Panel de revisión de preguntas"
   },
   "Account": {
     "deleteTitle": "Borrar cuenta",
@@ -180,5 +181,27 @@
     "cancel": "Cancelar",
     "thanks": "¡Gracias! La revisaremos.",
     "error": "No se pudo enviar el reporte."
+  },
+  "Admin": {
+    "title": "Revisión de preguntas",
+    "back": "Volver",
+    "summary": "{count, plural, =0 {No hay preguntas pendientes} one {# pregunta pendiente} other {# preguntas pendientes}}: dudas de la revisión automática y reportes de jugadores.",
+    "empty": "¡Todo revisado!",
+    "status": {
+      "draft": "Borrador",
+      "approved": "Aprobada"
+    },
+    "needsHuman": "Revisión humana",
+    "note": "Nota de la revisión",
+    "prompt": "Enunciado",
+    "correct": "Respuesta correcta",
+    "wrong": "Respuesta incorrecta {number}",
+    "verdictNote": "Nota (opcional)",
+    "approve": "Aprobar",
+    "reject": "Rechazar",
+    "edit": "Corregir",
+    "saveApprove": "Guardar y aprobar",
+    "cancelEdit": "Cancelar",
+    "error": "No se pudo guardar:"
   }
 }

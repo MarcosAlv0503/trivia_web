@@ -89,8 +89,18 @@ Tres skills de Claude Code, con el plan de suscripción y sin la API de pago:
 - **Traducir:** traduce las aprobadas que faltan en un idioma, o las marca como no traducibles.
 - **Revisar:**
   - aprueba, corrige o rechaza las preguntas;
-  - una duda pasa por una segunda revisión independiente, y si persiste queda como `needs_human` para revisarla a mano.
+  - una duda pasa por una segunda revisión independiente, y si persiste queda como `needs_human` para revisarla a mano;
+  - las preguntas reportadas por los jugadores se revisan primero.
 
 La parte mecánica está en `pnpm questions <comando>` (`status` muestra el recuento y qué falta). Los archivos de trabajo van a `.content/`, ignorada por git porque el repo es público y llevan las respuestas. Por defecto usan Supabase local; con `SUPABASE_URL` y `SUPABASE_SECRET_KEY` en el entorno, otro proyecto.
 
 Para que se ejecuten solos, crea una tarea programada en Claude Code Desktop (Routines → New routine → Local) en esta carpeta, con el skill como instrucción (p. ej. `/questions-generate`). Solo se ejecuta con el ordenador encendido. Antes, pulsa "Run now" una vez y marca "always allow" en los permisos que pida.
+
+## Panel de revisión (administradores)
+
+En `/admin` (enlace al final del perfil) un administrador ve las preguntas que necesitan revisión humana y las reportadas por los jugadores, y las aprueba, corrige o rechaza. Para el resto de cuentas la página no existe. Los administradores se dan de alta a mano con SQL (en local, desde Studio → SQL Editor):
+
+```sql
+insert into public.admins (user_id)
+select id from public.profiles where username = 'tu_usuario';
+```

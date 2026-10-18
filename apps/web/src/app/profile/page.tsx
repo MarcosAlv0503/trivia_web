@@ -3,11 +3,16 @@ import { getTranslations } from "next-intl/server";
 import { buttonClassName } from "@/components/button";
 import { DeleteAccount } from "@/features/profile/delete-account";
 import { ProfileForm } from "@/features/profile/profile-form";
-import { getActiveAvatarIds, requireProfile } from "@/features/profile/queries";
+import { getActiveAvatarIds, getAuthContext, requireProfile } from "@/features/profile/queries";
 
 export default async function ProfilePage() {
   const profile = await requireProfile();
-  const [t, avatarIds] = await Promise.all([getTranslations("Profile"), getActiveAvatarIds()]);
+  const { supabase } = await getAuthContext();
+  const [t, avatarIds, { data: isAdmin }] = await Promise.all([
+    getTranslations("Profile"),
+    getActiveAvatarIds(),
+    supabase.rpc("is_admin"),
+  ]);
 
   return (
     <main className="flex min-h-dvh flex-col items-center gap-8 p-6">
@@ -27,6 +32,11 @@ export default async function ProfilePage() {
         }}
       />
       <DeleteAccount />
+      {isAdmin && (
+        <Link href="/admin" className="font-bold text-fg-muted underline">
+          {t("adminLink")}
+        </Link>
+      )}
     </main>
   );
 }

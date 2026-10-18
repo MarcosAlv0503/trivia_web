@@ -33,7 +33,8 @@
       "usernameInvalid": "That username isn't valid.",
       "usernameTaken": "That username is already taken.",
       "generic": "Something went wrong. Please try again."
-    }
+    },
+    "adminLink": "Question review panel"
   },
   "Account": {
     "deleteTitle": "Delete account",
@@ -180,5 +181,27 @@
     "cancel": "Cancel",
     "thanks": "Thanks! We'll review it.",
     "error": "The report couldn't be sent."
+  },
+  "Admin": {
+    "title": "Question review",
+    "back": "Back",
+    "summary": "{count, plural, =0 {No pending questions} one {# pending question} other {# pending questions}}: doubts from the automatic review and player reports.",
+    "empty": "All reviewed!",
+    "status": {
+      "draft": "Draft",
+      "approved": "Approved"
+    },
+    "needsHuman": "Human review",
+    "note": "Review note",
+    "prompt": "Question",
+    "correct": "Correct answer",
+    "wrong": "Wrong answer {number}",
+    "verdictNote": "Note (optional)",
+    "approve": "Approve",
+    "reject": "Reject",
+    "edit": "Fix",
+    "saveApprove": "Save and approve",
+    "cancelEdit": "Cancel",
+    "error": "Couldn't save:"
   }
 }
