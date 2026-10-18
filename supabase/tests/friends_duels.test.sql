@@ -221,7 +221,10 @@ select throws_like(
   $$ select public.start_duel('00000000-0000-0000-0000-00000000000b', 'easy') $$,
   'ya tenéis 3 duelos en curso', 'como mucho 3 duelos activos entre dos jugadores'
 );
-select public.surrender_duel(id) from public.duels where status = 'active';
+-- Solo los duelos del test: la BD local puede tener duelos reales de otras cuentas.
+select public.surrender_duel(id) from public.duels
+where status = 'active'
+  and '00000000-0000-0000-0000-00000000000a' in (challenger_id, opponent_id);
 
 -- Rechazar, rendirse y eliminar amigo ----------------------------------------------------------------
 select set_config('test.declined', public.start_duel('00000000-0000-0000-0000-00000000000b', 'easy')::text, true);
