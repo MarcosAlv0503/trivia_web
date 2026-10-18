@@ -167,6 +167,7 @@
     "friend_accepted": "{name} accepted your friend request",
     "duel_turn": "It’s your turn in your duel against {name}!",
     "duel_finished": "Your duel against {name} is over",
+    "duel_deadline": "Your turn against {name} ends soon. Play now!",
     "close": "Close"
   },
   "Report": {
@@ -203,5 +204,13 @@
     "saveApprove": "Save and approve",
     "cancelEdit": "Cancel",
     "error": "Couldn't save:"
+  },
+  "Push": {
+    "title": "Notifications",
+    "description": "We'll notify you on this device when it's your turn in a duel and when your turn is about to run out.",
+    "enable": "Turn on notifications",
+    "disable": "Turn off notifications",
+    "unsupported": "This browser doesn't support notifications. On iPhone or iPad, first add the app to your Home Screen (Share → Add to Home Screen) and open it from there.",
+    "denied": "You've blocked notifications from this site. To get them, allow them in your browser settings."
   }
 }

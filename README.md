@@ -104,3 +104,24 @@ En `/admin` (enlace al final del perfil) un administrador ve las preguntas que n
 insert into public.admins (user_id)
 select id from public.profiles where username = 'tu_usuario';
 ```
+
+## App instalable y avisos push
+
+La web es una PWA: el navegador ofrece instalarla (en iPhone/iPad, Compartir → Añadir a pantalla de inicio). Los iconos se generan desde la mascota (`src/features/pwa/brand-icon.tsx`) y el service worker es `/sw.js` (`src/app/sw.js/route.ts`), que toma los textos de `messages/*.json`.
+
+Los avisos push (te toca en un duelo; tu turno vence en menos de 6 h) se activan en el perfil, por dispositivo. Flujo: fila en `notifications` → trigger → `pg_net` → Edge Function `supabase/functions/push` → servicio push del navegador. El aviso de plazo lo genera `pg_cron` cada 15 min. Sin configurar, todo lo demás funciona y simplemente no se envían.
+
+Configuración en local (una vez; `pnpm db:reset` borra el paso 3):
+
+1. `pnpm push:keys` genera las claves VAPID.
+2. Copia `supabase/functions/.env.example` a `supabase/functions/.env` con las dos claves, un `VAPID_SUBJECT` (`mailto:` de contacto) y un `PUSH_WEBHOOK_SECRET` aleatorio. Añade la clave pública a `apps/web/.env.local` como `NEXT_PUBLIC_VAPID_PUBLIC_KEY` y reinicia `pnpm dev`.
+3. Guarda en el Vault la URL de la función y el mismo secreto (Studio → SQL Editor):
+
+   ```sql
+   select vault.create_secret('http://kong:8000/functions/v1/push', 'push_function_url');
+   select vault.create_secret('<PUSH_WEBHOOK_SECRET>', 'push_webhook_secret');
+   ```
+
+4. Sirve la función: `pnpm exec supabase functions serve --env-file supabase/functions/.env` (déjalo abierto).
+
+En producción: `supabase functions deploy push`, las variables del paso 2 con `supabase secrets set`, y en el Vault la URL pública (`https://<proyecto>.supabase.co/functions/v1/push`).

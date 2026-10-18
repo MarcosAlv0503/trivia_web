@@ -215,6 +215,7 @@ export type Database = {
         Row: {
           challenger_id: string;
           created_at: string;
+          deadline_warned_turn: number | null;
           difficulty: string;
           end_reason: string | null;
           finished_at: string | null;
@@ -230,6 +231,7 @@ export type Database = {
         Insert: {
           challenger_id: string;
           created_at?: string;
+          deadline_warned_turn?: number | null;
           difficulty: string;
           end_reason?: string | null;
           finished_at?: string | null;
@@ -244,6 +246,7 @@ export type Database = {
         Update: {
           challenger_id?: string;
           created_at?: string;
+          deadline_warned_turn?: number | null;
           difficulty?: string;
           end_reason?: string | null;
           finished_at?: string | null;
@@ -381,6 +384,31 @@ export type Database = {
             referencedColumns: ["id"];
           },
         ];
+      };
+      push_subscriptions: {
+        Row: {
+          auth: string;
+          created_at: string;
+          endpoint: string;
+          p256dh: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          auth: string;
+          created_at?: string;
+          endpoint: string;
+          p256dh: string;
+          user_id: string;
+        };
+        Update: {
+          auth?: string;
+          created_at?: string;
+          endpoint?: string;
+          p256dh?: string;
+          user_id?: string;
+        };
+        Relationships: [];
       };
       question_reports: {
         Row: {
@@ -669,6 +697,7 @@ export type Database = {
       current_player_id: { Args: Record<PropertyKey, never>; Returns: string };
       decline_duel: { Args: { duel_id: string }; Returns: undefined };
       delete_own_account: { Args: Record<PropertyKey, never>; Returns: undefined };
+      delete_push_subscription: { Args: { sub_endpoint: string }; Returns: undefined };
       duel_candidates: {
         Args: {
           locale_a: string;
@@ -730,6 +759,7 @@ export type Database = {
         Returns: {
           challenger_id: string;
           created_at: string;
+          deadline_warned_turn: number | null;
           difficulty: string;
           end_reason: string | null;
           finished_at: string | null;
@@ -785,6 +815,10 @@ export type Database = {
       require_admin: { Args: Record<PropertyKey, never>; Returns: undefined };
       respond_friend_request: { Args: { accept: boolean; requester: string }; Returns: undefined };
       review_questions: { Args: { items: Json }; Returns: number };
+      save_push_subscription: {
+        Args: { sub_auth: string; sub_endpoint: string; sub_p256dh: string };
+        Returns: undefined;
+      };
       search_players: { Args: { query: string }; Returns: Json };
       send_friend_request: { Args: { target: string }; Returns: string };
       serve_duel_question: { Args: { duel_id: string }; Returns: Json };
@@ -799,6 +833,7 @@ export type Database = {
         Returns: string;
       };
       surrender_duel: { Args: { duel_id: string }; Returns: undefined };
+      warn_duel_deadlines: { Args: Record<PropertyKey, never>; Returns: number };
     };
     Enums: {
       [_ in never]: never;

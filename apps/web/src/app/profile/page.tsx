@@ -4,6 +4,7 @@ import { buttonClassName } from "@/components/button";
 import { DeleteAccount } from "@/features/profile/delete-account";
 import { ProfileForm } from "@/features/profile/profile-form";
 import { getActiveAvatarIds, getAuthContext, requireProfile } from "@/features/profile/queries";
+import { PushToggle } from "@/features/pwa/push-toggle";
 
 export default async function ProfilePage() {
   const profile = await requireProfile();
@@ -31,6 +32,7 @@ export default async function ProfilePage() {
           locale: profile.locale,
         }}
       />
+      <PushToggle />
       <DeleteAccount />
       {isAdmin && (
         <Link href="/admin" className="font-bold text-fg-muted underline">

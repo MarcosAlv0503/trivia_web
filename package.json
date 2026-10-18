@@ -19,7 +19,8 @@
     "db:types": "supabase gen types typescript --local > apps/web/src/lib/supabase/database.types.ts && prettier --write apps/web/src/lib/supabase/database.types.ts",
     "db:seed": "node scripts/import-questions.mts supabase/seed/questions.json --local",
     "db:test": "supabase test db",
-    "questions": "node scripts/questions.mts"
+    "questions": "node scripts/questions.mts",
+    "push:keys": "node scripts/vapid-keys.mts"
   },
   "devDependencies": {
     "prettier": "^3.9.10",

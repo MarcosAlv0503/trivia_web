@@ -394,6 +394,10 @@ deno_version = 2
 # [edge_runtime.secrets]
 # secret_key = "env(SECRET_VALUE)"
 
+# Avisos push (supabase/functions/push): la autentica el secreto compartido con el trigger, no un JWT.
+[functions.push]
+verify_jwt = false
+
 [analytics]
 enabled = true
 port = 54327

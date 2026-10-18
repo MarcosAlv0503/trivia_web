@@ -63,10 +63,13 @@ select throws_like(
 
 reset role;
 select is(
-  (select reason || ':' || locale from public.question_reports),
+  (select reason || ':' || locale from public.question_reports
+   where reporter_id = '00000000-0000-0000-0000-00000000000a'),
   'wrong_answer:es', 'un reporte por jugador y pregunta, con el idioma de la partida'
 );
-select set_config('test.reported', (select question_id::text from public.question_reports), true);
+select set_config('test.reported', (
+  select question_id::text from public.question_reports where reporter_id = '00000000-0000-0000-0000-00000000000a'
+), true);
 
 -- Reportar desde un duelo (jugada creada a mano: el flujo del duelo ya tiene sus tests).
 insert into public.duels (id, challenger_id, opponent_id, difficulty)

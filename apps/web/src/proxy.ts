@@ -14,6 +14,9 @@ export async function proxy(request: NextRequest) {
   return response;
 }
 
+// Fuera del proxy (sin sesión): estáticos, y lo que el navegador pide para instalar la PWA y recibir avisos.
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon\\.ico$|manifest\\.webmanifest$|sw\\.js$|icon/|apple-icon|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };

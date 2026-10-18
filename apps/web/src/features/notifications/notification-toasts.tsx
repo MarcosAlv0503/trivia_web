@@ -13,7 +13,7 @@ export const NOTIFICATION_EVENT = "trivia:notification";
 export type NotificationRow = {
   id: number;
   user_id: string;
-  kind: "friend_request" | "friend_accepted" | "duel_turn" | "duel_finished";
+  kind: "friend_request" | "friend_accepted" | "duel_turn" | "duel_finished" | "duel_deadline";
   actor_name: string;
   duel_id: string | null;
   created_at: string;
