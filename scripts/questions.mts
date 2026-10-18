@@ -27,6 +27,8 @@ type Question = {
   reviewNote: string | null;
   untranslatable: string[];
   translations: Record<string, Translation>;
+  /** Reportes de jugadores aún sin resolver. */
+  reports: { reason: string; locale: string }[];
   stats: { answered: number; correct: number; topWrong: number };
 };
 
@@ -86,7 +88,10 @@ async function status() {
   }
   const approved = all.filter((q) => q.status === "approved").length;
   const topical = all.filter(isActiveTopical).length;
-  console.log(`\nTotal aprobadas: ${approved} · actualidad vigentes: ${topical}`);
+  const reported = all.filter((q) => q.status === "approved" && q.reports.length).length;
+  console.log(
+    `\nTotal aprobadas: ${approved} · actualidad vigentes: ${topical} · reportadas: ${reported}`,
+  );
   for (const locale of ["es", "en"]) {
     const missing = all.filter(
       (q) =>
@@ -132,6 +137,8 @@ async function toTranslate(locale: string, limit: number) {
 function reviewReason(q: Question, now: Date): string | null {
   if (q.status === "draft" && !q.needsHuman) return "nueva";
   if (q.status !== "approved") return null;
+  if (q.reports.length)
+    return `reportada: ${q.reports.map((r) => `${r.reason} (${r.locale})`).join(", ")}`;
   const warn = new Date(now.getTime() + EXPIRY_WARNING_DAYS * 86_400_000);
   if (q.topical && q.expiresAt && new Date(q.expiresAt) < warn) return "caduca pronto";
   const { answered, correct, topWrong } = q.stats;
@@ -148,10 +155,13 @@ function reviewReason(q: Question, now: Date): string | null {
 async function toReview(limit: number) {
   const all = await exportAll();
   const now = new Date();
-  const flagged = all.flatMap((q) => {
-    const reason = reviewReason(q, now);
-    return reason ? [{ reason, q }] : [];
-  });
+  // Primero las reportadas por jugadores; después, el resto con motivo.
+  const flagged = all
+    .flatMap((q) => {
+      const reason = reviewReason(q, now);
+      return reason ? [{ reason, q }] : [];
+    })
+    .sort((a, b) => b.q.reports.length - a.q.reports.length);
   // El resto del cupo, auditoría de las aprobadas revisadas hace más tiempo (o nunca).
   const audit = all
     .filter((q) => q.status === "approved" && !flagged.some((f) => f.q === q))

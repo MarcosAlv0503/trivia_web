@@ -1,6 +1,6 @@
 ---
 name: questions-review
-description: Revisa preguntas (nuevas, reportadas por estadísticas, de actualidad a punto de caducar y una muestra de las aprobadas) y las aprueba, corrige o rechaza. Pensado para ejecutarse programado.
+description: Revisa preguntas (nuevas, reportadas por jugadores o por estadísticas, de actualidad a punto de caducar y una muestra de las aprobadas) y las aprueba, corrige o rechaza. Pensado para ejecutarse programado.
 argument-hint: "[cantidad=15]"
 disable-model-invocation: true
 allowed-tools: Bash(pnpm -s questions *) WebSearch WebFetch Read Edit(./.content/**) Write(./.content/**)
@@ -14,6 +14,7 @@ Las preguntas se aprueban solas. Una persona solo revisa las dudas muy serias qu
 2. **Primera revisión de cada pregunta:**
    - Comprueba con búsqueda web cualquier dato del que no estés completamente seguro. Hazlo **siempre** con las de actualidad y con las que traen motivos de estadísticas.
    - Con motivo de estadísticas, busca la causa: la correcta está mal, una incorrecta también es defendible, la dificultad está mal puesta…
+   - Con "reportada", los jugadores la han marcado (`wrong_answer`: la correcta está mal; `ambiguous`: confusa o con varias respuestas válidas; `typo`: errata o mala traducción; `offensive`: ofensiva). Entre paréntesis va el idioma en que la vieron. Comprueba el motivo con búsqueda web; un reporte no es prueba de fallo. Cualquier veredicto cierra sus reportes.
    - Con "caduca pronto", decide si sigue siendo cierta y relevante: renuévala (`expiresAt` = hoy + 90 días) o recházala.
    - Revisa también cada traducción: mismo significado, `correct` correcta y el **mismo orden** de `wrong`.
 3. **Veredicto** de cada pregunta:

@@ -11,6 +11,7 @@ import { Mascot } from "@/components/mascot";
 import { QuestionCard } from "@/components/question-card";
 import { Wheel } from "@/components/wheel";
 import { AnswerFeedback, REVEAL_MS } from "@/features/game/answer-feedback";
+import { ReportQuestion, type ReportReason } from "@/features/game/report-question";
 import { useQuestionTimer } from "@/features/game/use-question-timer";
 import {
   NOTIFICATION_EVENT,
@@ -42,6 +43,7 @@ export function DuelGame({ duelId }: { duelId: string }) {
   const [question, setQuestion] = useState<DuelQuestion | null>(null);
   const [chosen, setChosen] = useState<number>();
   const [result, setResult] = useState<DuelAnswerResult | null>(null);
+  const [reporting, setReporting] = useState(false);
   const [busy, setBusy] = useState(false);
   const answering = useRef(false);
 
@@ -106,6 +108,17 @@ export function DuelGame({ duelId }: { duelId: string }) {
     setPhase("reveal");
   }
 
+  async function report(reason: ReportReason) {
+    if (!question) return false;
+    const { error } = await supabase.rpc("report_duel_question", {
+      duel_id: duelId,
+      question_round: question.round,
+      question_slot: question.slot,
+      reason,
+    });
+    return !error;
+  }
+
   async function runAction(action: "surrender_duel" | "decline_duel") {
     setBusy(true);
     const { error } = await supabase.rpc(action, { duel_id: duelId });
@@ -151,10 +164,10 @@ export function DuelGame({ duelId }: { duelId: string }) {
     else setPhase("overview");
   });
   useEffect(() => {
-    if (phase !== "reveal") return;
+    if (phase !== "reveal" || reporting) return;
     const id = setTimeout(() => void afterReveal(), REVEAL_MS);
     return () => clearTimeout(id);
-  }, [phase]);
+  }, [phase, reporting]);
 
   if (phase === "error") {
     return (
@@ -226,6 +239,13 @@ export function DuelGame({ duelId }: { duelId: string }) {
           timerLabel={t("roundOf", { round: question.round, total: duel.roundCount })}
         />
         <AnswerFeedback result={result} timedOut={chosen === undefined} />
+        {phase === "reveal" && (
+          <ReportQuestion
+            key={`${question.round}-${question.slot}`}
+            onReport={report}
+            onOpenChange={setReporting}
+          />
+        )}
       </main>
     );
   }

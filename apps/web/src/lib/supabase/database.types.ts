@@ -23,6 +23,22 @@ export type Database = {
   };
   public: {
     Tables: {
+      admins: {
+        Row: {
+          created_at: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       avatars: {
         Row: {
           created_at: string;
@@ -366,6 +382,42 @@ export type Database = {
           },
         ];
       };
+      question_reports: {
+        Row: {
+          created_at: string;
+          locale: string;
+          question_id: string;
+          reason: string;
+          reporter_id: string;
+          resolved_at: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          locale: string;
+          question_id: string;
+          reason: string;
+          reporter_id: string;
+          resolved_at?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          locale?: string;
+          question_id?: string;
+          reason?: string;
+          reporter_id?: string;
+          resolved_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "question_reports_question_id_fkey";
+            columns: ["question_id"];
+            isOneToOne: false;
+            referencedRelation: "questions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       question_translations: {
         Row: {
           answers: string[];
@@ -582,6 +634,15 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      admin_review_question: {
+        Args: { note?: string; question_id: string; verdict: string };
+        Returns: undefined;
+      };
+      admin_review_queue: { Args: Record<PropertyKey, never>; Returns: Json };
+      admin_update_question: {
+        Args: { question_difficulty: string; question_id: string; translations: Json };
+        Returns: undefined;
+      };
       answer_duel_question: {
         Args: { choice: number; duel_id: string; question_round: number; question_slot: number };
         Returns: Json;
@@ -644,9 +705,14 @@ export type Database = {
       };
       expire_duels: { Args: { uid: string }; Returns: undefined };
       export_questions: { Args: Record<PropertyKey, never>; Returns: Json };
+      file_question_report: {
+        Args: { question: string; report_locale: string; report_reason: string; reporter: string };
+        Returns: undefined;
+      };
       get_duel: { Args: { duel_id: string }; Returns: Json };
       get_quick_match: { Args: { match_id: string }; Returns: Json };
       import_questions: { Args: { items: Json }; Returns: number };
+      is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
       is_playable: {
         Args: {
           q: Omit<
@@ -708,6 +774,15 @@ export type Database = {
         };
       };
       remove_friend: { Args: { other: string }; Returns: undefined };
+      report_duel_question: {
+        Args: { duel_id: string; question_round: number; question_slot: number; reason: string };
+        Returns: undefined;
+      };
+      report_quick_question: {
+        Args: { match_id: string; question_position: number; reason: string };
+        Returns: undefined;
+      };
+      require_admin: { Args: Record<PropertyKey, never>; Returns: undefined };
       respond_friend_request: { Args: { accept: boolean; requester: string }; Returns: undefined };
       review_questions: { Args: { items: Json }; Returns: number };
       search_players: { Args: { query: string }; Returns: Json };

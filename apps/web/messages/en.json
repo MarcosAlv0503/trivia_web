@@ -167,5 +167,18 @@
     "duel_turn": "It’s your turn in your duel against {name}!",
     "duel_finished": "Your duel against {name} is over",
     "close": "Close"
+  },
+  "Report": {
+    "button": "Report question",
+    "title": "What's wrong with this question?",
+    "reasons": {
+      "wrong_answer": "The correct answer is wrong",
+      "ambiguous": "It's confusing or has more than one valid answer",
+      "typo": "It has a typo or a bad translation",
+      "offensive": "It's offensive"
+    },
+    "cancel": "Cancel",
+    "thanks": "Thanks! We'll review it.",
+    "error": "The report couldn't be sent."
   }
 }

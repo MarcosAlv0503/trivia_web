@@ -167,5 +167,18 @@
     "duel_turn": "¡Te toca en tu duelo contra {name}!",
     "duel_finished": "Tu duelo contra {name} ha terminado",
     "close": "Cerrar"
+  },
+  "Report": {
+    "button": "Reportar pregunta",
+    "title": "¿Qué le pasa a esta pregunta?",
+    "reasons": {
+      "wrong_answer": "La respuesta correcta está mal",
+      "ambiguous": "Es confusa o hay más de una respuesta válida",
+      "typo": "Tiene una errata o está mal traducida",
+      "offensive": "Es ofensiva"
+    },
+    "cancel": "Cancelar",
+    "thanks": "¡Gracias! La revisaremos.",
+    "error": "No se pudo enviar el reporte."
   }
 }

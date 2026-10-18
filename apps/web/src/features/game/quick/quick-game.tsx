@@ -9,6 +9,7 @@ import { buttonClassName } from "@/components/button";
 import { Mascot } from "@/components/mascot";
 import { QuestionCard } from "@/components/question-card";
 import { AnswerFeedback, REVEAL_MS } from "@/features/game/answer-feedback";
+import { ReportQuestion, type ReportReason } from "@/features/game/report-question";
 import { useQuestionTimer } from "@/features/game/use-question-timer";
 import { Avatar } from "@/features/profile/avatar";
 import { createClient } from "@/lib/supabase/client";
@@ -27,6 +28,7 @@ export function QuickGame({ matchId }: { matchId: string }) {
   const [question, setQuestion] = useState<ServedQuestion | null>(null);
   const [chosen, setChosen] = useState<number>();
   const [result, setResult] = useState<AnswerResult | null>(null);
+  const [reporting, setReporting] = useState(false);
   // Evita enviar dos respuestas (doble toque, o toque justo cuando se agota el tiempo).
   const answering = useRef(false);
 
@@ -90,6 +92,16 @@ export function QuickGame({ matchId }: { matchId: string }) {
     setPhase("reveal");
   }
 
+  async function report(reason: ReportReason) {
+    if (!question) return false;
+    const { error } = await supabase.rpc("report_quick_question", {
+      match_id: matchId,
+      question_position: question.position,
+      reason,
+    });
+    return !error;
+  }
+
   // Arranque o reanudación (p. ej. tras recargar): el servidor sabe por dónde va la partida.
   const start = useEffectEvent(async () => {
     const loaded = await loadMatch();
@@ -115,10 +127,10 @@ export function QuickGame({ matchId }: { matchId: string }) {
     else await serve();
   });
   useEffect(() => {
-    if (phase !== "reveal") return;
+    if (phase !== "reveal" || reporting) return;
     const id = setTimeout(() => void afterReveal(), REVEAL_MS);
     return () => clearTimeout(id);
-  }, [phase]);
+  }, [phase, reporting]);
 
   if (phase === "error") {
     return (
@@ -220,6 +232,9 @@ export function QuickGame({ matchId }: { matchId: string }) {
       />
 
       <AnswerFeedback result={result} timedOut={chosen === undefined} />
+      {phase === "reveal" && (
+        <ReportQuestion key={question.position} onReport={report} onOpenChange={setReporting} />
+      )}
     </main>
   );
 }
