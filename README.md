@@ -75,6 +75,8 @@ Formato: un array como el de `supabase/seed/questions.json` (`externalId` único
 
 ## Crear, traducir y revisar preguntas con Claude Code
 
+Guía completa (ejecutar, programar y modificar los procesos): [docs/procesos-de-preguntas.md](docs/procesos-de-preguntas.md).
+
 Tres skills de Claude Code, con el plan de suscripción y sin la API de pago:
 
 ```text
