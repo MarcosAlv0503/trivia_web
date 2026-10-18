@@ -71,4 +71,24 @@ node scripts/import-questions.mts preguntas.json --local     # a Supabase local
 SUPABASE_URL=... SUPABASE_SECRET_KEY=... node scripts/import-questions.mts preguntas.json   # a otro entorno
 ```
 
-Formato: un array como el de `supabase/seed/questions.json` (`externalId` único, `category`, `difficulty` `easy|medium|hard`, `status` `draft|approved|rejected`, `source` `ai|manual|user` y `translations` con `prompt`, `correct` y `wrong` por idioma). Reimportar un `externalId` lo actualiza. Solo se juegan las preguntas `approved`.
+Formato: un array como el de `supabase/seed/questions.json` (`externalId` único, `category`, `difficulty` `easy|medium|hard`, `status` `draft|approved|rejected`, `source` `ai|manual|user`, opcionalmente `topical` y `expiresAt`, y `translations` con `prompt`, `correct` y `wrong` por idioma). Reimportar un `externalId` lo actualiza: sin `status` conserva el actual, y solo se sustituyen los idiomas incluidos. Se juegan las preguntas `approved` que no han caducado. Las de actualidad caducan a los 90 días si no se indica otra fecha.
+
+## Crear, traducir y revisar preguntas con Claude Code
+
+Tres skills de Claude Code, con el plan de suscripción y sin la API de pago:
+
+```text
+/questions-generate [categoría|actualidad] [easy|medium|hard] [cantidad]   # sin argumentos, lo que más falta
+/questions-translate [en] [cantidad]
+/questions-review [cantidad]
+```
+
+- **Generar:** crea preguntas en español y las importa como borrador. Las de actualidad se buscan en la web.
+- **Traducir:** traduce las aprobadas que faltan en un idioma, o las marca como no traducibles.
+- **Revisar:**
+  - aprueba, corrige o rechaza las preguntas;
+  - una duda pasa por una segunda revisión independiente, y si persiste queda como `needs_human` para revisarla a mano.
+
+La parte mecánica está en `pnpm questions <comando>` (`status` muestra el recuento y qué falta). Los archivos de trabajo van a `.content/`, ignorada por git porque el repo es público y llevan las respuestas. Por defecto usan Supabase local; con `SUPABASE_URL` y `SUPABASE_SECRET_KEY` en el entorno, otro proyecto.
+
+Para que se ejecuten solos, crea una tarea programada en Claude Code Desktop (Routines → New routine → Local) en esta carpeta, con el skill como instrucción (p. ej. `/questions-generate`). Solo se ejecuta con el ordenador encendido. Antes, pulsa "Run now" una vez y marca "always allow" en los permisos que pida.

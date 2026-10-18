@@ -29,3 +29,6 @@ pnpm-debug.log*
 Thumbs.db
 .vercel/
 .claude/settings.local.json
+
+# contenido de trabajo de los procesos de preguntas (lleva respuestas: el repo es público)
+.content/

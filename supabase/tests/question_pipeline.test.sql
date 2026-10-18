@@ -1,6 +1,6 @@
--- Actualidad, caducidad, exportación y revisión de preguntas. Se ejecuta con `pnpm db:test`; todo se deshace al final.
+-- Actualidad, caducidad, exportación, revisión y marcas de no traducible. Se ejecuta con `pnpm db:test`; todo se deshace al final.
 begin;
-select plan(17);
+select plan(19);
 
 -- Fixtures (como postgres) -------------------------------------------------------------------------
 update public.questions set status = 'rejected';
@@ -102,6 +102,14 @@ select throws_like(
 select throws_like(
   $$ select public.review_questions('[{"externalId": "nope", "verdict": "approve"}]') $$,
   '%pregunta inexistente%', 'rechaza una pregunta inexistente'
+);
+
+select is(public.mark_untranslatable(array['p-3', 'p-3', 'nope'], 'en'), 1, 'marca solo las que existen');
+select public.mark_untranslatable(array['p-3'], 'en');
+select is(
+  (select e -> 'untranslatable' from jsonb_array_elements(public.export_questions()) as e
+   where e ->> 'externalId' = 'p-3'),
+  '["en"]'::jsonb, 'marcar dos veces no duplica el idioma'
 );
 
 -- Servir: solo jugables y con el distintivo de actualidad --------------------------------------------

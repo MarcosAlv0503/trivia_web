@@ -410,6 +410,7 @@ export type Database = {
           source: string;
           status: string;
           topical: boolean;
+          untranslatable: string[];
           updated_at: string;
           is_playable: boolean | null;
         };
@@ -427,6 +428,7 @@ export type Database = {
           source: string;
           status?: string;
           topical?: boolean;
+          untranslatable?: string[];
           updated_at?: string;
         };
         Update: {
@@ -442,6 +444,7 @@ export type Database = {
           source?: string;
           status?: string;
           topical?: boolean;
+          untranslatable?: string[];
           updated_at?: string;
         };
         Relationships: [
@@ -678,6 +681,10 @@ export type Database = {
           isOneToOne: true;
           isSetofReturn: false;
         };
+      };
+      mark_untranslatable: {
+        Args: { external_ids: string[]; target_locale: string };
+        Returns: number;
       };
       notify: {
         Args: { actor: string; notification_kind: string; related_duel?: string; target: string };

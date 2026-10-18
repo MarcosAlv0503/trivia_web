@@ -12,7 +12,7 @@ Referencia permanente para las sesiones de ambos desarrolladores. Si algo de aqu
 - Online: amigos y, más adelante, emparejamiento aleatorio.
 - Multidioma desde el día uno (UI y preguntas): `es` (por defecto) y `en`.
 - Categorías iniciales: Geografía, Historia, Ciencia y Naturaleza, Arte y Literatura, Entretenimiento, Deportes, Tecnología. Son **datos en BD**, nunca un enum en código.
-- Preguntas generadas con IA fuera de este repo; la BD admite importación masiva y estado de revisión.
+- Preguntas generadas con IA mediante skills de Claude Code de este repo (`/questions-generate`, `/questions-translate`, `/questions-review`), con el plan de suscripción (sin API de pago); la BD admite importación masiva y estado de revisión.
 - Monetización futura: premium sin anuncios, cosméticos, dos monedas (Monedas jugando / Gemas de pago). **Sin cajas de botín aleatorias de pago** (regulación española): todo compra directa.
 
 ## Reglas de trabajo (obligatorias)
@@ -68,7 +68,7 @@ Supabase local con la CLI (`supabase start`, requiere Docker). Migraciones versi
 - **Fase 2 — Preguntas y "Preguntas rápidas" (HECHA, en `main`):** modelo de categorías/preguntas/traducciones; RPC segura para servir y validar; seed es/en; script de importación JSON; modo rápido en solitario y local por turnos (temporizador, puntuación, resultados); reglas en `game-core` con tests.
 - **Fase 3 — Online con amigos (HECHA, probada el 2026-10-17):** amigos (búsqueda, solicitudes, lista); duelo asíncrono contra un amigo; notificaciones in-app de turno.
 - **Fase 4 — Lista para la beta cerrada (ACTUAL).** Tareas en orden:
-  1. Contenido: preguntas de "actualidad" con caducidad; procesos automáticos de generación, traducción y revisión periódica; panel de revisión (solo admin); botón "reportar pregunta". Objetivo ≥1.500 preguntas aprobadas por idioma.
+  1. Contenido: preguntas de "actualidad" con caducidad (hecho); procesos automáticos de generación, traducción y revisión periódica (hechos); panel de revisión (solo admin); botón "reportar pregunta". Objetivo ≥1.500 preguntas aprobadas por idioma.
   2. PWA instalable + push web (turno de duelo, plazo a punto de vencer).
   3. Sesión de estilos y front + sonido y vibración + accesibilidad (icono por categoría además del color, tamaño de texto, teclado).
   4. Moderación de nombres de usuario y límites de peticiones en RPC sensibles.
@@ -93,6 +93,11 @@ Actualizar al cerrar cada sesión.
 - **Seed:** 126 preguntas (6 por categoría y dificultad: justo para 6 jugadores). Tras `pnpm db:reset` se recargan solas; tras `pnpm db:start` en una BD nueva, `pnpm db:seed`.
 - **Sesión dedicada a estilos y front:** probar más opciones estéticas sobre la base aprobada. Los tokens están en `apps/web/src/app/globals.css` y el muestrario de componentes en `/dev/ui` (solo en desarrollo).
 - **Roadmap aprobado (2026-10-17):** beta cerrada antes de la progresión; tablero después del lanzamiento público; comodines solo en solitario o con el mismo cupo en duelo; morfos y Laguna como eje de colección; push web en la Fase 4. Los textos "¿Sabías que…?" se dejan para más adelante.
+- **Contenido aprobado (2026-10-18):**
+  - Las preguntas de actualidad se mezclan en los modos normales con el distintivo "Actualidad" y caducan a los 90 días.
+  - Se aprueban solas tras la revisión automática. Una duda pasa por una segunda revisión independiente y solo si persiste va a revisión humana (`needs_human`).
+  - Idiomas: `es` y `en` por ahora.
+  - Sin API de pago: los procesos se ejecutan con Claude Code (plan Pro).
 - **Colores de categoría aprobados** (ya en la tabla `categories`): Geografía `#2ECC8F`, Historia `#D9964A`, Ciencia y Naturaleza `#2EC4E6`, Arte y Literatura `#9B7BFF`, Entretenimiento `#FF7A45`, Deportes `#F5C431`, Tecnología `#5C7CFA`.
 
 ## Decisiones
@@ -113,6 +118,7 @@ Actualizar al cerrar cada sesión.
 - **2026-10-16 — Sistema visual en tokens.** Colores, fuentes y estilo "pegatina" solo en `globals.css` (`@theme` de Tailwind v4); Fredoka (titulares) y Nunito (texto) vía `next/font`, servidas desde nuestro dominio. Componentes compartidos en `apps/web/src/components/` (presentacionales: no deciden nada del juego). Los colores de categoría vienen con los datos, no de los tokens.
 - **2026-10-16 — Preguntas solo vía RPC.** Las tablas de categorías, preguntas y partidas no tienen permisos para el cliente; todo pasa por funciones `security definer`. En `question_translations.answers` la **primera** respuesta es la correcta; cada ronda guarda un `answer_order` barajado y el cliente solo ve el orden mostrado.
 - **2026-10-16 — Modo rápido autoritativo en Postgres.** `start_quick_match` / `get_quick_match` / `serve_quick_question` / `answer_quick_question`: el reloj (`served_at`) y la puntuación se calculan en SQL, con 2 s de margen por latencia; recargar no reinicia el reloj. Las reglas (7 preguntas por jugador, 15 s) viven en la migración `quick_matches`; la fórmula de puntos, compartida con el duelo, solo en la función `answer_points`. Las preguntas se eligen primero entre las que la cuenta nunca ha visto (servidas) y luego por antigüedad (`quick_match_fresh_questions`).
+- **2026-10-18 — Procesos de contenido = skills de Claude Code + `scripts/questions.mts`.** Claude solo decide: genera, traduce y revisa. El script lee y escribe la BD con la clave secreta (`export_questions`, `import_questions`, `review_questions`, `mark_untranslatable`; solo `service_role`). Lo generado entra siempre como borrador. Los archivos de trabajo van a `.content/` (ignorada por git): **el repo es público y no puede contener preguntas de producción**. Jugable = `is_playable` (aprobada y sin caducar). Las estadísticas de revisión cuentan las respuestas por su posición original, así que la traducción conserva el orden de `wrong`.
 - **2026-10-16 — Importación de preguntas.** RPC `import_questions` (solo `service_role`, upsert por `externalId`) + `scripts/import-questions.mts` sin dependencias (Node 24 ejecuta TS). El seed de desarrollo usa el mismo camino (`pnpm db:seed`).
 - **2026-10-16 — Tests de BD con pgTAP** (`supabase/tests`, `pnpm db:test`), en un job aparte del CI que levanta solo Postgres.
 - **2026-10-16 — Amigos y duelos solo vía RPC** (`friends_and_duels`), con el mismo patrón que el modo rápido. El plazo de 48 h se aplica de forma perezosa (`expire_duels`) al consultar o jugar, sin cron. Cada jugada guarda el idioma del jugador al girar y se sirve siempre en ese idioma.
