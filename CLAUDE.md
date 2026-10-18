@@ -68,10 +68,10 @@ Supabase local con la CLI (`supabase start`, requiere Docker). Migraciones versi
 - **Fase 2 — Preguntas y "Preguntas rápidas" (HECHA, en `main`):** modelo de categorías/preguntas/traducciones; RPC segura para servir y validar; seed es/en; script de importación JSON; modo rápido en solitario y local por turnos (temporizador, puntuación, resultados); reglas en `game-core` con tests.
 - **Fase 3 — Online con amigos (HECHA, probada el 2026-10-17):** amigos (búsqueda, solicitudes, lista); duelo asíncrono contra un amigo; notificaciones in-app de turno.
 - **Fase 4 — Lista para la beta cerrada (ACTUAL).** Tareas en orden:
-  1. Contenido: preguntas de "actualidad" con caducidad (hecho); procesos automáticos de generación, traducción y revisión periódica (hechos); panel de revisión (solo admin); botón "reportar pregunta". Objetivo ≥1.500 preguntas aprobadas por idioma.
-  2. PWA instalable + push web (turno de duelo, plazo a punto de vencer).
+  1. Contenido: preguntas de "actualidad" con caducidad (hecho); procesos automáticos de generación, traducción y revisión periódica (hechos); panel de revisión (solo admin, hecho); botón "reportar pregunta" (hecho). Objetivo ≥1.500 preguntas aprobadas por idioma (pendiente: ejecutar los procesos).
+  2. PWA instalable + push web (turno de duelo, plazo a punto de vencer) (hecho; falta probar en un móvil real).
   3. Sesión de estilos y front + sonido y vibración + accesibilidad (icono por categoría además del color, tamaño de texto, teclado).
-  4. Moderación de nombres de usuario y límites de peticiones en RPC sensibles.
+  4. Moderación de nombres de usuario y límites de peticiones en RPC sensibles (hecho).
   5. Legal/RGPD: privacidad, términos, consentimiento, edad mínima.
   6. Producción: Vercel + Supabase Cloud, copias, monitorización de errores, analítica con consentimiento (retención D1/D7).
   7. Beta cerrada con 20–50 personas.
@@ -98,6 +98,7 @@ Actualizar al cerrar cada sesión.
   - Se aprueban solas tras la revisión automática. Una duda pasa por una segunda revisión independiente y solo si persiste va a revisión humana (`needs_human`).
   - Idiomas: `es` y `en` por ahora.
   - Sin API de pago: los procesos se ejecutan con Claude Code (plan Pro).
+- **Fase 4, hecho el 2026-10-18 sin revisión del usuario (textos y decisiones provisionales, pendientes de confirmar):** motivos de reporte (respuesta mal, confusa/varias válidas, errata/traducción, ofensiva); el reporte pausa el avance automático; una pregunta reportada se sigue jugando hasta su revisión; aviso de plazo con menos de 6 h; avisos solo de duelo (turno y plazo), activables en el perfil; lista inicial de términos prohibidos en nombres; límites de peticiones (README > "Moderación y límites").
 - **Colores de categoría aprobados** (ya en la tabla `categories`): Geografía `#2ECC8F`, Historia `#D9964A`, Ciencia y Naturaleza `#2EC4E6`, Arte y Literatura `#9B7BFF`, Entretenimiento `#FF7A45`, Deportes `#F5C431`, Tecnología `#5C7CFA`.
 
 ## Decisiones
@@ -123,3 +124,6 @@ Actualizar al cerrar cada sesión.
 - **2026-10-16 — Tests de BD con pgTAP** (`supabase/tests`, `pnpm db:test`), en un job aparte del CI que levanta solo Postgres.
 - **2026-10-16 — Amigos y duelos solo vía RPC** (`friends_and_duels`), con el mismo patrón que el modo rápido. El plazo de 48 h se aplica de forma perezosa (`expire_duels`) al consultar o jugar, sin cron. Cada jugada guarda el idioma del jugador al girar y se sirve siempre en ese idioma.
 - **2026-10-16 — Avisos in-app con tabla `notifications`** (RLS por usuario) publicada en Realtime; el cliente escucha sus inserciones (`NotificationToasts` en el layout) y reemite el evento de ventana `trivia:notification`. Se purgan a las 24 h: el estado real se consulta siempre con `list_duels` / `list_friends`. Descartado `realtime.messages`: depende del servicio Realtime y el CI solo arranca Postgres.
+- **2026-10-18 — Reportes y panel de revisión.** `question_reports` (uno por jugador y pregunta) solo vía RPC; los reportes abiertos priorizan la pregunta en `to-review` y cualquier veredicto los cierra (`review_questions`). Admins en `public.admins`, alta solo por SQL; las RPC `admin_*` reutilizan `review_questions` e `import_questions` (mismas validaciones). `/admin` responde 404 a quien no es admin.
+- **2026-10-18 — Push web.** Suscripciones en `push_subscriptions` (por dispositivo, máx. 10 por cuenta, se dan de baja al cerrar sesión). Envío: trigger en `notifications` → `pg_net` → Edge Function `push` (`web-push`, VAPID), con URL y secreto en el Vault; sin ellos no se envía nada. El aviso de plazo lo crea `pg_cron` cada 15 min. El texto lo pone el service worker (`/sw.js`, generado desde `messages/*.json`), sin caché offline.
+- **2026-10-18 — Límites de peticiones** con `check_rate_limit` (ventana fija por cuenta y acción, hint `rate_limited`): por trigger en las altas y dentro de las RPC de consulta (que pasan a `volatile`). Nombres prohibidos en `blocked_username_terms`, comprobados por trigger en `profiles`.
