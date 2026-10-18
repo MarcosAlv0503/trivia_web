@@ -401,31 +401,47 @@ export type Database = {
           category_id: string;
           created_at: string;
           difficulty: string;
+          expires_at: string | null;
           external_id: string;
           id: string;
+          needs_human: boolean;
+          review_note: string | null;
+          reviewed_at: string | null;
           source: string;
           status: string;
+          topical: boolean;
           updated_at: string;
+          is_playable: boolean | null;
         };
-        ComputedFields: never;
+        ComputedFields: "is_playable";
         Insert: {
           category_id: string;
           created_at?: string;
           difficulty: string;
+          expires_at?: string | null;
           external_id: string;
           id?: string;
+          needs_human?: boolean;
+          review_note?: string | null;
+          reviewed_at?: string | null;
           source: string;
           status?: string;
+          topical?: boolean;
           updated_at?: string;
         };
         Update: {
           category_id?: string;
           created_at?: string;
           difficulty?: string;
+          expires_at?: string | null;
           external_id?: string;
           id?: string;
+          needs_human?: boolean;
+          review_note?: string | null;
+          reviewed_at?: string | null;
           source?: string;
           status?: string;
+          topical?: boolean;
           updated_at?: string;
         };
         Relationships: [
@@ -567,6 +583,10 @@ export type Database = {
         Args: { choice: number; duel_id: string; question_round: number; question_slot: number };
         Returns: Json;
       };
+      answer_points: {
+        Args: { elapsed_ms: number; hit: boolean; time_limit_ms: number };
+        Returns: number;
+      };
       answer_quick_question: {
         Args: { choice: number; match_id: string; question_position: number };
         Returns: Json;
@@ -620,9 +640,19 @@ export type Database = {
         Returns: string;
       };
       expire_duels: { Args: { uid: string }; Returns: undefined };
+      export_questions: { Args: Record<PropertyKey, never>; Returns: Json };
       get_duel: { Args: { duel_id: string }; Returns: Json };
       get_quick_match: { Args: { match_id: string }; Returns: Json };
       import_questions: { Args: { items: Json }; Returns: number };
+      is_playable: {
+        Args: {
+          q: Omit<
+            Database["public"]["Tables"]["questions"]["Row"],
+            Database["public"]["Tables"]["questions"]["ComputedFields"]
+          >;
+        };
+        Returns: boolean;
+      };
       is_username_available: { Args: { candidate: string }; Returns: boolean };
       list_duels: { Args: Record<PropertyKey, never>; Returns: Json };
       list_friends: { Args: Record<PropertyKey, never>; Returns: Json };
@@ -672,6 +702,7 @@ export type Database = {
       };
       remove_friend: { Args: { other: string }; Returns: undefined };
       respond_friend_request: { Args: { accept: boolean; requester: string }; Returns: undefined };
+      review_questions: { Args: { items: Json }; Returns: number };
       search_players: { Args: { query: string }; Returns: Json };
       send_friend_request: { Args: { target: string }; Returns: string };
       serve_duel_question: { Args: { duel_id: string }; Returns: Json };

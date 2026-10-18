@@ -92,6 +92,7 @@ export function Showcase() {
           <h2 className="text-2xl font-bold">Tarjeta de pregunta</h2>
           <QuestionCard
             category={CATEGORIES[0]!}
+            badge="Actualidad"
             question="¿En qué lago vive el ajolote en estado salvaje?"
             answers={ANSWERS}
             timeLeft={0.62}

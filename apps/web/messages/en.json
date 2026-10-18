@@ -72,6 +72,7 @@
     },
     "retry": "Try again",
     "timer": "Time left",
+    "topical": "In the news",
     "round": "Round {round} of {total}",
     "correct": "Correct!",
     "wrong": "Wrong!",

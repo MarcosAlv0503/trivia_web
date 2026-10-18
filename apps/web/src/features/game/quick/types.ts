@@ -25,6 +25,7 @@ export type ServedQuestion = {
   timeLimitMs: number;
   elapsedMs: number;
   category: { id: string; name: string; color: string };
+  topical: boolean;
   prompt: string;
   answers: string[];
 };

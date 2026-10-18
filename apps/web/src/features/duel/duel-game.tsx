@@ -30,6 +30,7 @@ type ErrorKey = "notFound" | "notFriends" | "tooManyDuels" | "notEnoughQuestions
 /** Conduce el duelo: el servidor decide categoría, preguntas, puntos y turnos; aquí solo se muestra. */
 export function DuelGame({ duelId }: { duelId: string }) {
   const t = useTranslations("Duel");
+  const tGame = useTranslations("Quick");
   const router = useRouter();
   const [supabase] = useState(createClient);
   const [phase, setPhase] = useState<Phase>("loading");
@@ -215,6 +216,7 @@ export function DuelGame({ duelId }: { duelId: string }) {
         </div>
         <QuestionCard
           category={{ label: question.category.name, color: question.category.color }}
+          badge={question.topical ? tGame("topical") : undefined}
           question={question.prompt}
           answers={question.answers.map((text, i) => ({ id: String(i), text }))}
           timeLeft={timeLeftMs / question.timeLimitMs}

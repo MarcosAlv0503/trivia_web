@@ -6,6 +6,8 @@ export type Answer = { id: string; text: string };
 
 type Props = {
   category: { label: string; color: string };
+  /** Distintivo junto a la categoría (p. ej. "Actualidad"), ya traducido. */
+  badge?: string;
   question: string;
   answers: Answer[];
   /** Fracción de tiempo restante (0–1). */
@@ -22,6 +24,7 @@ type Props = {
 // Componente de presentación: no decide nada del juego, solo muestra el estado que recibe.
 export function QuestionCard({
   category,
+  badge,
   question,
   answers,
   timeLeft,
@@ -36,12 +39,19 @@ export function QuestionCard({
 
   return (
     <div className="grid gap-4 rounded-card bg-surface p-5 sticker">
-      <span
-        className="justify-self-start rounded-full border-2 border-sticker px-3 py-0.5 text-sm font-extrabold text-ink"
-        style={{ backgroundColor: category.color }}
-      >
-        {category.label}
-      </span>
+      <div className="flex flex-wrap gap-2">
+        <span
+          className="rounded-full border-2 border-sticker px-3 py-0.5 text-sm font-extrabold text-ink"
+          style={{ backgroundColor: category.color }}
+        >
+          {category.label}
+        </span>
+        {badge && (
+          <span className="rounded-full border-2 border-sticker bg-accent px-3 py-0.5 text-sm font-extrabold text-accent-ink">
+            {badge}
+          </span>
+        )}
+      </div>
 
       <div
         role="progressbar"

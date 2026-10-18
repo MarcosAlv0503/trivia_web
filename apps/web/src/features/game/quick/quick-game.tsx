@@ -209,6 +209,7 @@ export function QuickGame({ matchId }: { matchId: string }) {
 
       <QuestionCard
         category={{ label: question.category.name, color: question.category.color }}
+        badge={question.topical ? t("topical") : undefined}
         question={question.prompt}
         answers={question.answers.map((text, i) => ({ id: String(i), text }))}
         timeLeft={timeLeftMs / question.timeLimitMs}

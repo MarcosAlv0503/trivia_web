@@ -52,6 +52,7 @@ export type DuelQuestion = {
   timeLimitMs: number;
   elapsedMs: number;
   category: DuelCategory;
+  topical: boolean;
   prompt: string;
   answers: string[];
 };

@@ -90,7 +90,7 @@ select is(
 select set_config('test.q', public.serve_quick_question(current_setting('test.solo')::uuid)::text, true);
 select is(
   (select array_agg(k order by k) from jsonb_object_keys(current_setting('test.q')::jsonb) as k),
-  array['answers', 'category', 'elapsedMs', 'position', 'prompt', 'seat', 'timeLimitMs'],
+  array['answers', 'category', 'elapsedMs', 'position', 'prompt', 'seat', 'timeLimitMs', 'topical'],
   'la pregunta servida no incluye la correcta'
 );
 select is(jsonb_array_length(current_setting('test.q')::jsonb -> 'answers'), 4, 'sirve las 4 respuestas');
