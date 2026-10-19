@@ -76,10 +76,11 @@ export function QuestionCard({
         aria-valuenow={Math.round(timeLeft * 100)}
         className="h-3 overflow-hidden rounded-full border-2 border-sticker bg-bg-deep"
       >
-        {/* key: con cada pregunta nueva la barra se vuelve a montar ya llena, sin animar el relleno. */}
+        {/* key: con cada pregunta nueva la barra se vuelve a montar ya llena, sin animar el relleno.
+            La transición dura lo mismo que un tic del reloj (250 ms) y se quita al responder: se congela. */}
         <div
           key={question}
-          className="h-full bg-linear-to-r from-play to-ko transition-[width] duration-1000 ease-linear"
+          className={`h-full bg-linear-to-r from-play to-ko ${answered ? "" : "transition-[width] duration-250 ease-linear"}`}
           style={{ width: `${Math.max(0, Math.min(1, timeLeft)) * 100}%` }}
         />
       </div>

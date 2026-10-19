@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { QUICK } from "@trivia/game-core";
 import { buttonClassName } from "@/components/button";
+import { DuelIcon } from "@/components/duel-icon";
 import { LoginButtons } from "@/features/auth/login-buttons";
 import { SignOutButton } from "@/features/auth/sign-out-button";
 import { DuelList } from "@/features/duel/duel-list";
@@ -88,7 +89,10 @@ export default async function HomePage({
       </section>
 
       <section className="flex w-full flex-col gap-3 rounded-card bg-surface p-5 sticker">
-        <h2 className="text-2xl font-bold">⚔ {tDuel("title")}</h2>
+        <h2 className="flex items-center gap-2 text-2xl font-bold">
+          <DuelIcon size={30} />
+          {tDuel("title")}
+        </h2>
         <p className="font-bold text-fg-muted">
           {tDuel("summary")}
           <br />

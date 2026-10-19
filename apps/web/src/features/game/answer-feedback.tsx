@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useEffectEvent } from "react";
+import { useEffectEvent, useLayoutEffect } from "react";
 import { motion, useReducedMotion, type TargetAndTransition } from "motion/react";
 import { useTranslations } from "next-intl";
 import { speedTier } from "@trivia/game-core";
@@ -56,17 +56,30 @@ export function AnswerFeedback({ result, timedOut }: Props) {
     playSound(timedOut ? "timeout" : "wrong");
     vibrate([60, 40, 60]);
   });
-  useEffect(() => {
+  // Antes de pintar: el sonido sale a la vez que se ve el resultado.
+  useLayoutEffect(() => {
     if (result) announce();
   }, [result]);
 
   return (
     <div aria-live="polite" className="relative grid min-h-16 place-items-center">
       {result && !tier && (
+        // Misma pegatina que el acierto: cae, rebota un poco y tiembla.
         <motion.p
-          initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="font-display text-2xl font-bold text-ko"
+          className="relative z-20 rounded-full bg-ko px-5 py-1.5 font-display text-2xl font-bold text-white sticker"
+          initial={{ opacity: 0, y: reduceMotion ? 0 : -28, scale: reduceMotion ? 1 : 0.7 }}
+          animate={
+            reduceMotion
+              ? { opacity: 1 }
+              : {
+                  opacity: 1,
+                  y: [-28, 4, 0, 0, 0, 0],
+                  scale: [0.7, 1.06, 1, 1, 1, 1],
+                  x: [0, 0, 0, -8, 7, 0],
+                  rotate: [0, 0, 0, -4, 3, 0],
+                  transition: { duration: 0.6, times: [0, 0.3, 0.45, 0.6, 0.8, 1] },
+                }
+          }
         >
           {timedOut ? t("timeUp") : t("wrong")}
         </motion.p>

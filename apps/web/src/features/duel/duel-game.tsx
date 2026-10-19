@@ -11,6 +11,7 @@ import { Mascot } from "@/components/mascot";
 import { QuestionCard } from "@/components/question-card";
 import { BackLink } from "@/components/back-link";
 import { CategoryIcon } from "@/components/category-icon";
+import { DuelIcon } from "@/components/duel-icon";
 import { Wheel } from "@/components/wheel";
 import { AnswerFeedback } from "@/features/game/answer-feedback";
 import { playSound } from "@/features/game/sfx";
@@ -158,7 +159,12 @@ export function DuelGame({ duelId }: { duelId: string }) {
     return () => window.removeEventListener(NOTIFICATION_EVENT, listener);
   }, []);
 
-  const timeLeftMs = useQuestionTimer(question, phase === "question", () => void answer(null));
+  // El reloj se para al elegir (sin esperar a la respuesta del servidor).
+  const timeLeftMs = useQuestionTimer(
+    question,
+    phase === "question" && chosen === undefined,
+    () => void answer(null),
+  );
 
   // Tras ver la correcta, el jugador avanza cuando quiere ("Siguiente"); servir es idempotente.
   async function next() {
@@ -276,9 +282,7 @@ export function DuelGame({ duelId }: { duelId: string }) {
 
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-card bg-surface p-4 sticker">
         <PlayerScore name={t("you")} avatarId={duel.me.avatarId} score={duel.me.score} />
-        <span className="font-display text-2xl" aria-hidden="true">
-          ⚔
-        </span>
+        <DuelIcon size={40} />
         <PlayerScore
           name={duel.opponent.username}
           avatarId={duel.opponent.avatarId}
@@ -463,8 +467,25 @@ function DuelHeader({
         <button
           type="button"
           onClick={() => setConfirming(true)}
-          className="text-sm font-bold text-fg-muted underline"
+          className={buttonClassName("secondary", "gap-2 px-4 py-2 text-base")}
         >
+          {/* Bandera blanca. */}
+          <svg
+            viewBox="0 0 24 24"
+            width={20}
+            height={20}
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M5 21V4" fill="none" />
+            <path
+              d="M5 4.5c3-1.8 5.5 1.8 8.5 0s4.5-.5 5.5 0v8c-1-.5-2.5-1.8-5.5 0s-5.5-1.8-8.5 0z"
+              fill="var(--color-fg)"
+            />
+          </svg>
           {t("surrender")}
         </button>
       )}

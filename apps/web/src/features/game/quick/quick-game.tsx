@@ -113,7 +113,12 @@ export function QuickGame({ matchId }: { matchId: string }) {
     void start();
   }, []);
 
-  const timeLeftMs = useQuestionTimer(question, phase === "question", () => void answer(null));
+  // El reloj se para al elegir (sin esperar a la respuesta del servidor).
+  const timeLeftMs = useQuestionTimer(
+    question,
+    phase === "question" && chosen === undefined,
+    () => void answer(null),
+  );
 
   // Tras ver la correcta, el jugador avanza cuando quiere ("Siguiente"). Pulsar dos veces no rompe nada:
   // servir y cargar la partida son idempotentes.

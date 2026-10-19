@@ -2,12 +2,15 @@
 // `public.categories.id`; una categoría sin dibujo usa el genérico. Trazo en currentColor.
 
 const ICONS: Record<string, React.ReactNode> = {
-  // Globo terráqueo.
+  // La Tierra: América a la izquierda; Europa, África y Asia a la derecha.
   geography: (
     <>
       <circle cx="12" cy="12" r="9" />
-      <ellipse cx="12" cy="12" rx="4" ry="9" />
-      <path d="M3 12h18" />
+      <g fill="currentColor" stroke="none">
+        <path d="M6.1 9.4c.1-1.8 1.3-3.2 3.1-3.8l2.2-.1c.5.6.1 1.4-.6 1.7-.6.3-.4 1.1.2 1.4.1.8-.6 1.3-1.4 1.2-.7 0-1 .6-.8 1.2-1.1-.1-2.1-.7-2.7-1.6z" />
+        <path d="M9.8 12.3c1.3-.2 2.6.5 2.8 1.6.1 1-.6 1.9-1.2 2.9-.4.7-.8 1.3-1.3 1.5-.4-1.2-.4-2.4-.8-3.5-.3-1-.3-2.2.5-2.5z" />
+        <path d="M14.2 6.2c1.4-.3 2.9.4 3.6 1.6.5.9.3 1.8-.5 2.1-.7.2-.9.9-.5 1.5.8.9 1.1 2 .6 3.1-.5 1.1-1.2 1.9-1.8 2.8-.4.5-.9.3-1-.3-.2-1.1-.1-2.2-.7-3.1-.5-.7-.6-1.7-.1-2.3-.6-.7-.5-1.7.2-2.1-.6-.7-.6-2.6.2-3.3z" />
+      </g>
     </>
   ),
   // Reloj de arena.
