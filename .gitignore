@@ -35,3 +35,6 @@ Thumbs.db
 
 # consultas guardadas desde Supabase Studio (locales)
 supabase/snippets/
+
+# copias de la BD (datos personales; scripts/backup-db.mts)
+.backups/
