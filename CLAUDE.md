@@ -98,7 +98,7 @@ Actualizar al cerrar cada sesión.
   - Se aprueban solas tras la revisión automática. Una duda pasa por una segunda revisión independiente y solo si persiste va a revisión humana (`needs_human`).
   - Idiomas: `es` y `en` por ahora.
   - Sin API de pago: los procesos se ejecutan con Claude Code (plan Pro).
-- **Fase 4, aprobado el 2026-10-19:** motivos de reporte (respuesta mal, confusa/varias válidas, errata/traducción, ofensiva); una pregunta reportada se sigue jugando hasta su revisión; aviso de plazo con menos de 6 h; avisos solo de duelo (turno y plazo), activables en el perfil; límites de peticiones (README > "Moderación y límites"). Panel de revisión probado por el usuario. **Pendiente de decidir:** cómo se comparan los términos prohibidos en nombres (hoy por subcadena, bloquea p. ej. "badminton" por "admin").
+- **Fase 4, aprobado el 2026-10-19:** motivos de reporte (respuesta mal, confusa/varias válidas, errata/traducción, ofensiva); una pregunta reportada se sigue jugando hasta su revisión; aviso de plazo con menos de 6 h; avisos solo de duelo (turno y plazo), activables en el perfil; límites de peticiones (README > "Moderación y límites"). Panel de revisión probado por el usuario. Nombres prohibidos (2026-10-19): el término se busca tal cual en el nombre, sin distinguir mayúsculas y sin interpretar números como letras ("badminton" se rechaza por "admin"; "El_m1erd4s" se admite).
 - **Colores de categoría aprobados** (ya en la tabla `categories`): Geografía `#2ECC8F`, Historia `#D9964A`, Ciencia y Naturaleza `#2EC4E6`, Arte y Literatura `#9B7BFF`, Entretenimiento `#FF7A45`, Deportes `#F5C431`, Tecnología `#5C7CFA`.
 
 ## Decisiones

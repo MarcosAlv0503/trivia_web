@@ -1,6 +1,6 @@
 -- Moderación de nombres de usuario y límites de peticiones. Se ejecuta con `pnpm db:test`; todo se deshace al final.
 begin;
-select plan(12);
+select plan(13);
 
 insert into auth.users (id, email) values ('00000000-0000-0000-0000-00000000000a', 'alice@test.local');
 
@@ -8,7 +8,8 @@ insert into auth.users (id, email) values ('00000000-0000-0000-0000-00000000000a
 select ok(public.is_username_allowed('Ajolote_99'), 'un nombre normal está permitido');
 select ok(public.is_username_allowed('computadora'), 'no bloquea palabras comunes que contienen un insulto corto');
 select ok(not public.is_username_allowed('MiErDa_total'), 'bloquea sin distinguir mayúsculas');
-select ok(not public.is_username_allowed('m1_3rd4'), 'ni números que imitan letras, ni guiones bajos');
+select ok(public.is_username_allowed('El_m1erd4s'), 'la comparación es literal: admite números que imitan letras');
+select ok(not public.is_username_allowed('BadMinton'), 'y bloquea cualquier nombre que contenga el término tal cual');
 select ok(not public.is_username_allowed('el_admin'), 'ni suplantar al equipo');
 
 set local role authenticated;
