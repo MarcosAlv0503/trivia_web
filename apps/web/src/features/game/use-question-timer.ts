@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useEffectEvent, useState } from "react";
+import { playSound } from "./sfx";
 
 const TICK_MS = 250;
 
@@ -24,9 +25,14 @@ export function useQuestionTimer(
   useEffect(() => {
     if (!running || !question) return;
     const deadline = performance.now() + question.timeLimitMs - question.elapsedMs;
+    let lastSecond = Infinity;
     const id = setInterval(() => {
       const left = deadline - performance.now();
       setTick({ question, left: Math.max(0, left) });
+      // Un "tic" en cada uno de los últimos 3 segundos.
+      const second = Math.ceil(left / 1000);
+      if (second >= 1 && second <= 3 && second < lastSecond) playSound("tick");
+      lastSecond = Math.min(lastSecond, second);
       if (left <= 0) expire();
     }, TICK_MS);
     return () => clearInterval(id);

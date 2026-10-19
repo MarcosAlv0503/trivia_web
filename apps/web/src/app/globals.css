@@ -43,6 +43,15 @@
     color-scheme: dark;
   }
 
+  /* Tamaño de texto elegido en el perfil: todo está en rem, así que escala la interfaz entera. */
+  html[data-text-size="large"] {
+    font-size: 112.5%;
+  }
+
+  html[data-text-size="xlarge"] {
+    font-size: 125%;
+  }
+
   body {
     background:
       radial-gradient(

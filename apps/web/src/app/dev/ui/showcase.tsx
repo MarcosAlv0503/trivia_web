@@ -14,7 +14,7 @@ const CATEGORIES = [
   { id: "geography", label: "Geografía", color: "#2ECC8F" },
   { id: "history", label: "Historia", color: "#D9964A" },
   { id: "science", label: "Ciencia", color: "#2EC4E6" },
-  { id: "arts", label: "Arte y Lit.", color: "#9B7BFF" },
+  { id: "art-literature", label: "Arte y Lit.", color: "#9B7BFF" },
   { id: "entertainment", label: "Entreten.", color: "#FF7A45" },
   { id: "sports", label: "Deportes", color: "#F5C431" },
   { id: "technology", label: "Tecnología", color: "#5C7CFA" },

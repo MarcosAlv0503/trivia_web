@@ -9,8 +9,10 @@ import { DUEL, duelPendingRound, hoursLeft } from "@trivia/game-core";
 import { buttonClassName } from "@/components/button";
 import { Mascot } from "@/components/mascot";
 import { QuestionCard } from "@/components/question-card";
+import { CategoryIcon } from "@/components/category-icon";
 import { Wheel } from "@/components/wheel";
 import { AnswerFeedback } from "@/features/game/answer-feedback";
+import { playSound } from "@/features/game/sfx";
 import { ReportQuestion, type ReportReason } from "@/features/game/report-question";
 import { useQuestionTimer } from "@/features/game/use-question-timer";
 import {
@@ -89,6 +91,7 @@ export function DuelGame({ duelId }: { duelId: string }) {
     }
     const { categoryId } = data as unknown as { categoryId: string };
     setSpinTarget(duel.categories.findIndex((c) => c.id === categoryId));
+    playSound("spin");
   }
 
   async function answer(choice: number | null) {
@@ -160,8 +163,9 @@ export function DuelGame({ duelId }: { duelId: string }) {
   async function next() {
     const loaded = await loadDuel();
     if (!loaded) return;
-    if (loaded.nextAction === "answer") await serve();
-    else setPhase("overview");
+    if (loaded.nextAction === "answer") return serve();
+    if (loaded.result === "win") playSound("win");
+    setPhase("overview");
   }
 
   if (phase === "error") {
@@ -223,7 +227,11 @@ export function DuelGame({ duelId }: { duelId: string }) {
           </span>
         </div>
         <QuestionCard
-          category={{ label: question.category.name, color: question.category.color }}
+          category={{
+            id: question.category.id,
+            label: question.category.name,
+            color: question.category.color,
+          }}
           badge={question.topical ? tGame("topical") : undefined}
           question={question.prompt}
           answers={question.answers.map((text, i) => ({ id: String(i), text }))}
@@ -289,10 +297,11 @@ export function DuelGame({ duelId }: { duelId: string }) {
             {round ? (
               <span className="flex items-center gap-2 font-bold">
                 <span
-                  className="size-3.5 shrink-0 rounded-full border-2 border-sticker"
+                  className="grid size-7 shrink-0 place-items-center rounded-full border-2 border-sticker text-ink"
                   style={{ backgroundColor: round.category.color }}
-                  aria-hidden="true"
-                />
+                >
+                  <CategoryIcon id={round.category.id} size={16} />
+                </span>
                 {round.category.name}
               </span>
             ) : (

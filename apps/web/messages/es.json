@@ -215,5 +215,16 @@
     "disable": "Desactivar avisos",
     "unsupported": "Este navegador no admite avisos. En iPhone o iPad, añade primero la app a la pantalla de inicio (Compartir → Añadir a pantalla de inicio) y ábrela desde ahí.",
     "denied": "Has bloqueado los avisos de esta web. Para recibirlos, permítelos en los ajustes del navegador."
+  },
+  "Preferences": {
+    "title": "En este dispositivo",
+    "textSize": "Tamaño del texto",
+    "sizes": {
+      "normal": "Normal",
+      "large": "Grande",
+      "xlarge": "Muy grande"
+    },
+    "sound": "Sonidos",
+    "vibration": "Vibración"
   }
 }

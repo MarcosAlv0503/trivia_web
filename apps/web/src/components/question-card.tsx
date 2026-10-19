@@ -1,11 +1,13 @@
 "use client";
 
+import { useEffect, useEffectEvent } from "react";
 import { motion, useReducedMotion } from "motion/react";
+import { CategoryIcon } from "./category-icon";
 
 export type Answer = { id: string; text: string };
 
 type Props = {
-  category: { label: string; color: string };
+  category: { id: string; label: string; color: string };
   /** Distintivo junto a la categoría (p. ej. "Actualidad"), ya traducido. */
   badge?: string;
   question: string;
@@ -37,13 +39,26 @@ export function QuestionCard({
   // Bloqueada al elegir o al revelar la correcta (también si se agotó el tiempo sin elegir).
   const answered = selectedId !== undefined || correctId !== undefined;
 
+  // Teclado: 1, 2, 3… responden la respuesta en esa posición.
+  const onKey = useEffectEvent((e: KeyboardEvent) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const answer = answers[Number(e.key) - 1];
+    if (answer) onAnswer(answer.id);
+  });
+  useEffect(() => {
+    if (answered) return;
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [answered]);
+
   return (
     <div className="grid gap-4 rounded-card bg-surface p-5 sticker">
       <div className="flex flex-wrap gap-2">
         <span
-          className="rounded-full border-2 border-sticker px-3 py-0.5 text-sm font-extrabold text-ink"
+          className="inline-flex items-center gap-1.5 rounded-full border-2 border-sticker px-3 py-0.5 text-sm font-extrabold text-ink"
           style={{ backgroundColor: category.color }}
         >
+          <CategoryIcon id={category.id} size={16} />
           {category.label}
         </span>
         {badge && (

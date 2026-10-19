@@ -2,7 +2,9 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import { CategoryIcon } from "./category-icon";
 
+/** `id` es el de la categoría: decide su icono. */
 export type WheelSegment = { id: string; label: string; color: string };
 
 type Props = {
@@ -63,7 +65,10 @@ export function Wheel({ segments, target, onSpinEnd }: Props) {
               style={{ transform: `rotate(${center - 90}deg)` }}
             >
               {/* En la mitad izquierda se gira el texto para que no quede boca abajo. */}
-              <b className={`inline-block ${center > 180 ? "rotate-180" : ""}`}>{s.label}</b>
+              <b className={`inline-flex items-center gap-1 ${center > 180 ? "rotate-180" : ""}`}>
+                {s.label}
+                <CategoryIcon id={s.id} size={14} className="shrink-0" />
+              </b>
             </span>
           );
         })}

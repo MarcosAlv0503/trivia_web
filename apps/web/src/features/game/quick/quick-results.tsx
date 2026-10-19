@@ -1,12 +1,13 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { rankPlayers } from "@trivia/game-core";
 import { buttonClassName } from "@/components/button";
 import { Mascot } from "@/components/mascot";
+import { playSound } from "@/features/game/sfx";
 import { Avatar } from "@/features/profile/avatar";
 import { startQuickMatch, type StartState } from "./actions";
 import type { QuickMatch } from "./types";
@@ -16,6 +17,7 @@ const PLACE_STYLES = ["bg-play text-ink", "bg-surface-2", "bg-surface-2"];
 export function QuickResults({ match }: { match: QuickMatch }) {
   const t = useTranslations("Quick");
   const [state, formAction, pending] = useActionState<StartState, FormData>(startQuickMatch, {});
+  useEffect(() => playSound("win"), []);
   const ranked = rankPlayers(match.players);
   const perPlayer = match.total / match.players.length;
   const winners = ranked.filter((p) => p.place === 1);

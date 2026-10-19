@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
+import { cookies } from "next/headers";
 import { Fredoka, Nunito } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 import { NotificationToasts } from "@/features/notifications/notification-toasts";
+import { isTextSize, TEXT_SIZE_COOKIE } from "@/features/preferences/preferences";
 import { getAuthContext } from "@/features/profile/queries";
 import { BRAND_BG } from "@/features/pwa/brand-icon";
 import { RegisterServiceWorker } from "@/features/pwa/register-service-worker";
@@ -25,9 +27,18 @@ export async function generateMetadata(): Promise<Metadata> {
 export const viewport: Viewport = { themeColor: BRAND_BG };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const [locale, { claims }] = await Promise.all([getLocale(), getAuthContext()]);
+  const [locale, { claims }, cookieStore] = await Promise.all([
+    getLocale(),
+    getAuthContext(),
+    cookies(),
+  ]);
+  const textSize = cookieStore.get(TEXT_SIZE_COOKIE)?.value;
   return (
-    <html lang={locale} className={`${fredoka.variable} ${nunito.variable}`}>
+    <html
+      lang={locale}
+      className={`${fredoka.variable} ${nunito.variable}`}
+      data-text-size={isTextSize(textSize) ? textSize : "normal"}
+    >
       <body className="min-h-dvh antialiased">
         <NextIntlClientProvider>
           {children}

@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect, useEffectEvent } from "react";
 import { motion, useReducedMotion, type TargetAndTransition } from "motion/react";
 import { useTranslations } from "next-intl";
 import { speedTier } from "@trivia/game-core";
+import { playSound, vibrate } from "./sfx";
 
 type Props = {
   result: { isCorrect: boolean; points: number } | null;
@@ -48,6 +50,15 @@ export function AnswerFeedback({ result, timedOut }: Props) {
   const t = useTranslations("Quick");
   const reduceMotion = useReducedMotion();
   const tier = result?.isCorrect ? speedTier(result.points) : null;
+
+  const announce = useEffectEvent(() => {
+    if (tier) return playSound(tier === "normal" ? "correct" : tier);
+    playSound(timedOut ? "timeout" : "wrong");
+    vibrate([60, 40, 60]);
+  });
+  useEffect(() => {
+    if (result) announce();
+  }, [result]);
 
   return (
     <div aria-live="polite" className="relative grid min-h-16 place-items-center">

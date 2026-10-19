@@ -215,5 +215,16 @@
     "disable": "Turn off notifications",
     "unsupported": "This browser doesn't support notifications. On iPhone or iPad, first add the app to your Home Screen (Share → Add to Home Screen) and open it from there.",
     "denied": "You've blocked notifications from this site. To get them, allow them in your browser settings."
+  },
+  "Preferences": {
+    "title": "On this device",
+    "textSize": "Text size",
+    "sizes": {
+      "normal": "Normal",
+      "large": "Large",
+      "xlarge": "Extra large"
+    },
+    "sound": "Sounds",
+    "vibration": "Vibration"
   }
 }

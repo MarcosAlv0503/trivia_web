@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { Difficulty } from "@trivia/game-core";
 import { buttonClassName } from "@/components/button";
+import { CategoryIcon } from "@/components/category-icon";
 import { DifficultyPicker } from "@/features/game/difficulty-picker";
 import type { ReportReason } from "@/features/game/report-question";
 import { createClient } from "@/lib/supabase/client";
@@ -83,9 +84,10 @@ function ReviewCard({ item }: { item: QueueItem }) {
     <article className="grid gap-3 rounded-card bg-surface p-5 sticker">
       <div className="flex flex-wrap items-center gap-2 text-sm font-extrabold">
         <span
-          className="rounded-full border-2 border-sticker px-3 py-0.5 text-ink"
+          className="inline-flex items-center gap-1.5 rounded-full border-2 border-sticker px-3 py-0.5 text-ink"
           style={{ backgroundColor: item.category.color }}
         >
+          <CategoryIcon id={item.category.id} size={16} />
           {item.category.id}
         </span>
         <span>{tQuick(`difficulties.${item.difficulty}`)}</span>

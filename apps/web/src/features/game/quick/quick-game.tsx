@@ -215,7 +215,11 @@ export function QuickGame({ matchId }: { matchId: string }) {
       </GameHeader>
 
       <QuestionCard
-        category={{ label: question.category.name, color: question.category.color }}
+        category={{
+          id: question.category.id,
+          label: question.category.name,
+          color: question.category.color,
+        }}
         badge={question.topical ? t("topical") : undefined}
         question={question.prompt}
         answers={question.answers.map((text, i) => ({ id: String(i), text }))}
