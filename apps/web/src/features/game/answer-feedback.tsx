@@ -4,9 +4,6 @@ import { motion, useReducedMotion, type TargetAndTransition } from "motion/react
 import { useTranslations } from "next-intl";
 import { speedTier } from "@trivia/game-core";
 
-/** Tiempo que se muestra la respuesta correcta antes de avanzar solo. */
-export const REVEAL_MS = 2000;
-
 type Props = {
   result: { isCorrect: boolean; points: number } | null;
   /** Se agotó el tiempo sin elegir respuesta. */

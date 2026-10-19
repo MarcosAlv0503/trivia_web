@@ -8,7 +8,7 @@ import { phaseAfterReveal, roundOf, seatOf } from "@trivia/game-core";
 import { buttonClassName } from "@/components/button";
 import { Mascot } from "@/components/mascot";
 import { QuestionCard } from "@/components/question-card";
-import { AnswerFeedback, REVEAL_MS } from "@/features/game/answer-feedback";
+import { AnswerFeedback } from "@/features/game/answer-feedback";
 import { ReportQuestion, type ReportReason } from "@/features/game/report-question";
 import { useQuestionTimer } from "@/features/game/use-question-timer";
 import { Avatar } from "@/features/profile/avatar";
@@ -28,7 +28,6 @@ export function QuickGame({ matchId }: { matchId: string }) {
   const [question, setQuestion] = useState<ServedQuestion | null>(null);
   const [chosen, setChosen] = useState<number>();
   const [result, setResult] = useState<AnswerResult | null>(null);
-  const [reporting, setReporting] = useState(false);
   // Evita enviar dos respuestas (doble toque, o toque justo cuando se agota el tiempo).
   const answering = useRef(false);
 
@@ -111,13 +110,14 @@ export function QuickGame({ matchId }: { matchId: string }) {
     else await serve();
   });
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- el estado cambia tras la respuesta de red, no en el mismo render
     void start();
   }, []);
 
   const timeLeftMs = useQuestionTimer(question, phase === "question", () => void answer(null));
 
-  const afterReveal = useEffectEvent(async () => {
+  // Tras ver la correcta, el jugador avanza cuando quiere ("Siguiente"). Pulsar dos veces no rompe nada:
+  // servir y cargar la partida son idempotentes.
+  async function next() {
     if (!match || !result) return;
     const next = phaseAfterReveal(result.finished, match.players.length);
     if (next === "results") {
@@ -125,12 +125,7 @@ export function QuickGame({ matchId }: { matchId: string }) {
       if (await loadMatch()) setPhase("results");
     } else if (next === "handoff") setPhase("handoff");
     else await serve();
-  });
-  useEffect(() => {
-    if (phase !== "reveal" || reporting) return;
-    const id = setTimeout(() => void afterReveal(), REVEAL_MS);
-    return () => clearTimeout(id);
-  }, [phase, reporting]);
+  }
 
   if (phase === "error") {
     return (
@@ -233,7 +228,17 @@ export function QuickGame({ matchId }: { matchId: string }) {
 
       <AnswerFeedback result={result} timedOut={chosen === undefined} />
       {phase === "reveal" && (
-        <ReportQuestion key={question.position} onReport={report} onOpenChange={setReporting} />
+        <>
+          <button
+            type="button"
+            autoFocus
+            onClick={() => void next()}
+            className={buttonClassName("play", "self-center")}
+          >
+            {t("next")}
+          </button>
+          <ReportQuestion key={question.position} onReport={report} />
+        </>
       )}
     </main>
   );

@@ -9,24 +9,16 @@ export type ReportReason = (typeof REPORT_REASONS)[number];
 type Props = {
   /** Envía el reporte al servidor; devuelve si se guardó. */
   onReport: (reason: ReportReason) => Promise<boolean>;
-  /** Mientras se eligen motivos, la partida no avanza sola. */
-  onOpenChange: (open: boolean) => void;
 };
 
 /** Botón "Reportar pregunta" que se muestra al revelar la respuesta. */
-export function ReportQuestion({ onReport, onOpenChange }: Props) {
+export function ReportQuestion({ onReport }: Props) {
   const t = useTranslations("Report");
   const [state, setState] = useState<"idle" | "open" | "sending" | "sent" | "error">("idle");
-
-  function open(next: boolean) {
-    setState(next ? "open" : "idle");
-    onOpenChange(next);
-  }
 
   async function send(reason: ReportReason) {
     setState("sending");
     setState((await onReport(reason)) ? "sent" : "error");
-    onOpenChange(false);
   }
 
   if (state === "sent" || state === "error") {
@@ -41,7 +33,7 @@ export function ReportQuestion({ onReport, onOpenChange }: Props) {
     return (
       <button
         type="button"
-        onClick={() => open(true)}
+        onClick={() => setState("open")}
         className="self-center text-sm font-bold text-fg-muted underline"
       >
         ⚑ {t("button")}
@@ -67,7 +59,7 @@ export function ReportQuestion({ onReport, onOpenChange }: Props) {
       ))}
       <button
         type="button"
-        onClick={() => open(false)}
+        onClick={() => setState("idle")}
         className="justify-self-center pt-1 text-sm font-bold text-fg-muted underline"
       >
         {t("cancel")}

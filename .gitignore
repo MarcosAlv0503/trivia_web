@@ -32,3 +32,6 @@ Thumbs.db
 
 # contenido de trabajo de los procesos de preguntas (lleva respuestas: el repo es público)
 .content/
+
+# consultas guardadas desde Supabase Studio (locales)
+supabase/snippets/

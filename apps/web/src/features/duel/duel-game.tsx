@@ -10,7 +10,7 @@ import { buttonClassName } from "@/components/button";
 import { Mascot } from "@/components/mascot";
 import { QuestionCard } from "@/components/question-card";
 import { Wheel } from "@/components/wheel";
-import { AnswerFeedback, REVEAL_MS } from "@/features/game/answer-feedback";
+import { AnswerFeedback } from "@/features/game/answer-feedback";
 import { ReportQuestion, type ReportReason } from "@/features/game/report-question";
 import { useQuestionTimer } from "@/features/game/use-question-timer";
 import {
@@ -43,7 +43,6 @@ export function DuelGame({ duelId }: { duelId: string }) {
   const [question, setQuestion] = useState<DuelQuestion | null>(null);
   const [chosen, setChosen] = useState<number>();
   const [result, setResult] = useState<DuelAnswerResult | null>(null);
-  const [reporting, setReporting] = useState(false);
   const [busy, setBusy] = useState(false);
   const answering = useRef(false);
 
@@ -157,17 +156,13 @@ export function DuelGame({ duelId }: { duelId: string }) {
 
   const timeLeftMs = useQuestionTimer(question, phase === "question", () => void answer(null));
 
-  const afterReveal = useEffectEvent(async () => {
+  // Tras ver la correcta, el jugador avanza cuando quiere ("Siguiente"); servir es idempotente.
+  async function next() {
     const loaded = await loadDuel();
     if (!loaded) return;
     if (loaded.nextAction === "answer") await serve();
     else setPhase("overview");
-  });
-  useEffect(() => {
-    if (phase !== "reveal" || reporting) return;
-    const id = setTimeout(() => void afterReveal(), REVEAL_MS);
-    return () => clearTimeout(id);
-  }, [phase, reporting]);
+  }
 
   if (phase === "error") {
     return (
@@ -240,11 +235,17 @@ export function DuelGame({ duelId }: { duelId: string }) {
         />
         <AnswerFeedback result={result} timedOut={chosen === undefined} />
         {phase === "reveal" && (
-          <ReportQuestion
-            key={`${question.round}-${question.slot}`}
-            onReport={report}
-            onOpenChange={setReporting}
-          />
+          <>
+            <button
+              type="button"
+              autoFocus
+              onClick={() => void next()}
+              className={buttonClassName("play", "self-center")}
+            >
+              {tGame("next")}
+            </button>
+            <ReportQuestion key={`${question.round}-${question.slot}`} onReport={report} />
+          </>
         )}
       </main>
     );

@@ -93,7 +93,8 @@
     "home": "Inicio",
     "exit": "Salir",
     "exitConfirm": "¿Salir de la partida? Perderás el progreso.",
-    "keepPlaying": "Seguir jugando"
+    "keepPlaying": "Seguir jugando",
+    "next": "Siguiente"
   },
   "Friends": {
     "title": "Amigos",
