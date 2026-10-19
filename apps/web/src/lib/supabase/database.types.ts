@@ -860,6 +860,17 @@ export type Database = {
       };
       require_admin: { Args: Record<PropertyKey, never>; Returns: undefined };
       respond_friend_request: { Args: { accept: boolean; requester: string }; Returns: undefined };
+      retention_stats: {
+        Args: { days?: number };
+        Returns: {
+          d1: number;
+          d1_pct: number;
+          d7: number;
+          d7_pct: number;
+          signup_day: string;
+          signups: number;
+        }[];
+      };
       review_questions: { Args: { items: Json }; Returns: number };
       save_push_subscription: {
         Args: { sub_auth: string; sub_endpoint: string; sub_p256dh: string };
