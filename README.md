@@ -2,7 +2,7 @@
 
 Juego de trivia web. Monorepo pnpm: `apps/web` (Next.js), `packages/game-core` (reglas de juego en TS puro) y `supabase/` (base de datos, migraciones).
 
-Lee [CLAUDE.md](CLAUDE.md) antes de contribuir (reglas, arquitectura y flujo Git). Especificación completa en [docs/vision.md](docs/vision.md).
+Lee [CLAUDE.md](CLAUDE.md) antes de contribuir (reglas, arquitectura y flujo Git). Especificación completa en [docs/vision.md](docs/vision.md). Montar y mantener producción: [docs/produccion.md](docs/produccion.md).
 
 ## Requisitos
 
@@ -46,7 +46,7 @@ Sin credenciales la web arranca, pero los botones de login fallarán. Basta con 
 4. Reinicia Supabase: `pnpm db:stop && pnpm db:start`.
 5. Abre la web en **http://localhost:3000** (no `127.0.0.1`: las cookies de sesión dependen del host).
 
-Para producción se añadirá en ambos proveedores la URL de callback de Supabase Cloud (`https://<ref>.supabase.co/auth/v1/callback`).
+Para producción: [docs/produccion.md](docs/produccion.md) > "Login".
 
 ## Scripts
 
@@ -59,6 +59,7 @@ Para producción se añadirá en ambos proveedores la URL de callback de Supabas
 | `pnpm db:seed`                                              | Importa `supabase/seed/questions.json` en local |
 | `pnpm db:test`                                              | Tests pgTAP de RLS y RPC (`supabase/tests`)     |
 | `pnpm db:types`                                             | Regenera los tipos TS desde la BD local         |
+| `pnpm db:backup`                                            | Copia de la BD de producción en `.backups/`     |
 
 ## Migraciones
 
@@ -124,7 +125,7 @@ Configuración en local (una vez; `pnpm db:reset` borra el paso 3):
 
 4. Sirve la función: `pnpm exec supabase functions serve --env-file supabase/functions/.env` (déjalo abierto).
 
-En producción: `supabase functions deploy push`, las variables del paso 2 con `supabase secrets set`, y en el Vault la URL pública (`https://<proyecto>.supabase.co/functions/v1/push`).
+En producción: [docs/produccion.md](docs/produccion.md) > "Avisos push".
 
 ## Moderación y límites
 

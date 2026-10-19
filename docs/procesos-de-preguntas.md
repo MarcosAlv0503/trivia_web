@@ -105,7 +105,7 @@ Así también puedes programarlo con el Programador de tareas de Windows, en lug
 
 ## 4. Que se ejecuten solos (tareas programadas)
 
-Se usan las **tareas locales** de la app **Claude Code Desktop**. Se ejecutan en tu ordenador, con acceso a la BD local. Las rutinas en la nube no ven tu BD local; se usarán cuando exista producción (apartado 7).
+Se usan las **tareas locales** de la app **Claude Code Desktop**. Se ejecutan en tu ordenador, contra la BD local o contra producción según el apartado 7.
 
 ### Crear cada tarea
 
@@ -187,7 +187,7 @@ SUPABASE_URL=https://<proyecto>.supabase.co
 SUPABASE_SECRET_KEY=<clave secreta>   # nunca en el repo, nunca en el cliente
 ```
 
-Con ellas definidas, **todo** lo que hagan los procesos va a ese proyecto. Cuando se monte producción (tarea 6 de la Fase 4) se decidirá dónde viven estas variables. Lo previsto es usar rutinas en la nube, con la clave como secreto de la rutina, para no depender de tu ordenador. Este documento se actualizará entonces.
+Con ellas definidas, **todo** lo que hagan los procesos va a ese proyecto (con `--local`, a la BD local). Con producción montada, el contenido vive allí: las variables van en el bloque `env` de `.claude/settings.local.json` (local e ignorado por git), así las usan las tareas programadas y cualquier sesión de Claude Code en esta carpeta. Pasos: [produccion.md](produccion.md) > "Después del primer despliegue".
 
 ---
 
