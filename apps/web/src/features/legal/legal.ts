@@ -2,7 +2,7 @@
 // Al cambiar los términos o la privacidad de forma relevante: subir `version` y `updated` (se guarda la versión aceptada).
 export const LEGAL = {
   version: 1,
-  updated: "2026-10-19",
+  updated: "2026-10-20",
   minAge: 14,
   // shortcut: provisionales, rellenar antes de la beta (CLAUDE.md > Estado y pendientes).
   controller: "[NOMBRE DEL RESPONSABLE]",

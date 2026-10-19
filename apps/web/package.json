@@ -11,6 +11,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@sentry/nextjs": "^11.8.0",
     "@supabase/ssr": "^0.12",
     "@supabase/supabase-js": "^2",
     "@trivia/game-core": "workspace:*",

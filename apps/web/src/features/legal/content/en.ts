@@ -22,7 +22,7 @@ export const privacy: LegalDocument = {
           "Guests: the name and avatar of the players you add to a local match on your device.",
           "Question reports you send.",
           "Notifications: in-app notifications (deleted after 24 hours) and, only if you turn on push notifications, your browser's subscription to send them.",
-          "Technical data: usage counters to prevent abuse and our providers' technical logs, which may include your IP address.",
+          "Technical data: usage counters to prevent abuse, error reports (what failed, on which screen and with which browser and system) and our providers' technical logs, which may include your IP address.",
         ],
       ],
     },
@@ -32,6 +32,7 @@ export const privacy: LegalDocument = {
         [
           "To provide the service (your account, matches, friends, duels and their notifications): this is necessary to perform the terms you accept when you sign up.",
           "To keep the game safe and fair (usage limits, username moderation, reports): our legitimate interest in preventing abuse.",
+          "To find and fix errors (error reports) and to know whether people enjoy the game (we count, without identifying anyone, how many players come back to play days after signing up, using the game activity we already store): our legitimate interest in improving the game.",
           "Push notifications: only if you turn them on. You can turn them off in your profile at any time.",
         ],
         "We do not sell your data, we do not show ads and we do not use analytics tools. If we ever add them, we will ask for your permission first.",
@@ -41,14 +42,14 @@ export const privacy: LegalDocument = {
       heading: "Who else can see it",
       body: [
         "Other players see your username and avatar (when they search for you, in their friends list and in duels), and the result of the duels you play together.",
-        "To run the game we use providers that process data on our behalf: Supabase (database and sign-in), Vercel (web hosting) and your browser's notification services (Google, Apple or Mozilla). Google and Discord process your sign-in data under their own policies.",
+        "To run the game we use providers that process data on our behalf: Supabase (database and sign-in), Vercel (web hosting), Sentry (error reports, on EU servers) and your browser's notification services (Google, Apple or Mozilla). Google and Discord process your sign-in data under their own policies.",
         "If a provider processes data outside the European Economic Area, it does so with the safeguards required by law, such as the European Commission's standard contractual clauses or the EU-U.S. Data Privacy Framework.",
       ],
     },
     {
       heading: "How long we keep it",
       body: [
-        "For as long as you have an account. When you delete it from your profile, your profile and all your game data are erased immediately. In other players' finished duels, your place is left empty. Our providers' backups are overwritten after a limited time.",
+        "For as long as you have an account. When you delete it from your profile, your profile and all your game data are erased immediately. In other players' finished duels, your place is left empty. Backups are deleted after 30 days at most.",
       ],
     },
     {

@@ -22,7 +22,7 @@ export const privacy: LegalDocument = {
           "Invitados: el nombre y el avatar de los jugadores que añades en una partida local en tu dispositivo.",
           "Reportes de preguntas que envíes.",
           "Avisos: los avisos dentro de la app (se borran a las 24 horas) y, solo si activas los avisos push, la suscripción de tu navegador para enviártelos.",
-          "Datos técnicos: contadores de uso para evitar abusos y los registros técnicos de nuestros proveedores, que pueden incluir tu dirección IP.",
+          "Datos técnicos: contadores de uso para evitar abusos, informes de errores (qué falló, en qué pantalla y con qué navegador y sistema) y los registros técnicos de nuestros proveedores, que pueden incluir tu dirección IP.",
         ],
       ],
     },
@@ -32,6 +32,7 @@ export const privacy: LegalDocument = {
         [
           "Para prestarte el servicio (tu cuenta, las partidas, los amigos, los duelos y sus avisos): es necesario para cumplir los términos que aceptas al registrarte.",
           "Para mantener el juego seguro y justo (límites de uso, moderación de nombres, reportes): por nuestro interés legítimo en evitar abusos.",
+          "Para detectar y corregir errores (informes de errores) y saber si el juego gusta (contamos, sin identificar a nadie, cuántos jugadores vuelven a jugar días después de registrarse, a partir de la actividad de juego que ya guardamos): por nuestro interés legítimo en mejorar el juego.",
           "Avisos push: solo si los activas. Puedes desactivarlos en tu perfil cuando quieras.",
         ],
         "No vendemos tus datos, no mostramos publicidad y no usamos herramientas de analítica. Si algún día las añadimos, te pediremos permiso antes.",
@@ -41,14 +42,14 @@ export const privacy: LegalDocument = {
       heading: "Quién más puede verlos",
       body: [
         "Otros jugadores ven tu nombre de usuario y tu avatar (al buscarte, en sus amigos y en los duelos), y el resultado de los duelos que jugáis juntos.",
-        "Para funcionar usamos proveedores que tratan los datos por encargo nuestro: Supabase (base de datos y acceso), Vercel (alojamiento web) y los servicios de avisos de tu navegador (Google, Apple o Mozilla). Google y Discord tratan tus datos de acceso según sus propias políticas.",
+        "Para funcionar usamos proveedores que tratan los datos por encargo nuestro: Supabase (base de datos y acceso), Vercel (alojamiento web), Sentry (informes de errores, en servidores de la UE) y los servicios de avisos de tu navegador (Google, Apple o Mozilla). Google y Discord tratan tus datos de acceso según sus propias políticas.",
         "Si algún proveedor trata datos fuera del Espacio Económico Europeo, lo hace con las garantías que exige la ley, como las cláusulas contractuales tipo de la Comisión Europea o el Marco de Privacidad de Datos UE-EE. UU.",
       ],
     },
     {
       heading: "Cuánto tiempo los guardamos",
       body: [
-        "Mientras tengas la cuenta. Al borrarla desde tu perfil se eliminan al momento tu perfil y todos tus datos de juego. En los duelos ya terminados de otros jugadores, tu lugar queda vacío. Las copias de seguridad de nuestros proveedores se sobrescriben pasado un tiempo limitado.",
+        "Mientras tengas la cuenta. Al borrarla desde tu perfil se eliminan al momento tu perfil y todos tus datos de juego. En los duelos ya terminados de otros jugadores, tu lugar queda vacío. Las copias de seguridad se borran como máximo a los 30 días.",
       ],
     },
     {
