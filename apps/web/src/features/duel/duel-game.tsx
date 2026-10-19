@@ -11,7 +11,6 @@ import { Mascot } from "@/components/mascot";
 import { QuestionCard } from "@/components/question-card";
 import { BackLink } from "@/components/back-link";
 import { CategoryIcon } from "@/components/category-icon";
-import { DuelIcon } from "@/components/duel-icon";
 import { Wheel } from "@/components/wheel";
 import { AnswerFeedback } from "@/features/game/answer-feedback";
 import { playSound } from "@/features/game/sfx";
@@ -25,6 +24,7 @@ import { Avatar } from "@/features/profile/avatar";
 import { createClient } from "@/lib/supabase/client";
 import { startDuel } from "./start-duel";
 import type { Duel, DuelAnswerResult, DuelQuestion } from "./types";
+import { DuelIcon, WhiteFlagIcon } from "@/components/icons";
 
 // Pausa para ver la categoría que ha salido antes de la primera pregunta.
 const AFTER_SPIN_MS = 900;
@@ -243,6 +243,7 @@ export function DuelGame({ duelId }: { duelId: string }) {
           question={question.prompt}
           answers={question.answers.map((text, i) => ({ id: String(i), text }))}
           timeLeft={timeLeftMs / question.timeLimitMs}
+          timeLimitMs={question.timeLimitMs}
           selectedId={chosen === undefined ? undefined : String(chosen)}
           correctId={result ? String(result.correctIndex) : undefined}
           onAnswer={(id) => void answer(Number(id))}
@@ -469,23 +470,7 @@ function DuelHeader({
           onClick={() => setConfirming(true)}
           className={buttonClassName("secondary", "gap-2 px-4 py-2 text-base")}
         >
-          {/* Bandera blanca. */}
-          <svg
-            viewBox="0 0 24 24"
-            width={20}
-            height={20}
-            stroke="currentColor"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M5 21V4" fill="none" />
-            <path
-              d="M5 4.5c3-1.8 5.5 1.8 8.5 0s4.5-.5 5.5 0v8c-1-.5-2.5-1.8-5.5 0s-5.5-1.8-8.5 0z"
-              fill="var(--color-fg)"
-            />
-          </svg>
+          <WhiteFlagIcon size={20} />
           {t("surrender")}
         </button>
       )}

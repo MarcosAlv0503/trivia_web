@@ -9,6 +9,7 @@ import { CategoryIcon } from "@/components/category-icon";
 import { DifficultyPicker } from "@/features/game/difficulty-picker";
 import type { ReportReason } from "@/features/game/report-question";
 import { createClient } from "@/lib/supabase/client";
+import { CheckIcon, FlagIcon } from "@/components/icons";
 
 type Translation = { prompt: string; correct: string; wrong: string[] };
 
@@ -109,7 +110,8 @@ function ReviewCard({ item }: { item: QueueItem }) {
         <ul className="text-sm font-bold text-ko">
           {item.reports.map((r) => (
             <li key={`${r.reason}-${r.locale}`}>
-              ⚑ {tReport(`reasons.${r.reason}`)} ({r.locale}) ×{r.count}
+              <FlagIcon size={14} className="mr-1.5 inline" />
+              {tReport(`reasons.${r.reason}`)} ({r.locale}) ×{r.count}
             </li>
           ))}
         </ul>
@@ -163,7 +165,10 @@ function ReviewCard({ item }: { item: QueueItem }) {
               {tr.prompt}
             </p>
             <ul className="flex flex-wrap gap-1.5 text-sm font-bold">
-              <li className="rounded-xl bg-ok px-3 py-1 text-ink">✓ {tr.correct}</li>
+              <li className="inline-flex items-center gap-1.5 rounded-xl bg-ok px-3 py-1 text-ink">
+                <CheckIcon size={14} />
+                {tr.correct}
+              </li>
               {tr.wrong.map((answer) => (
                 <li key={answer} className="rounded-xl bg-surface-2 px-3 py-1">
                   {answer}

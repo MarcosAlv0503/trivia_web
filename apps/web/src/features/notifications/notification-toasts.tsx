@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
+import { CloseIcon } from "@/components/icons";
 
 /** Evento de ventana que reemite cada aviso, para que las pantallas abiertas (p. ej. un duelo) se actualicen. */
 export const NOTIFICATION_EVENT = "trivia:notification";
@@ -83,7 +84,7 @@ export function NotificationToasts({ userId }: { userId: string }) {
               aria-label={t("close")}
               className="grid size-10 shrink-0 place-items-center rounded-full font-bold"
             >
-              ✕
+              <CloseIcon size={18} />
             </button>
           </motion.div>
         ))}

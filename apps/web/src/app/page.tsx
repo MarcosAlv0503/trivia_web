@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { QUICK } from "@trivia/game-core";
 import { buttonClassName } from "@/components/button";
-import { DuelIcon } from "@/components/duel-icon";
 import { LoginButtons } from "@/features/auth/login-buttons";
 import { SignOutButton } from "@/features/auth/sign-out-button";
 import { DuelList } from "@/features/duel/duel-list";
@@ -12,6 +11,7 @@ import type { FriendLists } from "@/features/friends/types";
 import { HomeIntro } from "@/features/home/home-intro";
 import { Avatar } from "@/features/profile/avatar";
 import { getAuthContext, getOwnProfile } from "@/features/profile/queries";
+import { DuelIcon, FriendsIcon, QuickIcon } from "@/components/icons";
 
 export default async function HomePage({
   searchParams,
@@ -54,7 +54,8 @@ export default async function HomePage({
           href="/friends"
           className="flex items-center gap-2 rounded-full bg-surface px-4 py-2 font-display font-bold sticker"
         >
-          👥 {t("friends")}
+          <FriendsIcon size={20} />
+          {t("friends")}
           {incoming > 0 && (
             <span className="grid min-w-6 place-items-center rounded-full bg-accent px-1.5 text-sm text-accent-ink">
               {incoming}
@@ -74,7 +75,10 @@ export default async function HomePage({
 
       {/* Una tarjeta por modo de juego. */}
       <section className="flex w-full flex-col gap-3 rounded-card bg-surface p-5 sticker">
-        <h2 className="text-2xl font-bold">⚡ {tQuick("title")}</h2>
+        <h2 className="flex items-center gap-2 text-2xl font-bold">
+          <QuickIcon size={30} />
+          {tQuick("title")}
+        </h2>
         <p className="font-bold text-fg-muted">
           {tQuick("summary", {
             questions: QUICK.questionsPerPlayer,

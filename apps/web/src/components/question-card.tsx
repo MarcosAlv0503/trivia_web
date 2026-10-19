@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useEffectEvent } from "react";
+import { useEffect, useEffectEvent, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { CategoryIcon } from "./category-icon";
 
@@ -14,6 +14,8 @@ type Props = {
   answers: Answer[];
   /** Fracción de tiempo restante (0–1). */
   timeLeft: number;
+  /** Tiempo total de la pregunta: la barra se vacía sola, de forma continua, durante lo que queda. */
+  timeLimitMs: number;
   /** Respuesta elegida por el jugador, si ya ha contestado. */
   selectedId?: string;
   /** Respuesta correcta: solo se conoce cuando el servidor la revela tras contestar. */
@@ -30,6 +32,7 @@ export function QuestionCard({
   question,
   answers,
   timeLeft,
+  timeLimitMs,
   selectedId,
   correctId,
   onAnswer,
@@ -76,13 +79,8 @@ export function QuestionCard({
         aria-valuenow={Math.round(timeLeft * 100)}
         className="h-3 overflow-hidden rounded-full border-2 border-sticker bg-bg-deep"
       >
-        {/* key: con cada pregunta nueva la barra se vuelve a montar ya llena, sin animar el relleno.
-            La transición dura lo mismo que un tic del reloj (250 ms) y se quita al responder: se congela. */}
-        <div
-          key={question}
-          className={`h-full bg-linear-to-r from-play to-ko ${answered ? "" : "transition-[width] duration-250 ease-linear"}`}
-          style={{ width: `${Math.max(0, Math.min(1, timeLeft)) * 100}%` }}
-        />
+        {/* key: cada pregunta nueva empieza su propia animación desde lo que le queda. */}
+        <TimerFill key={question} start={timeLeft} timeLimitMs={timeLimitMs} frozen={answered} />
       </div>
 
       <p className="font-display text-xl font-bold">{question}</p>
@@ -109,5 +107,31 @@ export function QuestionCard({
         })}
       </div>
     </div>
+  );
+}
+
+/**
+ * Relleno de la barra de tiempo: una animación CSS continua desde lo que quedaba al montarse hasta 0, sincronizada
+ * con el reloj real (sin saltos ni retraso); al responder se pausa y queda congelada.
+ */
+function TimerFill({
+  start,
+  timeLimitMs,
+  frozen,
+}: {
+  start: number;
+  timeLimitMs: number;
+  frozen: boolean;
+}) {
+  const [from] = useState(() => Math.max(0, Math.min(1, start)));
+  return (
+    <div
+      className="h-full bg-linear-to-r from-play to-ko"
+      style={{
+        width: `${from * 100}%`,
+        animation: `timer-drain ${from * timeLimitMs}ms linear forwards`,
+        animationPlayState: frozen ? "paused" : "running",
+      }}
+    />
   );
 }

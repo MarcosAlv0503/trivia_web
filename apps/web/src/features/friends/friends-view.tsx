@@ -10,6 +10,7 @@ import { DifficultyPicker, SegmentedPicker } from "@/features/game/difficulty-pi
 import { Avatar } from "@/features/profile/avatar";
 import { createClient } from "@/lib/supabase/client";
 import type { FriendLists, Player, SearchResult } from "./types";
+import { CloseIcon } from "@/components/icons";
 
 const SEARCH_DELAY_MS = 300;
 
@@ -228,7 +229,7 @@ function FriendRow({
               aria-label={t("remove")}
               className={buttonClassName("secondary", "px-3 py-2 text-base")}
             >
-              ✕
+              <CloseIcon size={18} />
             </button>
           </div>
         )}

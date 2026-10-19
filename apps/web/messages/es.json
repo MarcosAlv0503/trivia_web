@@ -213,7 +213,7 @@
     "description": "Te avisamos en este dispositivo cuando te toque en un duelo y cuando se esté acabando el plazo de tu turno.",
     "enable": "Activar avisos",
     "disable": "Desactivar avisos",
-    "unsupported": "Este navegador no admite avisos. En iPhone o iPad, añade primero la app a la pantalla de inicio (Compartir → Añadir a pantalla de inicio) y ábrela desde ahí.",
+    "unsupported": "Este navegador no admite avisos. En iPhone o iPad, añade primero la app a la pantalla de inicio (Compartir y luego «Añadir a pantalla de inicio») y ábrela desde ahí.",
     "denied": "Has bloqueado los avisos de esta web. Para recibirlos, permítelos en los ajustes del navegador."
   },
   "Preferences": {

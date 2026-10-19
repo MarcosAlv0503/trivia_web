@@ -5,6 +5,7 @@ import { motion, useReducedMotion, type TargetAndTransition } from "motion/react
 import { useTranslations } from "next-intl";
 import { speedTier } from "@trivia/game-core";
 import { playSound, vibrate } from "./sfx";
+import { QuickIcon, SparkleIcon, StarIcon } from "@/components/icons";
 
 type Props = {
   result: { isCorrect: boolean; points: number } | null;
@@ -64,7 +65,7 @@ export function AnswerFeedback({ result, timedOut }: Props) {
   return (
     <div aria-live="polite" className="relative grid min-h-16 place-items-center">
       {result && !tier && (
-        // Misma pegatina que el acierto: cae, rebota un poco y tiembla.
+        // Misma pegatina que el acierto: cae, rebota y se asienta como un sello (sin desvanecerse).
         <motion.p
           className="relative z-20 rounded-full bg-ko px-5 py-1.5 font-display text-2xl font-bold text-white sticker"
           initial={{ opacity: 0, y: reduceMotion ? 0 : -28, scale: reduceMotion ? 1 : 0.7 }}
@@ -72,12 +73,11 @@ export function AnswerFeedback({ result, timedOut }: Props) {
             reduceMotion
               ? { opacity: 1 }
               : {
-                  opacity: 1,
-                  y: [-28, 4, 0, 0, 0, 0],
-                  scale: [0.7, 1.06, 1, 1, 1, 1],
-                  x: [0, 0, 0, -8, 7, 0],
-                  rotate: [0, 0, 0, -4, 3, 0],
-                  transition: { duration: 0.6, times: [0, 0.3, 0.45, 0.6, 0.8, 1] },
+                  opacity: [0, 1, 1, 1],
+                  y: [-28, 4, 0, 0],
+                  scale: [0.7, 1.08, 0.95, 1],
+                  rotate: [0, -3, 2, 0],
+                  transition: { duration: 0.45, times: [0, 0.35, 0.65, 1], ease: "easeOut" },
                 }
           }
         >
@@ -98,13 +98,13 @@ export function AnswerFeedback({ result, timedOut }: Props) {
             />
           )}
           {!reduceMotion && tier === "fast" && (
-            <Burst count={8} distance={70} symbols={["✦"]} colors={["var(--color-play)"]} />
+            <Burst count={8} distance={70} shapes={[SparkleIcon]} colors={["var(--color-play)"]} />
           )}
           {!reduceMotion && tier === "veryFast" && (
             <Burst
               count={14}
               distance={120}
-              symbols={["★", "✦"]}
+              shapes={[StarIcon, SparkleIcon]}
               colors={["var(--color-accent)", "var(--color-play)", "var(--color-ok)"]}
             />
           )}
@@ -115,11 +115,13 @@ export function AnswerFeedback({ result, timedOut }: Props) {
           >
             {tier !== "normal" && (
               <motion.span
+                className="flex"
                 aria-hidden="true"
                 animate={reduceMotion ? undefined : { rotate: [0, -15, 15, 0] }}
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
-                {tier === "veryFast" ? "⚡⚡" : "⚡"}
+                <QuickIcon size={26} />
+                {tier === "veryFast" && <QuickIcon size={26} className="-ml-2.5" />}
               </motion.span>
             )}
             {t("correct")} {t("points", { points: result!.points })}
@@ -134,12 +136,12 @@ export function AnswerFeedback({ result, timedOut }: Props) {
 function Burst({
   count,
   distance,
-  symbols,
+  shapes,
   colors,
 }: {
   count: number;
   distance: number;
-  symbols: string[];
+  shapes: ((props: { size?: number }) => React.ReactNode)[];
   colors: string[];
 }) {
   return (
@@ -151,7 +153,7 @@ function Burst({
         return (
           <motion.span
             key={i}
-            className="absolute top-1/2 left-1/2 -mt-3 -ml-2 text-xl leading-none"
+            className="absolute top-1/2 left-1/2 -mt-2.5 -ml-2.5"
             style={{ color: colors[i % colors.length] }}
             initial={{ x: 0, y: 0, scale: 0.4, opacity: 1 }}
             animate={{
@@ -163,7 +165,7 @@ function Burst({
             }}
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
           >
-            {symbols[i % symbols.length]}
+            {shapes[i % shapes.length]!({ size: 20 })}
           </motion.span>
         );
       })}

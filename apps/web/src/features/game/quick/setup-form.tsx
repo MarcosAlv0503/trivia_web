@@ -8,6 +8,7 @@ import { DifficultyPicker } from "@/features/game/difficulty-picker";
 import { Avatar } from "@/features/profile/avatar";
 import { AvatarPicker } from "@/features/profile/avatar-picker";
 import { startQuickMatch, type StartState } from "./actions";
+import { CloseIcon } from "@/components/icons";
 
 type Guest = { name: string; avatarId: string };
 
@@ -58,7 +59,7 @@ export function SetupForm({ host, recentGuests, avatarIds }: Props) {
               aria-label={t("remove", { name: guest.name })}
               className="ml-auto grid size-9 place-items-center rounded-full bg-surface-2 text-lg font-bold"
             >
-              ✕
+              <CloseIcon size={18} />
             </button>
           </PlayerRow>
         ))}

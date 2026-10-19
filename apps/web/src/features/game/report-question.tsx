@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { FlagIcon } from "@/components/icons";
 
 export const REPORT_REASONS = ["wrong_answer", "ambiguous", "typo", "offensive"] as const;
 export type ReportReason = (typeof REPORT_REASONS)[number];
@@ -34,9 +35,10 @@ export function ReportQuestion({ onReport }: Props) {
       <button
         type="button"
         onClick={() => setState("open")}
-        className="self-center text-sm font-bold text-fg-muted underline"
+        className="inline-flex items-center gap-1.5 self-center text-sm font-bold text-fg-muted underline"
       >
-        ⚑ {t("button")}
+        <FlagIcon size={14} />
+        {t("button")}
       </button>
     );
   }

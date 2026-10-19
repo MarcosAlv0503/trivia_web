@@ -96,6 +96,7 @@ export function Showcase() {
             question="¿En qué lago vive el ajolote en estado salvaje?"
             answers={ANSWERS}
             timeLeft={0.62}
+            timeLimitMs={15000}
             selectedId={selected}
             correctId={selected ? "b" : undefined}
             onAnswer={setSelected}

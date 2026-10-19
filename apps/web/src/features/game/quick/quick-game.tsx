@@ -15,6 +15,7 @@ import { Avatar } from "@/features/profile/avatar";
 import { createClient } from "@/lib/supabase/client";
 import { QuickResults } from "./quick-results";
 import type { AnswerResult, QuickMatch, QuickPlayer, ServedQuestion } from "./types";
+import { CloseIcon } from "@/components/icons";
 
 type Phase = "loading" | "handoff" | "question" | "reveal" | "results" | "error";
 
@@ -229,6 +230,7 @@ export function QuickGame({ matchId }: { matchId: string }) {
         question={question.prompt}
         answers={question.answers.map((text, i) => ({ id: String(i), text }))}
         timeLeft={timeLeftMs / question.timeLimitMs}
+        timeLimitMs={question.timeLimitMs}
         selectedId={chosen === undefined ? undefined : String(chosen)}
         correctId={result ? String(result.correctIndex) : undefined}
         onAnswer={(id) => void answer(Number(id))}
@@ -294,7 +296,7 @@ function GameHeader({ children }: { children: React.ReactNode }) {
         aria-label={t("exit")}
         className="grid size-10 place-items-center rounded-full bg-surface-2 text-lg font-bold sticker"
       >
-        ✕
+        <CloseIcon size={18} />
       </button>
       <div className="flex items-center gap-4">{children}</div>
     </div>

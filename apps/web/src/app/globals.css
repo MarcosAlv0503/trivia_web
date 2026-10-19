@@ -32,6 +32,13 @@
   --shadow-sticker-pressed: 0 1px 0 var(--color-sticker);
 }
 
+/* Barra de tiempo de la pregunta (components/question-card.tsx). */
+@keyframes timer-drain {
+  to {
+    width: 0%;
+  }
+}
+
 /* Pieza tipo pegatina: borde grueso + sombra plana. */
 @utility sticker {
   border: 3px solid var(--color-sticker);

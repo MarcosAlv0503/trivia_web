@@ -213,7 +213,7 @@
     "description": "We'll notify you on this device when it's your turn in a duel and when your turn is about to run out.",
     "enable": "Turn on notifications",
     "disable": "Turn off notifications",
-    "unsupported": "This browser doesn't support notifications. On iPhone or iPad, first add the app to your Home Screen (Share → Add to Home Screen) and open it from there.",
+    "unsupported": "This browser doesn't support notifications. On iPhone or iPad, first add the app to your Home Screen (Share, then “Add to Home Screen”) and open it from there.",
     "denied": "You've blocked notifications from this site. To get them, allow them in your browser settings."
   },
   "Preferences": {
