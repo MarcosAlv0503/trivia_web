@@ -4,6 +4,7 @@ import { BackLink } from "@/components/back-link";
 import { DeleteAccount } from "@/features/profile/delete-account";
 import { ProfileForm } from "@/features/profile/profile-form";
 import { getActiveAvatarIds, getAuthContext, requireProfile } from "@/features/profile/queries";
+import { LegalLinks } from "@/features/legal/legal-links";
 import { DevicePreferences } from "@/features/preferences/device-preferences";
 import { PushToggle } from "@/features/pwa/push-toggle";
 
@@ -34,6 +35,7 @@ export default async function ProfilePage() {
       <DevicePreferences />
       <PushToggle />
       <DeleteAccount />
+      <LegalLinks />
       {isAdmin && (
         <Link href="/admin" className="font-bold text-fg-muted underline">
           {t("adminLink")}

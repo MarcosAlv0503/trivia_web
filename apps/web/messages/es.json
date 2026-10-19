@@ -34,7 +34,8 @@
       "usernameTaken": "Ese nombre de usuario ya está cogido.",
       "usernameNotAllowed": "Ese nombre de usuario no está permitido. Elige otro.",
       "rateLimited": "Has cambiado de nombre demasiadas veces hoy. Inténtalo mañana.",
-      "generic": "Algo ha fallado. Inténtalo de nuevo."
+      "generic": "Algo ha fallado. Inténtalo de nuevo.",
+      "termsRequired": "Para crear tu cuenta tienes que confirmar tu edad y aceptar los términos."
     },
     "adminLink": "Panel de revisión de preguntas"
   },
@@ -226,5 +227,12 @@
     },
     "sound": "Sonidos",
     "vibration": "Vibración"
+  },
+  "Legal": {
+    "back": "Volver",
+    "terms": "Términos de uso",
+    "privacy": "Política de privacidad",
+    "updated": "Última actualización: {date, date, long}",
+    "accept": "Tengo {age} años o más y acepto los <terms>Términos de uso</terms> y la <privacy>Política de privacidad</privacy>."
   }
 }

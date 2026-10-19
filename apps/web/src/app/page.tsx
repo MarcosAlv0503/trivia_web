@@ -9,6 +9,7 @@ import { DuelList } from "@/features/duel/duel-list";
 import type { DuelSummary } from "@/features/duel/types";
 import type { FriendLists } from "@/features/friends/types";
 import { HomeIntro } from "@/features/home/home-intro";
+import { LegalLinks } from "@/features/legal/legal-links";
 import { Avatar } from "@/features/profile/avatar";
 import { getAuthContext, getOwnProfile } from "@/features/profile/queries";
 import { DuelIcon, FriendsIcon, QuickIcon } from "@/components/icons";
@@ -31,6 +32,7 @@ export default async function HomePage({
           </p>
         )}
         <LoginButtons />
+        <LegalLinks />
       </main>
     );
   }

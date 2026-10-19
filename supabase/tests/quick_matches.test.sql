@@ -9,9 +9,9 @@ insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-00000000000a', 'alice@test.local'),
   ('00000000-0000-0000-0000-00000000000b', 'bob@test.local'),
   ('00000000-0000-0000-0000-00000000000c', 'carol@test.local');
-insert into public.profiles (id, username, avatar_id, locale) values
-  ('00000000-0000-0000-0000-00000000000a', 'alice', 'axolotl-pink', 'es'),
-  ('00000000-0000-0000-0000-00000000000b', 'bob', 'axolotl-gold', 'es');
+insert into public.profiles (id, username, avatar_id, locale, terms_version) values
+  ('00000000-0000-0000-0000-00000000000a', 'alice', 'axolotl-pink', 'es', 1),
+  ('00000000-0000-0000-0000-00000000000b', 'bob', 'axolotl-gold', 'es', 1);
 -- carol no tiene perfil (onboarding sin completar).
 
 create function pg_temp.question(ext text, status text, locale text) returns jsonb language sql as $$

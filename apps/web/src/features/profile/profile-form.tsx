@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { buttonClassName } from "@/components/button";
+import { LEGAL } from "@/features/legal/legal";
 import { LOCALE_NAMES, locales } from "@/i18n/config";
 import { saveProfile, type FormState } from "./actions";
 import { AvatarPicker } from "./avatar-picker";
@@ -15,6 +17,7 @@ type Props = {
 
 export function ProfileForm({ mode, avatarIds, initial }: Props) {
   const t = useTranslations("Profile");
+  const tLegal = useTranslations("Legal");
   const currentLocale = useLocale();
   const [state, formAction, pending] = useActionState<FormState, FormData>(saveProfile, {});
 
@@ -60,6 +63,32 @@ export function ProfileForm({ mode, avatarIds, initial }: Props) {
           ))}
         </div>
       </fieldset>
+
+      {mode === "create" && (
+        <label className="flex items-start gap-3">
+          <input
+            type="checkbox"
+            name="acceptTerms"
+            required
+            className="mt-1 size-5 shrink-0 accent-accent"
+          />
+          <span>
+            {tLegal.rich("accept", {
+              age: LEGAL.minAge,
+              terms: (chunks) => (
+                <Link href="/legal/terms" target="_blank" className="font-bold underline">
+                  {chunks}
+                </Link>
+              ),
+              privacy: (chunks) => (
+                <Link href="/legal/privacy" target="_blank" className="font-bold underline">
+                  {chunks}
+                </Link>
+              ),
+            })}
+          </span>
+        </label>
+      )}
 
       {state.error && (
         <p role="alert" className="font-bold text-ko">

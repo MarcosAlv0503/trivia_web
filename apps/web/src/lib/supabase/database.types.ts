@@ -368,6 +368,8 @@ export type Database = {
           created_at: string;
           id: string;
           locale: string;
+          terms_accepted_at: string;
+          terms_version: number;
           updated_at: string;
           username: string;
         };
@@ -377,6 +379,8 @@ export type Database = {
           created_at?: string;
           id: string;
           locale: string;
+          terms_accepted_at?: string;
+          terms_version: number;
           updated_at?: string;
           username: string;
         };
@@ -385,6 +389,8 @@ export type Database = {
           created_at?: string;
           id?: string;
           locale?: string;
+          terms_accepted_at?: string;
+          terms_version?: number;
           updated_at?: string;
           username?: string;
         };

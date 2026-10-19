@@ -16,12 +16,12 @@ set local role authenticated;
 select set_config('request.jwt.claims', '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}', true);
 
 select throws_like(
-  $$ insert into public.profiles (id, username, avatar_id, locale)
-     values ('00000000-0000-0000-0000-00000000000a', 'shit_lord', 'axolotl-pink', 'es') $$,
+  $$ insert into public.profiles (id, username, avatar_id, locale, terms_version)
+     values ('00000000-0000-0000-0000-00000000000a', 'shit_lord', 'axolotl-pink', 'es', 1) $$,
   'nombre de usuario no permitido', 'no se crea un perfil con un nombre prohibido'
 );
-insert into public.profiles (id, username, avatar_id, locale)
-values ('00000000-0000-0000-0000-00000000000a', 'alice', 'axolotl-pink', 'es');
+insert into public.profiles (id, username, avatar_id, locale, terms_version)
+values ('00000000-0000-0000-0000-00000000000a', 'alice', 'axolotl-pink', 'es', 1);
 select throws_like(
   $$ update public.profiles set username = 'fuck_you' where id = '00000000-0000-0000-0000-00000000000a' $$,
   'nombre de usuario no permitido', 'ni se cambia a uno prohibido'

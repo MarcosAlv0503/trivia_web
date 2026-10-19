@@ -34,7 +34,8 @@
       "usernameTaken": "That username is already taken.",
       "usernameNotAllowed": "That username isn't allowed. Please choose another one.",
       "rateLimited": "You've changed your username too many times today. Try again tomorrow.",
-      "generic": "Something went wrong. Please try again."
+      "generic": "Something went wrong. Please try again.",
+      "termsRequired": "To create your account you need to confirm your age and accept the terms."
     },
     "adminLink": "Question review panel"
   },
@@ -226,5 +227,12 @@
     },
     "sound": "Sounds",
     "vibration": "Vibration"
+  },
+  "Legal": {
+    "back": "Back",
+    "terms": "Terms of use",
+    "privacy": "Privacy policy",
+    "updated": "Last updated: {date, date, long}",
+    "accept": "I am {age} or older and I accept the <terms>Terms of use</terms> and the <privacy>Privacy policy</privacy>."
   }
 }

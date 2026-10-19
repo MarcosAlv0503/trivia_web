@@ -1,12 +1,12 @@
 -- RLS y permisos de perfiles, avatares e invitados. Se ejecuta con `pnpm db:test`; todo se deshace al final.
 begin;
-select plan(11);
+select plan(13);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-00000000000a', 'alice@test.local'),
   ('00000000-0000-0000-0000-00000000000b', 'bob@test.local');
-insert into public.profiles (id, username, avatar_id, locale) values
-  ('00000000-0000-0000-0000-00000000000a', 'alice', 'axolotl-pink', 'es');
+insert into public.profiles (id, username, avatar_id, locale, terms_version) values
+  ('00000000-0000-0000-0000-00000000000a', 'alice', 'axolotl-pink', 'es', 1);
 
 set local role anon;
 select throws_ok('select * from public.profiles', '42501', null, 'anon no lee perfiles');
@@ -26,14 +26,24 @@ select is(
 );
 set local role authenticated;
 select throws_ok(
-  $$ insert into public.profiles (id, username, avatar_id, locale)
-     values ('00000000-0000-0000-0000-00000000000a', 'fake', 'axolotl-pink', 'es') $$,
+  $$ insert into public.profiles (id, username, avatar_id, locale, terms_version)
+     values ('00000000-0000-0000-0000-00000000000a', 'fake', 'axolotl-pink', 'es', 1) $$,
   '42501', null, 'bob no puede crear un perfil con el id de otro'
 );
 select ok(not public.is_username_available('ALICE'), 'el nombre de usuario es único sin distinguir mayúsculas');
-select lives_ok(
+select throws_ok(
   $$ insert into public.profiles (id, username, avatar_id, locale)
      values ('00000000-0000-0000-0000-00000000000b', 'bob', 'axolotl-gold', 'en') $$,
+  '23502', null, 'no se crea un perfil sin aceptar los términos'
+);
+select throws_ok(
+  $$ insert into public.profiles (id, username, avatar_id, locale, terms_version, terms_accepted_at)
+     values ('00000000-0000-0000-0000-00000000000b', 'bob', 'axolotl-gold', 'en', 1, '2000-01-01') $$,
+  '42501', null, 'la fecha de aceptación la pone la BD'
+);
+select lives_ok(
+  $$ insert into public.profiles (id, username, avatar_id, locale, terms_version)
+     values ('00000000-0000-0000-0000-00000000000b', 'bob', 'axolotl-gold', 'en', 1) $$,
   'bob crea su propio perfil'
 );
 select throws_ok(

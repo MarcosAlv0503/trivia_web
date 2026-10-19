@@ -1,9 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/proxy";
 
-// La cuenta es obligatoria: sin sesión solo son accesibles la portada y el flujo de login.
+// La cuenta es obligatoria: sin sesión solo son accesibles la portada, el flujo de login y los textos legales.
 function isPublicPath(pathname: string) {
-  return pathname === "/" || pathname.startsWith("/auth/");
+  return pathname === "/" || pathname.startsWith("/auth/") || pathname.startsWith("/legal/");
 }
 
 export async function proxy(request: NextRequest) {

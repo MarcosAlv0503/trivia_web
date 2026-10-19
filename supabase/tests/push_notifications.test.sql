@@ -8,9 +8,9 @@ update public.duels set status = 'finished', end_reason = 'completed' where stat
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-00000000000a', 'alice@test.local'),
   ('00000000-0000-0000-0000-00000000000b', 'bob@test.local');
-insert into public.profiles (id, username, avatar_id, locale) values
-  ('00000000-0000-0000-0000-00000000000a', 'alice', 'axolotl-pink', 'es'),
-  ('00000000-0000-0000-0000-00000000000b', 'bob', 'axolotl-gold', 'es');
+insert into public.profiles (id, username, avatar_id, locale, terms_version) values
+  ('00000000-0000-0000-0000-00000000000a', 'alice', 'axolotl-pink', 'es', 1),
+  ('00000000-0000-0000-0000-00000000000b', 'bob', 'axolotl-gold', 'es', 1);
 
 -- Suscripciones ------------------------------------------------------------------------------------
 set local role authenticated;

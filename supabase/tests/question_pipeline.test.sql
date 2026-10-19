@@ -5,8 +5,8 @@ select plan(19);
 -- Fixtures (como postgres) -------------------------------------------------------------------------
 update public.questions set status = 'rejected';
 insert into auth.users (id, email) values ('00000000-0000-0000-0000-00000000000a', 'alice@test.local');
-insert into public.profiles (id, username, avatar_id, locale)
-values ('00000000-0000-0000-0000-00000000000a', 'alice', 'axolotl-pink', 'es');
+insert into public.profiles (id, username, avatar_id, locale, terms_version)
+values ('00000000-0000-0000-0000-00000000000a', 'alice', 'axolotl-pink', 'es', 1);
 
 create function pg_temp.question(ext text, extra jsonb default '{}') returns jsonb language sql as $$
   select jsonb_build_object(
