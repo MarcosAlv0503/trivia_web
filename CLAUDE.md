@@ -70,7 +70,7 @@ Supabase local con la CLI (`supabase start`, requiere Docker). Migraciones versi
 - **Fase 4 — Lista para la beta cerrada (ACTUAL).** Tareas en orden:
   1. Contenido: preguntas de "actualidad" con caducidad (hecho); procesos automáticos de generación, traducción y revisión periódica (hechos); panel de revisión (solo admin, hecho); botón "reportar pregunta" (hecho). Objetivo ≥1.500 preguntas aprobadas por idioma (pendiente: ejecutar los procesos).
   2. PWA instalable + push web (turno de duelo, plazo a punto de vencer) (hecho). **Pendiente de comprobar:** instalar la app y recibir avisos en un móvil real (Android e iPhone), cuando haya un entorno accesible desde el móvil (tarea 6).
-  3. Sesión de estilos y front + sonido y vibración + accesibilidad (icono por categoría además del color, tamaño de texto, teclado).
+  3. Sesión de estilos y front + sonido y vibración + accesibilidad (icono por categoría además del color, tamaño de texto, teclado). Accesibilidad, sonido y vibración hechos; primer repaso visual hecho (2026-10-19), abierto a más ajustes del usuario.
   4. Moderación de nombres de usuario y límites de peticiones en RPC sensibles (hecho).
   5. Legal/RGPD: privacidad, términos, consentimiento, edad mínima.
   6. Producción: Vercel + Supabase Cloud, copias, monitorización de errores, analítica con consentimiento (retención D1/D7).
@@ -99,6 +99,7 @@ Actualizar al cerrar cada sesión.
   - Idiomas: `es` y `en` por ahora.
   - Sin API de pago: los procesos se ejecutan con Claude Code (plan Pro).
 - **Fase 4, aprobado el 2026-10-19:** motivos de reporte (respuesta mal, confusa/varias válidas, errata/traducción, ofensiva); una pregunta reportada se sigue jugando hasta su revisión; aviso de plazo con menos de 6 h; avisos solo de duelo (turno y plazo), activables en el perfil; límites de peticiones (README > "Moderación y límites"). Panel de revisión probado por el usuario. Nombres prohibidos (2026-10-19): el término se busca tal cual en el nombre, sin distinguir mayúsculas y sin interpretar números como letras ("badminton" se rechaza por "admin"; "El_m1erd4s" se admite).
+- **Estilos y accesibilidad aprobados (2026-10-19):** icono SVG propio por categoría (`components/category-icon.tsx`, por id); sonidos sintetizados (Web Audio) y vibración al fallar, activados por defecto; preferencias "En este dispositivo" en el perfil (tamaño de texto Normal/Grande/Muy grande, sonidos, vibración); teclas 1–4 y Enter. Repaso visual: borde de pegatina casi negro, ruleta solo con iconos, acción principal abajo (zona del pulgar) y volver con "←" redondo arriba a la izquierda en todas las pantallas.
 - **Colores de categoría aprobados** (ya en la tabla `categories`): Geografía `#2ECC8F`, Historia `#D9964A`, Ciencia y Naturaleza `#2EC4E6`, Arte y Literatura `#9B7BFF`, Entretenimiento `#FF7A45`, Deportes `#F5C431`, Tecnología `#5C7CFA`.
 
 ## Decisiones

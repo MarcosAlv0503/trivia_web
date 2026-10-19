@@ -4,8 +4,8 @@ import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { CategoryIcon } from "./category-icon";
 
-/** `id` es el de la categoría: decide su icono. */
-export type WheelSegment = { id: string; label: string; color: string };
+/** `id` es el de la categoría: decide su icono. El nombre lo muestra quien usa la ruleta al parar. */
+export type WheelSegment = { id: string; color: string };
 
 type Props = {
   segments: WheelSegment[];
@@ -61,14 +61,11 @@ export function Wheel({ segments, target, onSpinEnd }: Props) {
           return (
             <span
               key={s.id}
-              className="absolute top-1/2 left-1/2 -mt-2 w-[46%] origin-left pr-2.5 text-right text-xs leading-none font-extrabold text-ink"
+              className="absolute top-1/2 left-1/2 -mt-4 flex h-8 w-[38%] origin-left justify-end text-ink"
               style={{ transform: `rotate(${center - 90}deg)` }}
             >
-              {/* En la mitad izquierda se gira el texto para que no quede boca abajo. */}
-              <b className={`inline-flex items-center gap-1 ${center > 180 ? "rotate-180" : ""}`}>
-                {s.label}
-                <CategoryIcon id={s.id} size={14} className="shrink-0" />
-              </b>
+              {/* La parte de arriba del icono mira hacia fuera: queda derecho al pasar bajo el puntero. */}
+              <CategoryIcon id={s.id} size={32} className="rotate-90" />
             </span>
           );
         })}

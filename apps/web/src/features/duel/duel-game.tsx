@@ -9,6 +9,7 @@ import { DUEL, duelPendingRound, hoursLeft } from "@trivia/game-core";
 import { buttonClassName } from "@/components/button";
 import { Mascot } from "@/components/mascot";
 import { QuestionCard } from "@/components/question-card";
+import { BackLink } from "@/components/back-link";
 import { CategoryIcon } from "@/components/category-icon";
 import { Wheel } from "@/components/wheel";
 import { AnswerFeedback } from "@/features/game/answer-feedback";
@@ -203,7 +204,7 @@ export function DuelGame({ duelId }: { duelId: string }) {
           {t("roundOf", { round: duel.turnNumber, total: duel.roundCount })}
         </p>
         <Wheel
-          segments={duel.categories.map((c) => ({ id: c.id, label: c.name, color: c.color }))}
+          segments={duel.categories.map((c) => ({ id: c.id, color: c.color }))}
           target={spinTarget}
           onSpinEnd={() => setTimeout(() => void serve(), AFTER_SPIN_MS)}
         />
@@ -243,17 +244,17 @@ export function DuelGame({ duelId }: { duelId: string }) {
         />
         <AnswerFeedback result={result} timedOut={chosen === undefined} />
         {phase === "reveal" && (
-          <>
+          <div className="mt-auto flex flex-col gap-3">
+            <ReportQuestion key={`${question.round}-${question.slot}`} onReport={report} />
             <button
               type="button"
               autoFocus
               onClick={() => void next()}
-              className={buttonClassName("play", "self-center")}
+              className={buttonClassName("play", "w-full")}
             >
               {tGame("next")}
             </button>
-            <ReportQuestion key={`${question.round}-${question.slot}`} onReport={report} />
-          </>
+          </div>
         )}
       </main>
     );
@@ -322,25 +323,35 @@ export function DuelGame({ duelId }: { duelId: string }) {
         </p>
       )}
 
-      <div className="flex flex-col items-center gap-3">
-        {duel.nextAction === "spin" && (
-          <button type="button" onClick={() => void spin()} className={buttonClassName("play")}>
-            {t("spin")}
-          </button>
-        )}
-        {duel.nextAction === "answer" && (
-          <button type="button" onClick={() => void serve()} className={buttonClassName("play")}>
-            {t("play", { round: duelPendingRound(duel.turnNumber, duel.rounds.length) })}
-          </button>
-        )}
-        {duel.nextAction === "wait" && (
-          <p className="text-center font-bold text-fg-muted">
-            {t("waiting", {
-              name: duel.opponent.username,
-              hours: hoursLeft(new Date(duel.deadline), new Date(loadedAt)),
-            })}
-          </p>
-        )}
+      {(duel.nextAction === "wait" || (!active && duel.result)) && (
+        <div className="flex flex-col items-center gap-3">
+          {duel.nextAction === "wait" && (
+            <p className="text-center font-bold text-fg-muted">
+              {t("waiting", {
+                name: duel.opponent.username,
+                hours: hoursLeft(new Date(duel.deadline), new Date(loadedAt)),
+              })}
+            </p>
+          )}
+          {!active && duel.result && (
+            <>
+              <motion.h1
+                initial={{ scale: 0.6, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="text-center text-4xl font-bold"
+              >
+                {t(duel.result)}
+              </motion.h1>
+              {duel.endReason && duel.endReason !== "completed" && (
+                <p className="text-fg-muted">{t(`reasons.${duel.endReason}`)}</p>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Acciones, abajo (a mano del pulgar). */}
+      <div className="mt-auto flex flex-col gap-3">
         {duel.canDecline && (
           <button
             type="button"
@@ -351,33 +362,38 @@ export function DuelGame({ duelId }: { duelId: string }) {
             {t("decline")}
           </button>
         )}
-
+        {duel.nextAction === "spin" && (
+          <button
+            type="button"
+            onClick={() => void spin()}
+            className={buttonClassName("play", "w-full")}
+          >
+            {t("spin")}
+          </button>
+        )}
+        {duel.nextAction === "answer" && (
+          <button
+            type="button"
+            onClick={() => void serve()}
+            className={buttonClassName("play", "w-full")}
+          >
+            {t("play", { round: duelPendingRound(duel.turnNumber, duel.rounds.length) })}
+          </button>
+        )}
         {!active && duel.result && (
-          <>
-            <motion.h1
-              initial={{ scale: 0.6, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="text-center text-4xl font-bold"
+          <div className="flex w-full gap-3">
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => void rematch()}
+              className={buttonClassName("play", "flex-1")}
             >
-              {t(duel.result)}
-            </motion.h1>
-            {duel.endReason && duel.endReason !== "completed" && (
-              <p className="text-fg-muted">{t(`reasons.${duel.endReason}`)}</p>
-            )}
-            <div className="flex w-full gap-3">
-              <button
-                type="button"
-                disabled={busy}
-                onClick={() => void rematch()}
-                className={buttonClassName("play", "flex-1")}
-              >
-                {t("rematch")}
-              </button>
-              <Link href="/" className={buttonClassName("secondary", "py-3.5")}>
-                {t("home")}
-              </Link>
-            </div>
-          </>
+              {t("rematch")}
+            </button>
+            <Link href="/" className={buttonClassName("secondary", "py-3.5")}>
+              {t("home")}
+            </Link>
+          </div>
         )}
       </div>
     </main>
@@ -442,9 +458,7 @@ function DuelHeader({
 
   return (
     <div className="flex items-center justify-between gap-3">
-      <Link href="/" className={buttonClassName("secondary", "px-4 py-2 text-base")}>
-        ← {t("back")}
-      </Link>
+      <BackLink href="/" label={t("back")} />
       {canSurrender && (
         <button
           type="button"

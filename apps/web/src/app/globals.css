@@ -23,7 +23,7 @@
   --color-accent: #ff8fb8; /* rosa ajolote */
   --color-accent-ink: #3a0f22;
   --color-play: #f5c431;
-  --color-sticker: #071b26; /* borde y sombra de las piezas tipo pegatina */
+  --color-sticker: #01080c; /* borde y sombra de las piezas tipo pegatina: más oscuro que cualquier fondo */
   --color-ok: #3be07a;
   --color-ko: #ff4d5e;
 
@@ -54,13 +54,7 @@
 
   body {
     background:
-      radial-gradient(
-          120% 60% at 50% 0%,
-          var(--color-surface) 0%,
-          var(--color-bg) 45%,
-          var(--color-bg-deep) 100%
-        )
-        fixed,
+      radial-gradient(120% 60% at 50% 0%, var(--color-surface) 0%, var(--color-bg) 45%) fixed,
       var(--color-bg);
     color: var(--color-fg);
     font-family: var(--font-sans);

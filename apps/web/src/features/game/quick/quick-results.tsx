@@ -29,48 +29,50 @@ export function QuickResults({ match }: { match: QuickMatch }) {
         : t("winner", { name: winners[0]!.name });
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col items-center justify-center gap-6 p-4 sm:p-6">
-      <motion.div
-        initial={{ scale: 0.5, rotate: -10, opacity: 0 }}
-        animate={{ scale: 1, rotate: 0, opacity: 1 }}
-        transition={{ type: "spring", bounce: 0.5 }}
-        className="drop-shadow-[0_6px_0_var(--color-sticker)]"
-      >
-        <Mascot size={120} />
-      </motion.div>
-      <h1 className="text-center text-4xl font-bold">{heading}</h1>
+    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-6 p-4 sm:p-6">
+      <div className="flex flex-1 flex-col items-center justify-center gap-6">
+        <motion.div
+          initial={{ scale: 0.5, rotate: -10, opacity: 0 }}
+          animate={{ scale: 1, rotate: 0, opacity: 1 }}
+          transition={{ type: "spring", bounce: 0.5 }}
+          className="drop-shadow-[0_6px_0_var(--color-sticker)]"
+        >
+          <Mascot size={120} />
+        </motion.div>
+        <h1 className="text-center text-4xl font-bold">{heading}</h1>
 
-      <ol className="grid w-full gap-2" aria-label={t("results")}>
-        {ranked.map((p, i) => (
-          <motion.li
-            key={p.seat}
-            initial={{ x: -24, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.2 + i * 0.1 }}
-            className="flex items-center gap-3 rounded-2xl bg-surface p-2 pr-4 sticker"
-          >
-            {match.players.length > 1 && (
-              <span
-                className={`grid size-9 shrink-0 place-items-center rounded-full font-display text-lg font-bold ${
-                  PLACE_STYLES[p.place - 1] ?? "bg-surface"
-                }`}
-              >
-                {p.place}
+        <ol className="grid w-full gap-2" aria-label={t("results")}>
+          {ranked.map((p, i) => (
+            <motion.li
+              key={p.seat}
+              initial={{ x: -24, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.2 + i * 0.1 }}
+              className="flex items-center gap-3 rounded-2xl bg-surface p-2 pr-4 sticker"
+            >
+              {match.players.length > 1 && (
+                <span
+                  className={`grid size-9 shrink-0 place-items-center rounded-full font-display text-lg font-bold ${
+                    PLACE_STYLES[p.place - 1] ?? "bg-surface"
+                  }`}
+                >
+                  {p.place}
+                </span>
+              )}
+              <Avatar id={p.avatarId} size={44} />
+              <div className="flex min-w-0 flex-col">
+                <span className="truncate font-display text-lg font-bold">{p.name}</span>
+                <span className="text-sm text-fg-muted">
+                  {t("correctCount", { count: p.correct, total: perPlayer })}
+                </span>
+              </div>
+              <span className="ml-auto font-display text-2xl font-bold">
+                {t("score", { points: p.score })}
               </span>
-            )}
-            <Avatar id={p.avatarId} size={44} />
-            <div className="flex min-w-0 flex-col">
-              <span className="truncate font-display text-lg font-bold">{p.name}</span>
-              <span className="text-sm text-fg-muted">
-                {t("correctCount", { count: p.correct, total: perPlayer })}
-              </span>
-            </div>
-            <span className="ml-auto font-display text-2xl font-bold">
-              {t("score", { points: p.score })}
-            </span>
-          </motion.li>
-        ))}
-      </ol>
+            </motion.li>
+          ))}
+        </ol>
+      </div>
 
       {state.error && (
         <p role="alert" className="font-bold text-ko">

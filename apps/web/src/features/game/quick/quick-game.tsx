@@ -232,17 +232,17 @@ export function QuickGame({ matchId }: { matchId: string }) {
 
       <AnswerFeedback result={result} timedOut={chosen === undefined} />
       {phase === "reveal" && (
-        <>
+        <div className="mt-auto flex flex-col gap-3">
+          <ReportQuestion key={question.position} onReport={report} />
           <button
             type="button"
             autoFocus
             onClick={() => void next()}
-            className={buttonClassName("play", "self-center")}
+            className={buttonClassName("play", "w-full")}
           >
             {t("next")}
           </button>
-          <ReportQuestion key={question.position} onReport={report} />
-        </>
+        </div>
       )}
     </main>
   );

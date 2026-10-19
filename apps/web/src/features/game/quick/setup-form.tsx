@@ -37,7 +37,7 @@ export function SetupForm({ host, recentGuests, avatarIds }: Props) {
   }
 
   return (
-    <form action={formAction} className="flex w-full max-w-md flex-col gap-6">
+    <form action={formAction} className="flex w-full max-w-md flex-1 flex-col gap-6">
       <fieldset>
         <legend className="mb-2 font-display text-lg font-bold">{t("difficulty")}</legend>
         <DifficultyPicker name="difficulty" value={difficulty} onChange={setDifficulty} />
@@ -145,7 +145,11 @@ export function SetupForm({ host, recentGuests, avatarIds }: Props) {
         </p>
       )}
 
-      <button type="submit" disabled={pending} className={buttonClassName("play", "w-full")}>
+      <button
+        type="submit"
+        disabled={pending}
+        className={buttonClassName("play", "mt-auto w-full")}
+      >
         {pending ? t("starting") : t("start")}
       </button>
     </form>

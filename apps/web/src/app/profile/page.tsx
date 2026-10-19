@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { buttonClassName } from "@/components/button";
+import { BackLink } from "@/components/back-link";
 import { DeleteAccount } from "@/features/profile/delete-account";
 import { ProfileForm } from "@/features/profile/profile-form";
 import { getActiveAvatarIds, getAuthContext, requireProfile } from "@/features/profile/queries";
@@ -18,11 +18,9 @@ export default async function ProfilePage() {
 
   return (
     <main className="flex min-h-dvh flex-col items-center gap-8 p-6">
-      <div className="flex w-full max-w-md items-center justify-between">
+      <div className="flex w-full max-w-md items-center gap-3">
+        <BackLink href="/" label={t("back")} />
         <h1 className="text-3xl font-bold">{t("editTitle")}</h1>
-        <Link href="/" className={buttonClassName("secondary")}>
-          {t("back")}
-        </Link>
       </div>
       <ProfileForm
         mode="edit"
