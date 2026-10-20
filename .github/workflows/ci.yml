@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
       SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID: ci
       SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET: ci
     steps:
@@ -67,6 +67,6 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec supabase link --project-ref ${{ vars.SUPABASE_PROJECT_ID }}
-      - run: pnpm exec supabase db push
-      - run: pnpm exec supabase functions deploy push
+      # Sin `supabase link`: pediría al token más permisos (leer las claves del proyecto) de los que hacen falta.
+      - run: pnpm exec supabase db push --db-url "$SUPABASE_DB_URL" --yes
+      - run: pnpm exec supabase functions deploy push --project-ref ${{ vars.SUPABASE_PROJECT_ID }}

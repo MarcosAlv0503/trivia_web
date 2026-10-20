@@ -112,7 +112,9 @@ Los errores salen por `/lagoon` en nuestro dominio y de ahí a Sentry (túnel), 
 
 El job `deploy-supabase` del CI aplica las migraciones nuevas y redespliega la función `push` en cada push a `main`, después de pasar lint, tests y build. Para activarlo, en GitHub → repo → **Settings → Secrets and variables → Actions**:
 
-- **Secrets:** `SUPABASE_ACCESS_TOKEN` ([crea uno aquí](https://supabase.com/dashboard/account/tokens)) y `SUPABASE_DB_PASSWORD`.
+- **Secrets:**
+  - `SUPABASE_ACCESS_TOKEN`: [créalo aquí](https://supabase.com/dashboard/account/tokens) con _Resource access: Project_ (solo producción), sin preset y con permisos mínimos: _Project_ Read y _Edge Functions_ Read-write. Caduca: apúntate cuándo renovarlo.
+  - `SUPABASE_DB_URL`: la cadena de conexión del _Session pooler_ con tu contraseña, la misma de "Copias de seguridad" (los servidores de GitHub no tienen IPv6, así que la directa no sirve).
 - **Variables:** `SUPABASE_PROJECT_ID` = `<ref>`.
 
 Sin la variable, el job se salta. Vercel despliega la web en paralelo, así que durante uno o dos minutos la web nueva puede convivir con la BD anterior: haz migraciones que añadan (columnas, funciones nuevas) antes de quitar lo viejo en una migración posterior.
