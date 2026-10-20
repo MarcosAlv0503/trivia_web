@@ -86,7 +86,9 @@ La clave pública VAPID se usa también en Vercel (paso 5).
    | `ENABLE_EXPERIMENTAL_COREPACK`         | `1` (usa la versión de pnpm del `package.json`)         |
    | `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_*`   | del paso 6; puedes añadirlas después y volver a desplegar |
 
-   La clave **secreta** de Supabase no va nunca a Vercel.
+   La clave **secreta** de Supabase no va nunca a Vercel. Las `NEXT_PUBLIC_*` son públicas por diseño: créalas de tipo **Config** (Vercel no permite guardarlas como _Secret_, y un _Secret_ no se puede cambiar a _Config_: habría que borrarla y crearla de nuevo).
+
+   No pulses **Add** en las integraciones de Supabase y Sentry que ofrece Vercel: crean variables y proyectos que no usamos.
 
 4. **Deploy.** Al terminar, tu `<dominio>` es `<proyecto>.vercel.app` (o uno propio en _Settings → Domains_).
 5. _Settings → Build and Deployment → Node.js Version:_ **24.x**.
@@ -97,12 +99,14 @@ Cada push a `main` despliega la web automáticamente.
 ## 6. Sentry (errores)
 
 1. En [sentry.io](https://sentry.io), al crear la organización elige **Data Storage Location: European Union**.
-2. **Create project → Next.js.** Copia el **DSN** → Vercel: `NEXT_PUBLIC_SENTRY_DSN`.
-3. Proyecto → **Settings → Security & Privacy:** activa _Prevent Storing of IP Addresses_ y deja _Data Scrubber_ activado.
+2. **Create project → Next.js**, con nombre `trivia-web` (si no lo cambias se llama `javascript-nextjs`, y ese es el que va en `SENTRY_PROJECT`). No ejecutes el asistente `npx @sentry/wizard`: el código ya está en el repo. Copia el **DSN** → Vercel: `NEXT_PUBLIC_SENTRY_DSN` (tipo Config).
+3. Proyecto → **Settings → Security & Privacy:** activa _Prevent Storing of IP Addresses_ y deja _Data Scrubber_ activado. En **Inbound Filters**, activa el filtro de errores de extensiones del navegador.
 4. Para ver los errores con el código legible (source maps): _Settings → Auth Tokens → Organization tokens_ → crea uno → Vercel: `SENTRY_AUTH_TOKEN`, y además `SENTRY_ORG` y `SENTRY_PROJECT` (los nombres cortos de la organización y del proyecto, como salen en la URL).
 5. Redespliega en Vercel. Sentry te avisa por email de cada error nuevo.
 
-La web solo envía errores: sin trazas de rendimiento, sin grabación de sesión, sin cookies y sin datos personales. Sin DSN no envía nada (por eso en local no hace falta). Los errores de la BD y de la Edge Function se ven en el panel de Supabase → **Logs**.
+Si el build avisa de `Failed to create release: 404`, `SENTRY_ORG` o `SENTRY_PROJECT` no coinciden con los nombres cortos de Sentry. Para probarlo: en la web, consola del navegador → `setTimeout(() => { throw new Error("prueba") })`, y en uno o dos minutos sale en **Issues**.
+
+Los errores salen por `/lagoon` en nuestro dominio y de ahí a Sentry (túnel), porque los bloqueadores de anuncios cortan las peticiones directas. La web solo envía errores: sin trazas de rendimiento, sin grabación de sesión, sin cookies y sin datos personales. Sin DSN no envía nada (por eso en local no hace falta). Los errores de la BD y de la Edge Function se ven en el panel de Supabase → **Logs**.
 
 ## 7. Despliegue automático de la BD
 
