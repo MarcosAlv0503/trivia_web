@@ -41,7 +41,7 @@ export const privacy: LegalDocument = {
     {
       heading: "Who else can see it",
       body: [
-        "Other players see your username and avatar (when they search for you, in their friends list and in duels), and the result of the duels you play together.",
+        "Other players see your username, avatar and level (when they search for you, in their friends list and in duels), and the result of the duels you play together.",
         "To run the game we use providers that process data on our behalf: Supabase (database and sign-in), Vercel (web hosting), Sentry (error reports, on EU servers) and your browser's notification services (Google, Apple or Mozilla). Google and Discord process your sign-in data under their own policies.",
         "If a provider processes data outside the European Economic Area, it does so with the safeguards required by law, such as the European Commission's standard contractual clauses or the EU-U.S. Data Privacy Framework.",
       ],

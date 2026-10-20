@@ -6,6 +6,7 @@ import { ProfileForm } from "@/features/profile/profile-form";
 import { getActiveAvatarIds, getAuthContext, requireProfile } from "@/features/profile/queries";
 import { LegalLinks } from "@/features/legal/legal-links";
 import { DevicePreferences } from "@/features/preferences/device-preferences";
+import { LevelCard } from "@/features/progress/level-card";
 import { PushToggle } from "@/features/pwa/push-toggle";
 
 export default async function ProfilePage() {
@@ -22,6 +23,9 @@ export default async function ProfilePage() {
       <div className="flex w-full max-w-md items-center gap-3">
         <BackLink href="/" label={t("back")} />
         <h1 className="text-3xl font-bold">{t("editTitle")}</h1>
+      </div>
+      <div className="w-full max-w-md">
+        <LevelCard xp={profile.xp} />
       </div>
       <ProfileForm
         mode="edit"

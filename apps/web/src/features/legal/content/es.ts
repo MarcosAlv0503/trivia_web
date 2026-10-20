@@ -41,7 +41,7 @@ export const privacy: LegalDocument = {
     {
       heading: "Quién más puede verlos",
       body: [
-        "Otros jugadores ven tu nombre de usuario y tu avatar (al buscarte, en sus amigos y en los duelos), y el resultado de los duelos que jugáis juntos.",
+        "Otros jugadores ven tu nombre de usuario, tu avatar y tu nivel (al buscarte, en sus amigos y en los duelos), y el resultado de los duelos que jugáis juntos.",
         "Para funcionar usamos proveedores que tratan los datos por encargo nuestro: Supabase (base de datos y acceso), Vercel (alojamiento web), Sentry (informes de errores, en servidores de la UE) y los servicios de avisos de tu navegador (Google, Apple o Mozilla). Google y Discord tratan tus datos de acceso según sus propias políticas.",
         "Si algún proveedor trata datos fuera del Espacio Económico Europeo, lo hace con las garantías que exige la ley, como las cláusulas contractuales tipo de la Comisión Europea o el Marco de Privacidad de Datos UE-EE. UU.",
       ],

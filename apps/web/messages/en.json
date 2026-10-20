@@ -11,6 +11,28 @@
     "duelsTitle": "Your duels",
     "noDuels": "No duels yet. Challenge a friend!"
   },
+  "Progress": {
+    "level": "Level {level}",
+    "levelShort": "Lv. {level}",
+    "xp": "{current} / {needed} XP",
+    "gained": "+{xp} XP",
+    "barLabel": "Progress to level {next}",
+    "levelUp": "Level {level}!",
+    "newTitle": "New title: {title}",
+    "titles": {
+      "1": "Little egg",
+      "5": "Curious larva",
+      "10": "Restless gills",
+      "15": "Lagoon prospect",
+      "20": "Bright spark",
+      "25": "Know-it-all",
+      "30": "Walking encyclopedia",
+      "35": "Brilliant mind",
+      "40": "Lagoon legend",
+      "45": "Eminence",
+      "50": "Lagoon oracle"
+    }
+  },
   "Auth": {
     "signInWith": "Sign in with {provider}",
     "signOut": "Sign out",

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Avatar } from "@/features/profile/avatar";
+import { LevelBadge } from "@/features/progress/level-badge";
 import type { DuelSummary } from "./types";
 
 const RESULT_KEYS = {
@@ -33,6 +34,7 @@ export function DuelList({ duels }: { duels: DuelSummary[] }) {
               <span className="min-w-0 truncate font-display text-lg font-bold">
                 {duel.opponent.username}
               </span>
+              <LevelBadge xp={duel.opponent.xp} />
               {duel.status === "active" ? (
                 <>
                   <span className="ml-auto text-sm font-bold text-fg-muted">

@@ -21,9 +21,11 @@ import {
   type NotificationRow,
 } from "@/features/notifications/notification-toasts";
 import { Avatar } from "@/features/profile/avatar";
+import { LevelBadge } from "@/features/progress/level-badge";
+import { XpGain } from "@/features/progress/xp-gain";
 import { createClient } from "@/lib/supabase/client";
 import { startDuel } from "./start-duel";
-import type { Duel, DuelAnswerResult, DuelQuestion } from "./types";
+import type { Duel, DuelAnswerResult, DuelPlayer, DuelQuestion } from "./types";
 import { DuelIcon, WhiteFlagIcon } from "@/components/icons";
 
 // Pausa para ver la categoría que ha salido antes de la primera pregunta.
@@ -282,13 +284,9 @@ export function DuelGame({ duelId }: { duelId: string }) {
       />
 
       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-card bg-surface p-4 sticker">
-        <PlayerScore name={t("you")} avatarId={duel.me.avatarId} score={duel.me.score} />
+        <PlayerScore name={t("you")} player={duel.me} />
         <DuelIcon size={40} />
-        <PlayerScore
-          name={duel.opponent.username}
-          avatarId={duel.opponent.avatarId}
-          score={duel.opponent.score}
-        />
+        <PlayerScore name={duel.opponent.username} player={duel.opponent} />
       </div>
 
       <ol className="grid gap-1.5">
@@ -350,6 +348,7 @@ export function DuelGame({ duelId }: { duelId: string }) {
               {duel.endReason && duel.endReason !== "completed" && (
                 <p className="text-fg-muted">{t(`reasons.${duel.endReason}`)}</p>
               )}
+              {duel.xpGain && <XpGain {...duel.xpGain} />}
             </>
           )}
         </div>
@@ -413,12 +412,13 @@ function Centered({ children }: { children: React.ReactNode }) {
   );
 }
 
-function PlayerScore({ name, avatarId, score }: { name: string; avatarId: string; score: number }) {
+function PlayerScore({ name, player }: { name: string; player: DuelPlayer }) {
   return (
     <div className="flex min-w-0 flex-col items-center gap-1">
-      <Avatar id={avatarId} size={56} />
+      <Avatar id={player.avatarId} size={56} />
       <span className="max-w-full truncate font-bold">{name}</span>
-      <span className="font-display text-2xl font-bold tabular-nums">{score}</span>
+      <LevelBadge xp={player.xp} />
+      <span className="font-display text-2xl font-bold tabular-nums">{player.score}</span>
     </div>
   );
 }

@@ -6,7 +6,8 @@ import { isEnabled } from "@/features/preferences/preferences";
 // apagan a distinto ritmo), golpes de madera (ruido filtrado) y una reverberación corta generada. Y vibración
 // (solo donde el navegador la admite: Android sí, iPhone no). Ambos se pueden apagar en el perfil.
 
-export type Sound = "correct" | "fast" | "veryFast" | "wrong" | "timeout" | "tick" | "spin" | "win";
+export type Sound =
+  "correct" | "fast" | "veryFast" | "wrong" | "timeout" | "tick" | "spin" | "win" | "levelUp";
 
 // Notas (Hz).
 const C4 = 261.63,
@@ -153,6 +154,11 @@ const SOUNDS: Record<Sound, (e: Engine, t: number) => void> = {
   win: (e, t) => {
     [C5, E5, G5, C6].forEach((f, i) => tone(e, MALLET, f, t + i * 0.08, 0.28, 0.6));
     [C6, E6, G6].forEach((f) => tone(e, BELL, f, t + 0.34, 0.07, 1.6));
+  },
+  // Campanas que suben y un acorde final que se queda sonando.
+  levelUp: (e, t) => {
+    [G5, C6, E6, G6].forEach((f, i) => tone(e, BELL, f, t + i * 0.1, 0.11, 1.2));
+    [C6, E6, G6].forEach((f) => tone(e, BELL, f, t + 0.45, 0.06, 2));
   },
 };
 

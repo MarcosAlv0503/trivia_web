@@ -66,8 +66,8 @@ select is(public.search_players('bo'), '[]'::jsonb, 'la búsqueda exige al menos
 select is(public.search_players('___'), '[]'::jsonb, 'el _ no actúa como comodín');
 select is(
   public.search_players('BOB'),
-  '[{"id": "00000000-0000-0000-0000-00000000000b", "username": "bob", "avatarId": "axolotl-gold", "relation": null}]'::jsonb,
-  'busca por prefijo sin distinguir mayúsculas y solo expone nombre y avatar'
+  '[{"id": "00000000-0000-0000-0000-00000000000b", "username": "bob", "avatarId": "axolotl-gold", "xp": 0, "relation": null}]'::jsonb,
+  'busca por prefijo sin distinguir mayúsculas y solo expone nombre, avatar y XP'
 );
 select throws_like(
   $$ select public.start_duel('00000000-0000-0000-0000-00000000000b', 'easy') $$,

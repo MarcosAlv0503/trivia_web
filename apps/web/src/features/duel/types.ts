@@ -1,4 +1,5 @@
 import type { Difficulty, DuelRounds } from "@trivia/game-core";
+import type { XpGained } from "@/features/progress/xp-gain";
 
 // Forma de lo que devuelven las RPC del duelo (los tipos generados solo dicen `Json`).
 
@@ -8,7 +9,13 @@ export type DuelResult = "win" | "loss" | "draw" | "cancelled" | null;
 export type DuelEndReason =
   "completed" | "timeout" | "surrender" | "declined" | "unfriended" | null;
 
-export type DuelPlayer = { id: string; username: string; avatarId: string; score: number };
+export type DuelPlayer = {
+  id: string;
+  username: string;
+  avatarId: string;
+  xp: number;
+  score: number;
+};
 
 export type Duel = {
   id: string;
@@ -21,6 +28,8 @@ export type Duel = {
   deadline: string;
   nextAction: DuelAction;
   canDecline: boolean;
+  /** XP ganada en este duelo; `null` hasta terminar (o si no sumó nada). */
+  xpGain: XpGained | null;
   me: DuelPlayer;
   opponent: DuelPlayer;
   rounds: {
@@ -41,7 +50,7 @@ export type DuelSummary = {
   round: number;
   roundCount: DuelRounds;
   deadline: string;
-  opponent: { username: string; avatarId: string };
+  opponent: { username: string; avatarId: string; xp: number };
   myScore: number;
   opponentScore: number;
 };

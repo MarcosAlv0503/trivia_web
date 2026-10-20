@@ -7,6 +7,9 @@ import { QuestionCard } from "@/components/question-card";
 import { Wheel } from "@/components/wheel";
 import { AnswerFeedback } from "@/features/game/answer-feedback";
 import { Avatar } from "@/features/profile/avatar";
+import { LevelBadge } from "@/features/progress/level-badge";
+import { LevelCard } from "@/features/progress/level-card";
+import { XpGain } from "@/features/progress/xp-gain";
 
 // Datos de ejemplo solo para desarrollo (sin i18n a propósito). Los colores de categoría
 // aprobados en la Fase 1; en la Fase 2 vivirán en la tabla de categorías.
@@ -48,6 +51,7 @@ export function Showcase() {
   const [spinning, setSpinning] = useState(false);
   // `id` cambia en cada pulsación para volver a montar la animación aunque se repita el mismo caso.
   const [feedback, setFeedback] = useState<{ id: number; points: number } | null>(null);
+  const [xp, setXp] = useState<{ id: number; gained: number; total: number } | null>(null);
 
   function spin() {
     setSpinning(true);
@@ -152,6 +156,35 @@ export function Showcase() {
           result={feedback && { isCorrect: feedback.points > 0, points: feedback.points }}
           timedOut={false}
         />
+      </section>
+
+      <section className="grid max-w-md gap-4">
+        <h2 className="text-2xl font-bold">XP y niveles</h2>
+        <div className="flex flex-wrap gap-3">
+          {[
+            ["Sin subir (+60)", 60, 160],
+            ["Sube de nivel (+80)", 80, 320],
+            ["Título nuevo (+90)", 90, 1010],
+          ].map(([label, gained, total]) => (
+            <button
+              key={label}
+              type="button"
+              className={buttonClassName("secondary")}
+              onClick={() =>
+                setXp({ id: Date.now(), gained: Number(gained), total: Number(total) })
+              }
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        {xp && <XpGain key={xp.id} gained={xp.gained} total={xp.total} />}
+        <LevelCard xp={1010} />
+        <div className="flex gap-2">
+          {[0, 320, 4500, 122500].map((value) => (
+            <LevelBadge key={value} xp={value} />
+          ))}
+        </div>
       </section>
 
       <section className="grid gap-4">

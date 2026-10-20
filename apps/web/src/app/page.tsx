@@ -10,6 +10,7 @@ import type { DuelSummary } from "@/features/duel/types";
 import type { FriendLists } from "@/features/friends/types";
 import { HomeIntro } from "@/features/home/home-intro";
 import { LegalLinks } from "@/features/legal/legal-links";
+import { LevelCard } from "@/features/progress/level-card";
 import { Avatar } from "@/features/profile/avatar";
 import { getAuthContext, getOwnProfile } from "@/features/profile/queries";
 import { DuelIcon, FriendsIcon, QuickIcon } from "@/components/icons";
@@ -74,6 +75,7 @@ export default async function HomePage({
         </Link>
       </div>
       <HomeIntro />
+      <LevelCard xp={profile.xp} />
 
       {/* Una tarjeta por modo de juego. */}
       <section className="flex w-full flex-col gap-3 rounded-card bg-surface p-5 sticker">

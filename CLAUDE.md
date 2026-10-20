@@ -76,7 +76,7 @@ Supabase local con la CLI (`supabase start`, requiere Docker). Migraciones versi
   6. Producción: Vercel + Supabase Cloud, copias, monitorización de errores, retención D1/D7. Preparado en el repo (2026-10-20); **pendiente:** que el usuario cree los proyectos siguiendo `docs/produccion.md`.
   7. Beta cerrada con 20–50 personas.
 - **Fase 5 — Hábito y progresión (ACTUAL).** Tareas en orden:
-  1. XP y niveles con títulos.
+  1. XP y niveles con títulos (hecho, 2026-10-21; pendiente de que el usuario lo pruebe: `/dev/ui` > "XP y niveles").
   2. Estadísticas por categoría y % de acierto global de cada pregunta.
   3. Modo práctica.
   4. Reto diario compartible (mismas preguntas para todos, resultado en cuadritos de color de categoría).
@@ -145,4 +145,5 @@ Actualizar al cerrar cada sesión.
 - **2026-10-19 — Textos legales.** `/legal/terms` y `/legal/privacy` son públicas (proxy). El contenido por idioma vive en `features/legal/content/*.ts`, fuera de `messages/*.json`, porque el proveedor de next-intl envía los mensajes a todas las páginas. `profiles.terms_version` es obligatoria al crear el perfil (la envía la web desde `LEGAL.version`) y `terms_accepted_at` la pone la BD (no editable). Al cambiar los textos de forma relevante se sube `LEGAL.version`; volver a pedir la aceptación a las cuentas existentes aún no está hecho.
 - **2026-10-20 — Producción.** Guía en `docs/produccion.md`. Supabase Cloud en la UE; las migraciones y la función `push` se despliegan desde el CI (job `deploy-supabase`, tras los checks en `main`; inactivo sin `vars.SUPABASE_PROJECT_ID`), la web desde Vercel (root `apps/web`, variables solo en _Production_). El seed no va a producción (es público); el contenido se genera allí con los procesos (`env` en `.claude/settings.local.json`).
 - **2026-10-20 — Errores con Sentry** (`@sentry/nextjs`, región UE): solo errores, sin trazas, replay ni PII; sin `NEXT_PUBLIC_SENTRY_DSN` no envía nada. Source maps con `SENTRY_AUTH_TOKEN` en Vercel. Envío por el túnel `/lagoon` (esquiva bloqueadores de anuncios), excluido del proxy.
+- **2026-10-21 — XP con ledger.** `xp_events` (una fila por jugador y partida) + total en `profiles.xp` (no editable por el cliente). La suman triggers al terminar la partida rápida (`finished_at`) o el duelo (`status`): cubre todos los finales sin tocar cada RPC. La regla de XP vive solo en la migración `xp_and_levels`; nivel y título se derivan del total en `game-core` (`progress.ts`). Las RPC devuelven `xp` de cada jugador y lo ganado en la partida (`xp` / `xpGain`).
 - **2026-10-20 — Retención y copias.** `retention_stats(days)` (solo `service_role`/Studio) con la actividad de juego que ya guardamos. `pnpm db:backup` (`supabase db dump`) a `.backups/` (ignorada), borrando las de más de 30 días como promete la privacidad.

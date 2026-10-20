@@ -11,6 +11,28 @@
     "duelsTitle": "Tus duelos",
     "noDuels": "Aún no tienes duelos. ¡Reta a un amigo!"
   },
+  "Progress": {
+    "level": "Nivel {level}",
+    "levelShort": "Nv. {level}",
+    "xp": "{current} / {needed} XP",
+    "gained": "+{xp} XP",
+    "barLabel": "Progreso hasta el nivel {next}",
+    "levelUp": "¡Nivel {level}!",
+    "newTitle": "Nuevo título: {title}",
+    "titles": {
+      "1": "Huevito",
+      "5": "Larva curiosa",
+      "10": "Branquias inquietas",
+      "15": "Promesa de la laguna",
+      "20": "Cerebrito",
+      "25": "Sabelotodo",
+      "30": "Enciclopedia andante",
+      "35": "Mente brillante",
+      "40": "Leyenda de la laguna",
+      "45": "Eminencia",
+      "50": "Oráculo de la laguna"
+    }
+  },
   "Auth": {
     "signInWith": "Entrar con {provider}",
     "signOut": "Cerrar sesión",

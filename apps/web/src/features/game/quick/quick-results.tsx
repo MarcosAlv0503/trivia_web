@@ -9,6 +9,7 @@ import { buttonClassName } from "@/components/button";
 import { Mascot } from "@/components/mascot";
 import { playSound } from "@/features/game/sfx";
 import { Avatar } from "@/features/profile/avatar";
+import { XpGain } from "@/features/progress/xp-gain";
 import { startQuickMatch, type StartState } from "./actions";
 import type { QuickMatch } from "./types";
 
@@ -72,6 +73,7 @@ export function QuickResults({ match }: { match: QuickMatch }) {
             </motion.li>
           ))}
         </ol>
+        {match.xp && <XpGain {...match.xp} />}
       </div>
 
       {state.error && (

@@ -1,4 +1,5 @@
 import type { Difficulty } from "@trivia/game-core";
+import type { XpGained } from "@/features/progress/xp-gain";
 
 // Forma de lo que devuelven las RPC del modo rápido (los tipos generados solo dicen `Json`).
 
@@ -17,6 +18,8 @@ export type QuickMatch = {
   /** Siguiente posición por jugar; `null` si la partida ha terminado. */
   nextPosition: number | null;
   players: QuickPlayer[];
+  /** XP del anfitrión en esta partida; `null` hasta terminar. */
+  xp: XpGained | null;
 };
 
 export type ServedQuestion = {

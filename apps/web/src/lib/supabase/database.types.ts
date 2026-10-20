@@ -372,6 +372,7 @@ export type Database = {
           terms_version: number;
           updated_at: string;
           username: string;
+          xp: number;
         };
         ComputedFields: never;
         Insert: {
@@ -383,6 +384,7 @@ export type Database = {
           terms_version: number;
           updated_at?: string;
           username: string;
+          xp?: number;
         };
         Update: {
           avatar_id?: string;
@@ -393,6 +395,7 @@ export type Database = {
           terms_version?: number;
           updated_at?: string;
           username?: string;
+          xp?: number;
         };
         Relationships: [
           {
@@ -698,6 +701,52 @@ export type Database = {
         };
         Relationships: [];
       };
+      xp_events: {
+        Row: {
+          amount: number;
+          created_at: string;
+          duel_id: string | null;
+          id: number;
+          player_id: string;
+          quick_match_id: string | null;
+          total: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          amount: number;
+          created_at?: string;
+          duel_id?: string | null;
+          id?: never;
+          player_id: string;
+          quick_match_id?: string | null;
+          total: number;
+        };
+        Update: {
+          amount?: number;
+          created_at?: string;
+          duel_id?: string | null;
+          id?: never;
+          player_id?: string;
+          quick_match_id?: string | null;
+          total?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "xp_events_duel_id_fkey";
+            columns: ["duel_id"];
+            isOneToOne: false;
+            referencedRelation: "duels";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "xp_events_quick_match_id_fkey";
+            columns: ["quick_match_id"];
+            isOneToOne: false;
+            referencedRelation: "quick_matches";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -785,6 +834,10 @@ export type Database = {
       };
       get_duel: { Args: { duel_id: string }; Returns: Json };
       get_quick_match: { Args: { match_id: string }; Returns: Json };
+      grant_xp: {
+        Args: { amount: number; duel: string; player: string; quick_match: string };
+        Returns: undefined;
+      };
       import_questions: { Args: { items: Json }; Returns: number };
       is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
       is_playable: {
@@ -891,6 +944,7 @@ export type Database = {
       };
       surrender_duel: { Args: { duel_id: string }; Returns: undefined };
       warn_duel_deadlines: { Args: Record<PropertyKey, never>; Returns: number };
+      xp_gain: { Args: { duel: string; player: string; quick_match: string }; Returns: Json };
     };
     Enums: {
       [_ in never]: never;

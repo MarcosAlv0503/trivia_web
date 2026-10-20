@@ -8,6 +8,7 @@ import { buttonClassName } from "@/components/button";
 import { startDuel, type StartDuelError } from "@/features/duel/start-duel";
 import { DifficultyPicker, SegmentedPicker } from "@/features/game/difficulty-picker";
 import { Avatar } from "@/features/profile/avatar";
+import { LevelBadge } from "@/features/progress/level-badge";
 import { createClient } from "@/lib/supabase/client";
 import type { FriendLists, Player, SearchResult } from "./types";
 import { CloseIcon } from "@/components/icons";
@@ -214,6 +215,7 @@ function FriendRow({
       <div className="flex items-center gap-3 pr-1">
         <Avatar id={player.avatarId} size={44} />
         <span className="font-display text-lg font-bold">{player.username}</span>
+        <LevelBadge xp={player.xp} />
         {mode === "idle" && (
           <div className="ml-auto flex gap-2">
             <button
@@ -309,6 +311,7 @@ function PlayerRow({ player, children }: { player: Player; children?: React.Reac
     <div className="flex items-center gap-3 rounded-2xl bg-surface p-2 pr-3 sticker">
       <Avatar id={player.avatarId} size={44} />
       <span className="font-display text-lg font-bold">{player.username}</span>
+      <LevelBadge xp={player.xp} />
       {children}
     </div>
   );
