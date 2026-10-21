@@ -334,6 +334,144 @@ export type Database = {
           },
         ];
       };
+      live_duel_answers: {
+        Row: {
+          answered_at: string | null;
+          chosen: number | null;
+          credited: boolean | null;
+          duel_id: string;
+          is_correct: boolean | null;
+          player_id: string;
+          points: number | null;
+          position: number;
+          served_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          answered_at?: string | null;
+          chosen?: number | null;
+          credited?: boolean | null;
+          duel_id: string;
+          is_correct?: boolean | null;
+          player_id: string;
+          points?: number | null;
+          position: number;
+          served_at: string;
+        };
+        Update: {
+          answered_at?: string | null;
+          chosen?: number | null;
+          credited?: boolean | null;
+          duel_id?: string;
+          is_correct?: boolean | null;
+          player_id?: string;
+          points?: number | null;
+          position?: number;
+          served_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "live_duel_answers_duel_id_fkey";
+            columns: ["duel_id"];
+            isOneToOne: false;
+            referencedRelation: "live_duels";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "live_duel_answers_duel_id_position_fkey";
+            columns: ["duel_id", "position"];
+            isOneToOne: false;
+            referencedRelation: "live_duel_questions";
+            referencedColumns: ["duel_id", "position"];
+          },
+        ];
+      };
+      live_duel_questions: {
+        Row: {
+          answer_order: number[];
+          duel_id: string;
+          position: number;
+          question_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          answer_order: number[];
+          duel_id: string;
+          position: number;
+          question_id: string;
+        };
+        Update: {
+          answer_order?: number[];
+          duel_id?: string;
+          position?: number;
+          question_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "live_duel_questions_duel_id_fkey";
+            columns: ["duel_id"];
+            isOneToOne: false;
+            referencedRelation: "live_duels";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "live_duel_questions_question_id_fkey";
+            columns: ["question_id"];
+            isOneToOne: false;
+            referencedRelation: "questions";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      live_duels: {
+        Row: {
+          challenger_id: string;
+          challenger_locale: string;
+          challenger_score: number;
+          created_at: string;
+          difficulty: string;
+          finished_at: string | null;
+          id: string;
+          opponent_id: string;
+          opponent_locale: string;
+          opponent_score: number;
+          question_count: number;
+          starts_at: string | null;
+          status: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          challenger_id: string;
+          challenger_locale: string;
+          challenger_score?: number;
+          created_at?: string;
+          difficulty: string;
+          finished_at?: string | null;
+          id?: string;
+          opponent_id: string;
+          opponent_locale: string;
+          opponent_score?: number;
+          question_count?: number;
+          starts_at?: string | null;
+          status?: string;
+        };
+        Update: {
+          challenger_id?: string;
+          challenger_locale?: string;
+          challenger_score?: number;
+          created_at?: string;
+          difficulty?: string;
+          finished_at?: string | null;
+          id?: string;
+          opponent_id?: string;
+          opponent_locale?: string;
+          opponent_score?: number;
+          question_count?: number;
+          starts_at?: string | null;
+          status?: string;
+        };
+        Relationships: [];
+      };
       notifications: {
         Row: {
           actor_name: string;
@@ -362,12 +500,32 @@ export type Database = {
         };
         Relationships: [];
       };
+      presence: {
+        Row: {
+          busy: boolean;
+          last_seen_at: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          busy?: boolean;
+          last_seen_at: string;
+          user_id: string;
+        };
+        Update: {
+          busy?: boolean;
+          last_seen_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           avatar_id: string;
           created_at: string;
           id: string;
           locale: string;
+          show_online: boolean;
           terms_accepted_at: string;
           terms_version: number;
           updated_at: string;
@@ -380,6 +538,7 @@ export type Database = {
           created_at?: string;
           id: string;
           locale: string;
+          show_online?: boolean;
           terms_accepted_at?: string;
           terms_version: number;
           updated_at?: string;
@@ -391,6 +550,7 @@ export type Database = {
           created_at?: string;
           id?: string;
           locale?: string;
+          show_online?: boolean;
           terms_accepted_at?: string;
           terms_version?: number;
           updated_at?: string;
@@ -765,6 +925,11 @@ export type Database = {
         Args: { choice: number; duel_id: string; question_round: number; question_slot: number };
         Returns: Json;
       };
+      answer_live_invite: { Args: { accept: boolean; duel_id: string }; Returns: undefined };
+      answer_live_question: {
+        Args: { choice: number; duel_id: string; question_position: number };
+        Returns: Json;
+      };
       answer_points: {
         Args: { elapsed_ms: number; hit: boolean; time_limit_ms: number };
         Returns: number;
@@ -784,6 +949,7 @@ export type Database = {
         };
         Returns: boolean;
       };
+      cancel_live_duel: { Args: { duel_id: string }; Returns: undefined };
       check_rate_limit: {
         Args: { limited_action: string; max_hits: number; per: string };
         Returns: undefined;
@@ -833,12 +999,14 @@ export type Database = {
         Returns: undefined;
       };
       get_duel: { Args: { duel_id: string }; Returns: Json };
+      get_live_duel: { Args: { duel_id: string }; Returns: Json };
       get_quick_match: { Args: { match_id: string }; Returns: Json };
       grant_xp: {
         Args: { amount: number; duel: string; player: string; quick_match: string };
         Returns: undefined;
       };
       import_questions: { Args: { items: Json }; Returns: number };
+      invite_live_duel: { Args: { friend: string; match_difficulty: string }; Returns: string };
       is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
       is_playable: {
         Args: {
@@ -853,6 +1021,40 @@ export type Database = {
       is_username_available: { Args: { candidate: string }; Returns: boolean };
       list_duels: { Args: Record<PropertyKey, never>; Returns: Json };
       list_friends: { Args: Record<PropertyKey, never>; Returns: Json };
+      live_busy: { Args: { uid: string }; Returns: boolean };
+      live_clock_end: {
+        Args: {
+          d: Omit<
+            Database["public"]["Tables"]["live_duels"]["Row"],
+            Database["public"]["Tables"]["live_duels"]["ComputedFields"]
+          >;
+          player: string;
+        };
+        Returns: string;
+      };
+      live_ms: { Args: { span: string }; Returns: number };
+      live_player_done: {
+        Args: {
+          d: Omit<
+            Database["public"]["Tables"]["live_duels"]["Row"],
+            Database["public"]["Tables"]["live_duels"]["ComputedFields"]
+          >;
+          player: string;
+        };
+        Returns: boolean;
+      };
+      live_player_summary: {
+        Args: {
+          d: Omit<
+            Database["public"]["Tables"]["live_duels"]["Row"],
+            Database["public"]["Tables"]["live_duels"]["ComputedFields"]
+          >;
+          player: string;
+          score: number;
+        };
+        Returns: Json;
+      };
+      live_points: { Args: { elapsed_ms: number; hit: boolean }; Returns: number };
       lock_active_duel: {
         Args: { target: string; uid: string };
         Returns: {
@@ -885,6 +1087,7 @@ export type Database = {
         Args: { actor: string; notification_kind: string; related_duel?: string; target: string };
         Returns: undefined;
       };
+      presence_of: { Args: { target: string; viewer: string }; Returns: string };
       remember_guest: {
         Args: { guest_avatar_id: string; guest_name: string };
         Returns: {
@@ -932,7 +1135,9 @@ export type Database = {
       search_players: { Args: { query: string }; Returns: Json };
       send_friend_request: { Args: { target: string }; Returns: string };
       serve_duel_question: { Args: { duel_id: string }; Returns: Json };
+      serve_live_question: { Args: { duel_id: string }; Returns: Json };
       serve_quick_question: { Args: { match_id: string }; Returns: Json };
+      settle_live_duels: { Args: { uid: string }; Returns: undefined };
       spin_duel_round: { Args: { duel_id: string }; Returns: Json };
       start_duel: {
         Args: { duel_difficulty: string; duel_round_count?: number; opponent: string };
@@ -943,6 +1148,7 @@ export type Database = {
         Returns: string;
       };
       surrender_duel: { Args: { duel_id: string }; Returns: undefined };
+      touch_presence: { Args: { is_busy: boolean }; Returns: undefined };
       warn_duel_deadlines: { Args: Record<PropertyKey, never>; Returns: number };
       xp_gain: { Args: { duel: string; player: string; quick_match: string }; Returns: Json };
     };
