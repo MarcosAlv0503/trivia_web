@@ -126,6 +126,28 @@ export type Database = {
           },
         ];
       };
+      daily_challenges: {
+        Row: {
+          created_at: string;
+          day: string;
+          number: number;
+          question_ids: string[];
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          day: string;
+          number: number;
+          question_ids: string[];
+        };
+        Update: {
+          created_at?: string;
+          day?: string;
+          number?: number;
+          question_ids?: string[];
+        };
+        Relationships: [];
+      };
       duel_plays: {
         Row: {
           answer_order: number[];
@@ -811,7 +833,8 @@ export type Database = {
       quick_matches: {
         Row: {
           created_at: string;
-          difficulty: string;
+          daily_day: string | null;
+          difficulty: string | null;
           finished_at: string | null;
           id: string;
           locale: string;
@@ -821,7 +844,8 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           created_at?: string;
-          difficulty: string;
+          daily_day?: string | null;
+          difficulty?: string | null;
           finished_at?: string | null;
           id?: string;
           locale: string;
@@ -830,14 +854,23 @@ export type Database = {
         };
         Update: {
           created_at?: string;
-          difficulty?: string;
+          daily_day?: string | null;
+          difficulty?: string | null;
           finished_at?: string | null;
           id?: string;
           locale?: string;
           owner_id?: string;
           player_count?: number;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "quick_matches_daily_day_fkey";
+            columns: ["daily_day"];
+            isOneToOne: false;
+            referencedRelation: "daily_challenges";
+            referencedColumns: ["day"];
+          },
+        ];
       };
       rate_limits: {
         Row: {
@@ -966,6 +999,17 @@ export type Database = {
         Returns: undefined;
       };
       current_player_id: { Args: Record<PropertyKey, never>; Returns: string };
+      daily_result: {
+        Args: {
+          m: Omit<
+            Database["public"]["Tables"]["quick_matches"]["Row"],
+            Database["public"]["Tables"]["quick_matches"]["ComputedFields"]
+          >;
+          viewer_locale: string;
+        };
+        Returns: Json;
+      };
+      daily_today: { Args: Record<PropertyKey, never>; Returns: string };
       decline_duel: { Args: { duel_id: string }; Returns: undefined };
       delete_own_account: { Args: Record<PropertyKey, never>; Returns: undefined };
       delete_push_subscription: { Args: { sub_endpoint: string }; Returns: undefined };
@@ -1003,12 +1047,28 @@ export type Database = {
         };
         Returns: string;
       };
+      ensure_daily_challenge: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          created_at: string;
+          day: string;
+          number: number;
+          question_ids: string[];
+        };
+        SetofOptions: {
+          from: "*";
+          to: "daily_challenges";
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       expire_duels: { Args: { uid: string }; Returns: undefined };
       export_questions: { Args: Record<PropertyKey, never>; Returns: Json };
       file_question_report: {
         Args: { question: string; report_locale: string; report_reason: string; reporter: string };
         Returns: undefined;
       };
+      get_daily: { Args: Record<PropertyKey, never>; Returns: Json };
       get_duel: { Args: { duel_id: string }; Returns: Json };
       get_live_duel: { Args: { duel_id: string }; Returns: Json };
       get_quick_match: { Args: { match_id: string }; Returns: Json };
@@ -1151,6 +1211,7 @@ export type Database = {
       serve_quick_question: { Args: { match_id: string }; Returns: Json };
       settle_live_duels: { Args: { uid: string }; Returns: undefined };
       spin_duel_round: { Args: { duel_id: string }; Returns: Json };
+      start_daily_match: { Args: Record<PropertyKey, never>; Returns: string };
       start_duel: {
         Args: { duel_difficulty: string; duel_round_count?: number; opponent: string };
         Returns: string;

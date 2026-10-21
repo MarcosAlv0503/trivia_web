@@ -108,7 +108,9 @@ select set_config('test.m', public.start_quick_match('easy')::text, true);
 select public.serve_quick_question(current_setting('test.m')::uuid);
 select ok(public.answer_quick_question(current_setting('test.m')::uuid, 0, 0) ? 'hitRate',
   'answer_quick_question devuelve hitRate');
-select is(public.category_stats() -> 0 -> 'answered', '3'::jsonb, 'la respuesta recién dada ya cuenta');
+-- La pregunta servida es al azar (de Geografía o de Historia): se mira el total.
+select is((select sum((s ->> 'answered')::integer) from jsonb_array_elements(public.category_stats()) as s), 5::bigint,
+  'la respuesta recién dada ya cuenta');
 
 select * from finish();
 rollback;

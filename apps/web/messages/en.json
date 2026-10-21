@@ -44,6 +44,25 @@
     "notPlayed": "Not played yet",
     "barLabel": "Correct answers in {category} ({count} answered)"
   },
+  "Daily": {
+    "title": "Daily challenge #{number}",
+    "summary": "7 questions, one from each category",
+    "tagline": "The same for everyone. How many can you get today?",
+    "play": "Play",
+    "continue": "Continue",
+    "seeResult": "See result",
+    "result": "{correct}/{total} · {points} points",
+    "points": "{points} pts",
+    "back": "Back",
+    "friendsTitle": "Your friends today",
+    "noFriends": "None of your friends has played it yet.",
+    "share": "Share",
+    "shareText": "Daily challenge #{number}: {correct}/{total} and {points} points. Can you beat me? {url}",
+    "shareCopied": "Image downloaded and text copied.",
+    "shareError": "Couldn’t share.",
+    "squareHit": "{category}: correct",
+    "squareMiss": "{category}: wrong"
+  },
   "Auth": {
     "signInWith": "Sign in with {provider}",
     "signOut": "Sign out",

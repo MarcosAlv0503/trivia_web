@@ -13,7 +13,8 @@ export type QuickPlayer = {
 
 export type QuickMatch = {
   id: string;
-  difficulty: Difficulty;
+  /** null en el reto diario (dificultades mezcladas). */
+  difficulty: Difficulty | null;
   total: number;
   /** Siguiente posición por jugar; `null` si la partida ha terminado. */
   nextPosition: number | null;

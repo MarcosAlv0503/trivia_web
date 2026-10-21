@@ -100,7 +100,7 @@ export function QuickResults({ match }: { match: QuickMatch }) {
       <div className="flex w-full gap-3">
         {/* Revancha: mismos jugadores (en el mismo orden) y misma dificultad. */}
         <form action={formAction} className="flex-1">
-          <input type="hidden" name="difficulty" value={match.difficulty} />
+          <input type="hidden" name="difficulty" value={match.difficulty ?? ""} />
           {match.players
             .filter((p) => p.seat > 0)
             .map((p) => (

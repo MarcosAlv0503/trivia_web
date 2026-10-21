@@ -143,6 +143,19 @@ export const DuelIcon = (p: IconProps) => (
   </Svg>
 );
 
+/** Hoja de calendario con una estrella: reto diario. */
+export const DailyIcon = (p: IconProps) => (
+  <Svg {...p} stroke="var(--color-sticker)" strokeWidth="1.3" strokeLinejoin="round">
+    <rect x="2.5" y="4" width="19" height="18" rx="3.5" fill="var(--color-surface-2)" />
+    <path d="M2.5 10V7.5A3.5 3.5 0 0 1 6 4h12a3.5 3.5 0 0 1 3.5 3.5V10z" fill="var(--color-play)" />
+    <path d="M8 2v4M16 2v4" strokeWidth="1.8" strokeLinecap="round" />
+    <path
+      d="m12 11.8 1.6 3.1 3.4.5-2.5 2.4.6 3.4-3.1-1.6-3.1 1.6.6-3.4-2.5-2.4 3.4-.5z"
+      fill="var(--color-accent)"
+    />
+  </Svg>
+);
+
 /** Reloj con un rayo: duelo relámpago. */
 export const LiveIcon = (p: IconProps) => (
   <Svg {...p} stroke="var(--color-sticker)" strokeWidth="1.3" strokeLinejoin="round">

@@ -2,6 +2,7 @@
 
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { phaseAfterReveal, roundOf, seatOf } from "@trivia/game-core";
@@ -19,9 +20,13 @@ import { CloseIcon } from "@/components/icons";
 
 type Phase = "loading" | "handoff" | "question" | "reveal" | "results" | "error";
 
-/** Conduce la partida: el servidor sirve, cronometra y puntúa; aquí solo se muestra y se envía la elección. */
-export function QuickGame({ matchId }: { matchId: string }) {
+/**
+ * Conduce la partida: el servidor sirve, cronometra y puntúa; aquí solo se muestra y se envía la elección.
+ * `daily`: es el reto diario; al terminar, la página (/daily) se recarga y muestra su propio resultado.
+ */
+export function QuickGame({ matchId, daily = false }: { matchId: string; daily?: boolean }) {
   const t = useTranslations("Quick");
+  const router = useRouter();
   const [supabase] = useState(createClient);
   const [phase, setPhase] = useState<Phase>("loading");
   const [error, setError] = useState<"notFound" | "generic">("generic");
@@ -121,6 +126,12 @@ export function QuickGame({ matchId }: { matchId: string }) {
     () => void answer(null),
   );
 
+  // Reto diario terminado: la página vuelve a pedirse al servidor y pasa a mostrar su resultado.
+  const showResults = phase === "results";
+  useEffect(() => {
+    if (daily && showResults) router.refresh();
+  }, [daily, showResults, router]);
+
   // Tras ver la correcta, el jugador avanza cuando quiere ("Siguiente"). Pulsar dos veces no rompe nada:
   // servir y cargar la partida son idempotentes.
   async function next() {
@@ -158,7 +169,7 @@ export function QuickGame({ matchId }: { matchId: string }) {
     );
   }
 
-  if (phase === "loading" || !match) {
+  if (phase === "loading" || !match || (daily && showResults)) {
     return (
       <Centered>
         <motion.div

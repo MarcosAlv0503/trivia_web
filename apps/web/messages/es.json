@@ -44,6 +44,25 @@
     "notPlayed": "Sin jugar",
     "barLabel": "Aciertos en {category} ({count, plural, one {# respondida} other {# respondidas}})"
   },
+  "Daily": {
+    "title": "Reto diario #{number}",
+    "summary": "7 preguntas, una de cada categoría",
+    "tagline": "Las mismas para todos. ¿Cuántas aciertas hoy?",
+    "play": "Jugar",
+    "continue": "Continuar",
+    "seeResult": "Ver resultado",
+    "result": "{correct}/{total} · {points} puntos",
+    "points": "{points} pts",
+    "back": "Volver",
+    "friendsTitle": "Tus amigos hoy",
+    "noFriends": "Ninguno de tus amigos lo ha jugado todavía.",
+    "share": "Compartir",
+    "shareText": "Reto diario #{number}: {correct}/{total} y {points} puntos. ¿Me superas? {url}",
+    "shareCopied": "Imagen descargada y texto copiado.",
+    "shareError": "No se ha podido compartir.",
+    "squareHit": "{category}: acierto",
+    "squareMiss": "{category}: fallo"
+  },
   "Auth": {
     "signInWith": "Entrar con {provider}",
     "signOut": "Cerrar sesión",

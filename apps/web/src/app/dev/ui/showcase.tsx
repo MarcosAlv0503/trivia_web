@@ -16,6 +16,7 @@ import { LevelBadge } from "@/features/progress/level-badge";
 import { LevelCard } from "@/features/progress/level-card";
 import { XpGain } from "@/features/progress/xp-gain";
 import { CategoryStats } from "@/features/stats/category-stats";
+import { DailySquares } from "@/features/daily/daily-squares";
 
 // Datos de ejemplo solo para desarrollo (sin i18n a propósito). Los colores de categoría
 // aprobados en la Fase 1; en la Fase 2 vivirán en la tabla de categorías.
@@ -169,6 +170,30 @@ export function Showcase() {
           }
           timedOut={false}
         />
+      </section>
+
+      <section className="grid max-w-md gap-4">
+        <h2 className="text-2xl font-bold">Reto diario: cuadritos</h2>
+        {[42, 36, 20].map((size) => (
+          <DailySquares
+            key={size}
+            size={size}
+            rounds={[
+              ["geography", "#2ECC8F"],
+              ["history", "#D9964A"],
+              ["science", "#2EC4E6"],
+              ["art-literature", "#9B7BFF"],
+              ["entertainment", "#FF7A45"],
+              ["sports", "#F5C431"],
+              ["technology", "#5C7CFA"],
+            ].map(([id, color], i) => ({
+              categoryId: id!,
+              name: id!,
+              color: color!,
+              correct: i !== 2 && i !== 5,
+            }))}
+          />
+        ))}
       </section>
 
       <section className="grid max-w-md gap-4">

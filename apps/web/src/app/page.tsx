@@ -7,6 +7,8 @@ import { LoginButtons } from "@/features/auth/login-buttons";
 import { SignOutButton } from "@/features/auth/sign-out-button";
 import { DuelList } from "@/features/duel/duel-list";
 import type { DuelSummary } from "@/features/duel/types";
+import { DailyCard } from "@/features/daily/daily-card";
+import type { Daily } from "@/features/daily/types";
 import type { FriendLists } from "@/features/friends/types";
 import { HomeIntro } from "@/features/home/home-intro";
 import { LegalLinks } from "@/features/legal/legal-links";
@@ -40,7 +42,7 @@ export default async function HomePage({
   const profile = await getOwnProfile();
   if (!profile) redirect("/onboarding");
   const { supabase } = await getAuthContext();
-  const [t, tProgress, tQuick, tDuel, tLive, { data: duels }, { data: friends }] =
+  const [t, tProgress, tQuick, tDuel, tLive, { data: duels }, { data: friends }, { data: daily }] =
     await Promise.all([
       getTranslations("Home"),
       getTranslations("Progress"),
@@ -49,6 +51,7 @@ export default async function HomePage({
       getTranslations("Live"),
       supabase.rpc("list_duels"),
       supabase.rpc("list_friends"),
+      supabase.rpc("get_daily"),
     ]);
   const incoming = (friends as unknown as FriendLists | null)?.incoming.length ?? 0;
   const { level } = levelProgress(profile.xp);
@@ -82,7 +85,8 @@ export default async function HomePage({
       </div>
       <HomeIntro />
 
-      {/* Una tarjeta por modo de juego. */}
+      {/* Una tarjeta por modo de juego; el reto diario primero. Sin reto (p. ej. sin preguntas suficientes), sin tarjeta. */}
+      {daily && <DailyCard daily={daily as unknown as Daily} />}
       <section className="flex w-full flex-col gap-3 rounded-card bg-surface p-5 sticker">
         <h2 className="flex items-center gap-2 text-2xl font-bold">
           <QuickIcon size={30} />
