@@ -4,6 +4,7 @@ import { Fredoka, Nunito } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 import { NotificationToasts } from "@/features/notifications/notification-toasts";
+import { PresenceHeartbeat } from "@/features/presence/presence-heartbeat";
 import { isTextSize, TEXT_SIZE_COOKIE } from "@/features/preferences/preferences";
 import { getAuthContext } from "@/features/profile/queries";
 import { BRAND_BG } from "@/features/pwa/brand-icon";
@@ -43,6 +44,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <NextIntlClientProvider>
           {children}
           {claims && <NotificationToasts userId={claims.sub} />}
+          {claims && <PresenceHeartbeat />}
           <RegisterServiceWorker />
         </NextIntlClientProvider>
       </body>

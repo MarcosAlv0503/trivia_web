@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { levelProgress, QUICK } from "@trivia/game-core";
+import { levelProgress, LIVE, QUICK } from "@trivia/game-core";
 import { buttonClassName } from "@/components/button";
 import { LoginButtons } from "@/features/auth/login-buttons";
 import { SignOutButton } from "@/features/auth/sign-out-button";
@@ -12,7 +12,7 @@ import { HomeIntro } from "@/features/home/home-intro";
 import { LegalLinks } from "@/features/legal/legal-links";
 import { Avatar } from "@/features/profile/avatar";
 import { getAuthContext, getOwnProfile } from "@/features/profile/queries";
-import { DuelIcon, FriendsIcon, QuickIcon } from "@/components/icons";
+import { DuelIcon, FriendsIcon, LiveIcon, QuickIcon } from "@/components/icons";
 
 export default async function HomePage({
   searchParams,
@@ -40,14 +40,16 @@ export default async function HomePage({
   const profile = await getOwnProfile();
   if (!profile) redirect("/onboarding");
   const { supabase } = await getAuthContext();
-  const [t, tProgress, tQuick, tDuel, { data: duels }, { data: friends }] = await Promise.all([
-    getTranslations("Home"),
-    getTranslations("Progress"),
-    getTranslations("Quick"),
-    getTranslations("Duel"),
-    supabase.rpc("list_duels"),
-    supabase.rpc("list_friends"),
-  ]);
+  const [t, tProgress, tQuick, tDuel, tLive, { data: duels }, { data: friends }] =
+    await Promise.all([
+      getTranslations("Home"),
+      getTranslations("Progress"),
+      getTranslations("Quick"),
+      getTranslations("Duel"),
+      getTranslations("Live"),
+      supabase.rpc("list_duels"),
+      supabase.rpc("list_friends"),
+    ]);
   const incoming = (friends as unknown as FriendLists | null)?.incoming.length ?? 0;
   const { level } = levelProgress(profile.xp);
 
@@ -111,6 +113,21 @@ export default async function HomePage({
         </p>
         <Link href="/friends" className={buttonClassName("play", "self-end text-xl")}>
           {tDuel("challengeFriend")}
+        </Link>
+      </section>
+
+      <section className="flex w-full flex-col gap-3 rounded-card bg-surface p-5 sticker">
+        <h2 className="flex items-center gap-2 text-2xl font-bold">
+          <LiveIcon size={30} />
+          {tLive("title")}
+        </h2>
+        <p className="font-bold text-fg-muted">
+          {tLive("summary", { seconds: LIVE.matchMs / 1000 })}
+          <br />
+          {tLive("tagline")}
+        </p>
+        <Link href="/live" className={buttonClassName("play", "self-end text-xl")}>
+          {tLive("play")}
         </Link>
       </section>
 

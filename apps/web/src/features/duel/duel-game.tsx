@@ -5,7 +5,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
-import { DUEL, duelPendingRound, hoursLeft } from "@trivia/game-core";
+import {
+  DUEL,
+  duelPendingRound,
+  headToHeadOutcome,
+  hoursLeft,
+  legendaryThreshold,
+} from "@trivia/game-core";
 import { buttonClassName } from "@/components/button";
 import { Mascot } from "@/components/mascot";
 import { QuestionCard } from "@/components/question-card";
@@ -13,6 +19,7 @@ import { BackLink } from "@/components/back-link";
 import { CategoryIcon } from "@/components/category-icon";
 import { Wheel } from "@/components/wheel";
 import { AnswerFeedback } from "@/features/game/answer-feedback";
+import { MatchOutcome, useOutcomeOnce } from "@/features/game/match-outcome";
 import { playSound } from "@/features/game/sfx";
 import { ReportQuestion, type ReportReason } from "@/features/game/report-question";
 import { useQuestionTimer } from "@/features/game/use-question-timer";
@@ -161,6 +168,16 @@ export function DuelGame({ duelId }: { duelId: string }) {
     return () => window.removeEventListener(NOTIFICATION_EVENT, listener);
   }, []);
 
+  // Final con animación (una vez por dispositivo); un duelo cancelado o rechazado no la tiene.
+  const decided =
+    phase === "overview" &&
+    duel?.status === "finished" &&
+    duel.result &&
+    duel.result !== "cancelled"
+      ? duel.result
+      : null;
+  const outcomeShown = useOutcomeOnce(decided ? `duel:${duelId}` : null);
+
   // El reloj se para al elegir (sin esperar a la respuesta del servidor).
   const timeLeftMs = useQuestionTimer(
     question,
@@ -173,7 +190,6 @@ export function DuelGame({ duelId }: { duelId: string }) {
     const loaded = await loadDuel();
     if (!loaded) return;
     if (loaded.nextAction === "answer") return serve();
-    if (loaded.result === "win") playSound("win");
     setPhase("overview");
   }
 
@@ -277,6 +293,16 @@ export function DuelGame({ duelId }: { duelId: string }) {
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-5 p-4 sm:p-6">
+      {decided && outcomeShown.showing && (
+        <MatchOutcome
+          kind={headToHeadOutcome(
+            decided,
+            duel.me.score,
+            legendaryThreshold(duel.roundCount * DUEL.questionsPerRound),
+          )}
+          onDone={outcomeShown.dismiss}
+        />
+      )}
       <DuelHeader
         canSurrender={active}
         busy={busy}
@@ -348,7 +374,9 @@ export function DuelGame({ duelId }: { duelId: string }) {
               {duel.endReason && duel.endReason !== "completed" && (
                 <p className="text-fg-muted">{t(`reasons.${duel.endReason}`)}</p>
               )}
-              {duel.xpGain && <XpGain {...duel.xpGain} />}
+              {duel.xpGain && (!decided || outcomeShown.afterOutcome) && (
+                <XpGain {...duel.xpGain} />
+              )}
             </>
           )}
         </div>

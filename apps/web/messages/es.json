@@ -141,7 +141,10 @@
     "remove": "Eliminar",
     "removeConfirm": "¿Eliminar a {name} de tus amigos? Los duelos en curso se cancelarán.",
     "removeYes": "Sí, eliminar",
-    "error": "Algo ha fallado. Inténtalo de nuevo."
+    "error": "Algo ha fallado. Inténtalo de nuevo.",
+    "online": "En línea",
+    "busy": "Jugando",
+    "liveChallenge": "Duelo relámpago"
   },
   "Duel": {
     "title": "Duelo por turnos",
@@ -188,13 +191,75 @@
     "rounds": "Rondas",
     "roundsOption": "{count} rondas"
   },
+  "Live": {
+    "title": "Duelo relámpago",
+    "summary": "1 contra 1 en vivo · {seconds} segundos",
+    "tagline": "Reta a un amigo conectado y a ver quién suma más",
+    "play": "Retar en vivo",
+    "back": "Volver",
+    "pickTitle": "Amigos conectados",
+    "noneOnline": "Ahora mismo no hay ningún amigo conectado.",
+    "hiddenHint": "Si ocultas que estás en línea (en tu perfil), tampoco verás a tus amigos conectados.",
+    "friends": "Ir a amigos",
+    "challenge": "Retar",
+    "pickDifficulty": "Elige la dificultad",
+    "go": "¡Retar!",
+    "cancel": "Cancelar",
+    "waitingInvite": "Esperando a {name}…",
+    "invited": "{name} te reta a un duelo relámpago",
+    "accept": "Aceptar",
+    "decline": "Rechazar",
+    "closed": {
+      "declined": "{name} ha rechazado el duelo.",
+      "expired": "{name} no ha respondido a tiempo.",
+      "cancelled": "Duelo cancelado."
+    },
+    "challengeAnother": "Retar otra vez",
+    "home": "Inicio",
+    "getReady": "¡Prepárate!",
+    "you": "Tú",
+    "clockLabel": "Quedan {seconds} s",
+    "timeUp": "¡Tiempo!",
+    "waitingRival": "Esperando a {name}…",
+    "results": {
+      "win": "¡Has ganado!",
+      "loss": "Has perdido",
+      "draw": "¡Empate!"
+    },
+    "correctCount": "{correct} de {answered} aciertos",
+    "exitConfirm": "¿Salir? Tu reloj seguirá corriendo y dejarás de sumar puntos.",
+    "exit": "Salir",
+    "keepPlaying": "Seguir jugando",
+    "errors": {
+      "notFound": "No hemos encontrado este duelo.",
+      "generic": "Algo ha fallado. Inténtalo de nuevo.",
+      "notFriends": "Solo puedes retar a tus amigos.",
+      "friendOffline": "{name} ya no está conectado.",
+      "friendBusy": "{name} está jugando otra partida.",
+      "liveInProgress": "Ya tienes un duelo relámpago en marcha.",
+      "notEnoughQuestions": "No hay suficientes preguntas en vuestros idiomas para esta dificultad.",
+      "rateLimited": "Has retado demasiadas veces seguidas. Espera un poco."
+    }
+  },
   "Notifications": {
     "friend_request": "{name} te ha enviado una solicitud de amistad",
     "friend_accepted": "{name} ha aceptado tu solicitud de amistad",
     "duel_turn": "¡Te toca en tu duelo contra {name}!",
     "duel_finished": "Tu duelo contra {name} ha terminado",
     "duel_deadline": "Tu turno contra {name} se acaba pronto. ¡Juega ya!",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "live_invite": "¡{name} te reta a un duelo relámpago!",
+    "accept": "Aceptar",
+    "decline": "Rechazar"
+  },
+  "Outcome": {
+    "victory": "¡Victoria!",
+    "defeat": "Derrota",
+    "defeatSub": "¡Lo diste todo!",
+    "draw": "Empate",
+    "legendaryDraw": "¡¡¡Combate legendario!!!",
+    "legendarySub": "Empate entre dos titanes",
+    "skip": "Toca para continuar"
   },
   "Report": {
     "button": "Reportar pregunta",
@@ -238,6 +303,12 @@
     "disable": "Desactivar avisos",
     "unsupported": "Este navegador no admite avisos. En iPhone o iPad, añade primero la app a la pantalla de inicio (Compartir y luego «Añadir a pantalla de inicio») y ábrela desde ahí.",
     "denied": "Has bloqueado los avisos de esta web. Para recibirlos, permítelos en los ajustes del navegador."
+  },
+  "Presence": {
+    "title": "En línea",
+    "showOnline": "Mostrar cuando estoy en línea",
+    "description": "Si lo apagas, tus amigos no te verán conectado ni podrán retarte a un duelo relámpago, y tú tampoco verás quién está conectado.",
+    "error": "No se ha podido guardar. Inténtalo de nuevo."
   },
   "Preferences": {
     "title": "En este dispositivo",

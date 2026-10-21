@@ -7,15 +7,35 @@ import { isEnabled } from "@/features/preferences/preferences";
 // (solo donde el navegador la admite: Android sí, iPhone no). Ambos se pueden apagar en el perfil.
 
 export type Sound =
-  "correct" | "fast" | "veryFast" | "wrong" | "timeout" | "tick" | "spin" | "win" | "levelUp";
+  | "correct"
+  | "fast"
+  | "veryFast"
+  | "wrong"
+  | "timeout"
+  | "tick"
+  | "spin"
+  | "win"
+  | "levelUp"
+  // Finales de partida (MatchOutcome).
+  | "victory"
+  | "defeat"
+  | "draw"
+  | "legendaryDraw";
 
 // Notas (Hz).
 const C4 = 261.63,
+  D4 = 293.66,
   E4 = 329.63,
+  F4 = 349.23,
   G4 = 392,
+  A4 = 440,
   Bb3 = 233.08,
   Eb4 = 311.13;
+const C3 = 130.81,
+  G3 = 196,
+  Ab3 = 207.65;
 const C5 = 523.25,
+  D5 = 587.33,
   E5 = 659.25,
   G5 = 783.99,
   C6 = 1046.5,
@@ -159,6 +179,39 @@ const SOUNDS: Record<Sound, (e: Engine, t: number) => void> = {
   levelUp: (e, t) => {
     [G5, C6, E6, G6].forEach((f, i) => tone(e, BELL, f, t + i * 0.1, 0.11, 1.2));
     [C6, E6, G6].forEach((f) => tone(e, BELL, f, t + 0.45, 0.06, 2));
+  },
+  // Fiesta: palmas de madera, arpegio saltarín de marimba, trino y acorde de campanas.
+  victory: (e, t) => {
+    [0, 0.12, 0.24, 0.42].forEach((d) => knock(e, t + d, 1400, 0.3, 0.05));
+    [C5, E5, G5, C6, G5, C6, E6].forEach((f, i) =>
+      tone(e, MALLET, f, t + 0.1 + i * 0.085, 0.28, 0.55),
+    );
+    for (let i = 0; i < 6; i++) tone(e, MALLET, i % 2 ? E6 : G6, t + 0.75 + i * 0.05, 0.12, 0.3);
+    [C6, E6, G6].forEach((f) => tone(e, BELL, f, t + 1.08, 0.08, 1.8));
+    tone(e, MALLET, C4, t + 1.08, 0.3, 1.2);
+  },
+  // Triste pero orgulloso: bajada lenta en menor que se resuelve en un acorde mayor cálido.
+  defeat: (e, t) => {
+    [G4, Eb4, D4, C4].forEach((f, i) => tone(e, MALLET, f, t + i * 0.32, 0.32, 0.9));
+    [C4, E4, G4].forEach((f) => tone(e, MALLET, f, t + 1.4, 0.2, 1.8));
+    tone(e, BELL, C5, t + 1.4, 0.05, 2);
+  },
+  // Aburrido: dos golpes iguales y planos.
+  draw: (e, t) => {
+    [0, 0.45].forEach((d, i) => {
+      knock(e, t + d, 700, 0.22, 0.05);
+      tone(e, MALLET, G4, t + d, i ? 0.22 : 0.3, 0.35);
+    });
+  },
+  // Épico y caballeresco: llamada de quintas en campanas graves, golpe metálico y acorde largo.
+  legendaryDraw: (e, t) => {
+    [C3, G3, C4].forEach((f, i) => tone(e, BELL, f * 2, t + i * 0.22, 0.14, 1.4));
+    tone(e, MALLET, Ab3, t + 0.66, 0.3, 0.6);
+    [F4, A4, C5].forEach((f) => tone(e, BELL, f, t + 0.88, 0.07, 1));
+    knock(e, t + 1.2, 3200, 0.4, 0.12);
+    tone(e, BELL, C6 * 1.5, t + 1.2, 0.08, 0.8);
+    [C4, G4, C5, E5, G5, C6].forEach((f) => tone(e, BELL, f, t + 1.25, 0.06, 2.6));
+    [C5, D5, E5, G5, C6].forEach((f, i) => tone(e, MALLET, f, t + 1.3 + i * 0.07, 0.18, 0.7));
   },
 };
 

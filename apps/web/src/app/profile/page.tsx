@@ -7,11 +7,12 @@ import { getActiveAvatarIds, getAuthContext, requireProfile } from "@/features/p
 import { LegalLinks } from "@/features/legal/legal-links";
 import { DevicePreferences } from "@/features/preferences/device-preferences";
 import { LevelCard } from "@/features/progress/level-card";
+import { OnlineToggle } from "@/features/presence/online-toggle";
 import { PushToggle } from "@/features/pwa/push-toggle";
 
 export default async function ProfilePage() {
   const profile = await requireProfile();
-  const { supabase } = await getAuthContext();
+  const { supabase, claims } = await getAuthContext();
   const [t, avatarIds, { data: isAdmin }] = await Promise.all([
     getTranslations("Profile"),
     getActiveAvatarIds(),
@@ -38,6 +39,7 @@ export default async function ProfilePage() {
       />
       <DevicePreferences />
       <PushToggle />
+      <OnlineToggle userId={claims!.sub} initial={profile.show_online} />
       <DeleteAccount />
       <LegalLinks />
       {isAdmin && (

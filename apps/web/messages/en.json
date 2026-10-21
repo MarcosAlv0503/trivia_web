@@ -141,7 +141,10 @@
     "remove": "Remove",
     "removeConfirm": "Remove {name} from your friends? Ongoing duels will be cancelled.",
     "removeYes": "Yes, remove",
-    "error": "Something went wrong. Please try again."
+    "error": "Something went wrong. Please try again.",
+    "online": "Online",
+    "busy": "Playing",
+    "liveChallenge": "Lightning duel"
   },
   "Duel": {
     "title": "Turn-based Duel",
@@ -188,13 +191,75 @@
     "rounds": "Rounds",
     "roundsOption": "{count} rounds"
   },
+  "Live": {
+    "title": "Lightning duel",
+    "summary": "Live 1 vs 1 · {seconds} seconds",
+    "tagline": "Challenge an online friend and see who scores more",
+    "play": "Challenge live",
+    "back": "Back",
+    "pickTitle": "Online friends",
+    "noneOnline": "None of your friends are online right now.",
+    "hiddenHint": "If you hide your online status (in your profile), you won't see your online friends either.",
+    "friends": "Go to friends",
+    "challenge": "Challenge",
+    "pickDifficulty": "Choose the difficulty",
+    "go": "Challenge!",
+    "cancel": "Cancel",
+    "waitingInvite": "Waiting for {name}…",
+    "invited": "{name} challenges you to a lightning duel",
+    "accept": "Accept",
+    "decline": "Decline",
+    "closed": {
+      "declined": "{name} declined the duel.",
+      "expired": "{name} didn't answer in time.",
+      "cancelled": "Duel cancelled."
+    },
+    "challengeAnother": "Challenge again",
+    "home": "Home",
+    "getReady": "Get ready!",
+    "you": "You",
+    "clockLabel": "{seconds} s left",
+    "timeUp": "Time's up!",
+    "waitingRival": "Waiting for {name}…",
+    "results": {
+      "win": "You won!",
+      "loss": "You lost",
+      "draw": "It's a draw!"
+    },
+    "correctCount": "{correct} of {answered} correct",
+    "exitConfirm": "Leave? Your clock will keep running and you'll stop scoring.",
+    "exit": "Leave",
+    "keepPlaying": "Keep playing",
+    "errors": {
+      "notFound": "We couldn't find this duel.",
+      "generic": "Something went wrong. Please try again.",
+      "notFriends": "You can only challenge your friends.",
+      "friendOffline": "{name} is no longer online.",
+      "friendBusy": "{name} is playing another match.",
+      "liveInProgress": "You already have a lightning duel going on.",
+      "notEnoughQuestions": "There aren't enough questions in your languages for this difficulty.",
+      "rateLimited": "You've sent too many challenges in a row. Please wait a bit."
+    }
+  },
   "Notifications": {
     "friend_request": "{name} sent you a friend request",
     "friend_accepted": "{name} accepted your friend request",
     "duel_turn": "It’s your turn in your duel against {name}!",
     "duel_finished": "Your duel against {name} is over",
     "duel_deadline": "Your turn against {name} ends soon. Play now!",
-    "close": "Close"
+    "close": "Close",
+    "live_invite": "{name} challenges you to a lightning duel!",
+    "accept": "Accept",
+    "decline": "Decline"
+  },
+  "Outcome": {
+    "victory": "Victory!",
+    "defeat": "Defeat",
+    "defeatSub": "You gave it everything!",
+    "draw": "Draw",
+    "legendaryDraw": "Legendary battle!!!",
+    "legendarySub": "A draw between two titans",
+    "skip": "Tap to continue"
   },
   "Report": {
     "button": "Report question",
@@ -238,6 +303,12 @@
     "disable": "Turn off notifications",
     "unsupported": "This browser doesn't support notifications. On iPhone or iPad, first add the app to your Home Screen (Share, then “Add to Home Screen”) and open it from there.",
     "denied": "You've blocked notifications from this site. To get them, allow them in your browser settings."
+  },
+  "Presence": {
+    "title": "Online",
+    "showOnline": "Show when I'm online",
+    "description": "If you turn this off, your friends won't see you online or be able to challenge you to a lightning duel, and you won't see who's online either.",
+    "error": "Couldn't save. Please try again."
   },
   "Preferences": {
     "title": "On this device",

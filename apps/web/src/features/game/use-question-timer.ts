@@ -13,11 +13,13 @@ type TimedQuestion = { timeLimitMs: number; elapsedMs: number };
 /**
  * Cuenta atrás de la pregunta servida (el servidor ya descuenta lo transcurrido, p. ej. tras recargar).
  * Mientras `running`, llama a `onExpire` en cada tic desde 0 + GRACE_MS: quien la usa debe ignorar llamadas repetidas.
+ * `ticks`: "tic" en los últimos 3 s (el duelo relámpago lo hace con su reloj de partida, no en cada pregunta).
  */
 export function useQuestionTimer(
   question: TimedQuestion | null,
   running: boolean,
   onExpire: () => void,
+  { ticks = true }: { ticks?: boolean } = {},
 ) {
   const [tick, setTick] = useState<{ question: TimedQuestion | null; left: number }>({
     question: null,
@@ -34,12 +36,12 @@ export function useQuestionTimer(
       setTick({ question, left: Math.max(0, left) });
       // Un "tic" en cada uno de los últimos 3 segundos.
       const second = Math.ceil(left / 1000);
-      if (second >= 1 && second <= 3 && second < lastSecond) playSound("tick");
+      if (ticks && second >= 1 && second <= 3 && second < lastSecond) playSound("tick");
       lastSecond = Math.min(lastSecond, second);
       if (left <= -GRACE_MS) expire();
     }, TICK_MS);
     return () => clearInterval(id);
-  }, [running, question]);
+  }, [running, question, ticks]);
 
   if (!question) return 0;
   return tick.question === question ? tick.left : question.timeLimitMs - question.elapsedMs;

@@ -106,9 +106,11 @@ servidor calcula reloj y puntos. Realtime solo como transporte.
   la muestra con Aceptar/Rechazar. El trigger de push la ignora.
 - **Arranque a la vez:** al aceptar, `starts_at = now() + 3 s`; los dos ven una cuenta atrás 3-2-1 y empiezan a la vez
   por el reloj del servidor.
-- **Reloj del servidor:** el tiempo de un jugador es `now() − starts_at − 1 s × respuestas que ha dado` (el segundo por
-  respuesta cubre el destello y la petición de la siguiente pregunta). Se le acaba cuando llega a 60 s. Si se
-  desconecta, su reloj sigue corriendo, así que la partida acaba a lo sumo en 60 s + 1 s por respuesta. Una pregunta
+- **Reloj del servidor:** el tiempo de un jugador es `now() − starts_at` menos las pausas tras cada respuesta dada a
+  tiempo: lo que tardó en servirse la siguiente pregunta (el destello y la petición), como mucho 1 s cada una
+  (corregido el 2026-10-21 en `live_clock_pause`: con 1 s fijo, quien responde muy rápido casi no gastaba reloj). Se
+  le acaba cuando llega a 60 s. Si se desconecta, su reloj sigue corriendo, así que la partida acaba a lo sumo en
+  60 s + 1 s por respuesta. Una pregunta
   se cierra a los 6 s o cuando acaba el reloj del jugador, lo que llegue antes, con la misma gracia y margen de
   latencia que el modo rápido. El cliente solo dibuja el reloj y se resincroniza con lo que devuelve cada RPC.
 - **Reserva:** 60 preguntas por partida (gastarlas exige responder en menos de 1 s de media); si se acaban, se acaba

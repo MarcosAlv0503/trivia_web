@@ -19,6 +19,7 @@ export const privacy: LegalDocument = {
           "Perfil: nombre de usuario, avatar, idioma y la fecha en que aceptaste estos textos.",
           "Actividad de juego: partidas, respuestas, puntuaciones, duelos y preguntas que ya has visto.",
           "Amigos: solicitudes enviadas y recibidas, y tu lista de amigos.",
+          "Conexión: cuándo usaste la app por última vez y si estás en una partida, para que tus amigos vean si estás en línea y puedan retarte en vivo. Solo lo ven tus amigos y puedes ocultarlo en tu perfil.",
           "Invitados: el nombre y el avatar de los jugadores que añades en una partida local en tu dispositivo.",
           "Reportes de preguntas que envíes.",
           "Avisos: los avisos dentro de la app (se borran a las 24 horas) y, solo si activas los avisos push, la suscripción de tu navegador para enviártelos.",

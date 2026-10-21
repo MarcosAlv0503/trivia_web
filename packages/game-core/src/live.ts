@@ -7,8 +7,11 @@ export const LIVE = {
   questionMs: 6_000,
   /** Destello tras responder: acierto o fallo y la correcta. */
   revealMs: 700,
-  /** Cada respuesta devuelve este tiempo al reloj del jugador: cubre el destello y pedir la siguiente. */
-  answerCreditMs: 1_000,
+  /**
+   * Tras cada respuesta, el reloj del jugador se para lo que tarde en llegar la siguiente pregunta (el destello y la
+   * petición), como mucho esto: si se va, su reloj sigue corriendo.
+   */
+  maxPauseMs: 1_000,
   inviteSeconds: 30,
   countdownMs: 3_000,
   correct: 10,

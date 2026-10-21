@@ -23,6 +23,8 @@ type Props = {
   onAnswer: (id: string) => void;
   /** Texto accesible de la barra de tiempo (traducido por quien usa el componente). */
   timerLabel: string;
+  /** Sin barra de tiempo: quien lo usa muestra el tiempo de otra forma (p. ej. el reloj del duelo relámpago). */
+  hideTimer?: boolean;
 };
 
 // Componente de presentación: no decide nada del juego, solo muestra el estado que recibe.
@@ -37,6 +39,7 @@ export function QuestionCard({
   correctId,
   onAnswer,
   timerLabel,
+  hideTimer = false,
 }: Props) {
   const reduceMotion = useReducedMotion();
   // Bloqueada al elegir o al revelar la correcta (también si se agotó el tiempo sin elegir).
@@ -71,17 +74,19 @@ export function QuestionCard({
         )}
       </div>
 
-      <div
-        role="progressbar"
-        aria-label={timerLabel}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={Math.round(timeLeft * 100)}
-        className="h-3 overflow-hidden rounded-full border-2 border-sticker bg-bg-deep"
-      >
-        {/* key: cada pregunta nueva empieza su propia animación desde lo que le queda. */}
-        <TimerFill key={question} start={timeLeft} timeLimitMs={timeLimitMs} frozen={answered} />
-      </div>
+      {!hideTimer && (
+        <div
+          role="progressbar"
+          aria-label={timerLabel}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(timeLeft * 100)}
+          className="h-3 overflow-hidden rounded-full border-2 border-sticker bg-bg-deep"
+        >
+          {/* key: cada pregunta nueva empieza su propia animación desde lo que le queda. */}
+          <TimerFill key={question} start={timeLeft} timeLimitMs={timeLimitMs} frozen={answered} />
+        </div>
+      )}
 
       <p className="font-display text-xl font-bold">{question}</p>
 

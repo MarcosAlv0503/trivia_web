@@ -19,6 +19,7 @@ export const privacy: LegalDocument = {
           "Profile: username, avatar, language and the date you accepted these documents.",
           "Game activity: matches, answers, scores, duels and the questions you have already seen.",
           "Friends: requests sent and received, and your friends list.",
+          "Connection: when you last used the app and whether you are in a match, so your friends can see if you are online and challenge you live. Only your friends see it, and you can hide it in your profile.",
           "Guests: the name and avatar of the players you add to a local match on your device.",
           "Question reports you send.",
           "Notifications: in-app notifications (deleted after 24 hours) and, only if you turn on push notifications, your browser's subscription to send them.",

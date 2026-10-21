@@ -4,9 +4,10 @@ import { useActionState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
-import { rankPlayers } from "@trivia/game-core";
+import { legendaryThreshold, localOutcome, rankPlayers } from "@trivia/game-core";
 import { buttonClassName } from "@/components/button";
 import { Mascot } from "@/components/mascot";
+import { MatchOutcome, useOutcomeOnce } from "@/features/game/match-outcome";
 import { playSound } from "@/features/game/sfx";
 import { Avatar } from "@/features/profile/avatar";
 import { XpGain } from "@/features/progress/xp-gain";
@@ -18,9 +19,15 @@ const PLACE_STYLES = ["bg-play text-ink", "bg-surface-2", "bg-surface-2"];
 export function QuickResults({ match }: { match: QuickMatch }) {
   const t = useTranslations("Quick");
   const [state, formAction, pending] = useActionState<StartState, FormData>(startQuickMatch, {});
-  useEffect(() => playSound("win"), []);
   const ranked = rankPlayers(match.players);
   const perPlayer = match.total / match.players.length;
+  // En local, animación de victoria (o empate en cabeza); en solitario, el sonido de siempre.
+  const outcome = localOutcome(match.players, legendaryThreshold(perPlayer));
+  const solo = outcome === null;
+  const { showing, afterOutcome, dismiss } = useOutcomeOnce(solo ? null : `quick:${match.id}`);
+  useEffect(() => {
+    if (solo) playSound("win");
+  }, [solo]);
   const winners = ranked.filter((p) => p.place === 1);
   const heading =
     match.players.length === 1
@@ -31,6 +38,13 @@ export function QuickResults({ match }: { match: QuickMatch }) {
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-6 p-4 sm:p-6">
+      {outcome && showing && (
+        <MatchOutcome
+          kind={outcome.kind}
+          names={outcome.winners.map((p) => p.name)}
+          onDone={dismiss}
+        />
+      )}
       <div className="flex flex-1 flex-col items-center justify-center gap-6">
         <motion.div
           initial={{ scale: 0.5, rotate: -10, opacity: 0 }}
@@ -73,7 +87,8 @@ export function QuickResults({ match }: { match: QuickMatch }) {
             </motion.li>
           ))}
         </ol>
-        {match.xp && <XpGain {...match.xp} />}
+        {/* Después de la animación: la subida de nivel tiene su propia pegatina y sonido. */}
+        {match.xp && (solo || afterOutcome) && <XpGain {...match.xp} />}
       </div>
 
       {state.error && (

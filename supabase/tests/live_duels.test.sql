@@ -2,7 +2,7 @@
 -- Como en friends_duels: las RPC se llaman como postgres con el usuario simulado en request.jwt.claims; los permisos
 -- se comprueban con el rol authenticated. Los relojes se mueven a mano (starts_at, served_at, created_at).
 begin;
-select plan(35);
+select plan(37);
 
 -- Fixtures -----------------------------------------------------------------------------------------
 update public.questions set status = 'rejected';
@@ -98,7 +98,10 @@ select throws_like(
   $$ select public.invite_live_duel('00000000-0000-0000-0000-00000000000b', 'hard') $$,
   'no hay suficientes preguntas', 'hacen falta 20 preguntas en los idiomas de los dos'
 );
-select is((select count(*)::integer from public.live_duels), 0, 'el fallo no deja una partida a medias');
+select is(
+  (select count(*)::integer from public.live_duels where challenger_id = '00000000-0000-0000-0000-00000000000a'), 0,
+  'el fallo no deja una partida a medias'
+);
 
 select set_config('test.live', public.invite_live_duel('00000000-0000-0000-0000-00000000000b', 'easy')::text, true);
 select is(public.get_live_duel(pg_temp.duel()) ->> 'status', 'pending', 'la invitación queda pendiente');
@@ -196,6 +199,33 @@ select throws_like(
 );
 -- La pregunta abierta de bob caducó hace mucho: ya no está jugando y la partida se cierra.
 select is(public.get_live_duel(pg_temp.duel()) ->> 'result', 'win', 'al acabar los dos relojes gana quien más suma');
+
+-- Pausa del reloj tras cada respuesta ---------------------------------------------------------------
+select set_config('test.live', public.invite_live_duel('00000000-0000-0000-0000-00000000000b', 'easy')::text, true);
+select pg_temp.as_user('bob');
+select public.answer_live_invite(pg_temp.duel(), true);
+update public.live_duels set starts_at = clock_timestamp() - interval '10 seconds' where id = pg_temp.duel();
+select pg_temp.as_user('alice');
+select public.serve_live_question(pg_temp.duel());
+select public.answer_live_question(pg_temp.duel(), 0, 0);
+-- Respondió hace 0,2 s: solo se descuenta eso (no 1 s entero).
+update public.live_duel_answers set answered_at = clock_timestamp() - interval '200 milliseconds'
+where duel_id = pg_temp.duel() and player_id = '00000000-0000-0000-0000-00000000000a' and position = 0;
+select ok(
+  (public.serve_live_question(pg_temp.duel()) ->> 'remainingMs')::integer between 50000 and 50500,
+  'la pausa es lo que se tardó en pedir la siguiente'
+);
+-- Respondió hace 5 s (p. ej. se fue): como mucho se descuenta 1 s.
+update public.live_duel_answers set served_at = clock_timestamp() - interval '6 seconds',
+  answered_at = clock_timestamp() - interval '5 seconds'
+where duel_id = pg_temp.duel() and player_id = '00000000-0000-0000-0000-00000000000a' and position = 0;
+update public.live_duel_answers set served_at = clock_timestamp()
+where duel_id = pg_temp.duel() and player_id = '00000000-0000-0000-0000-00000000000a' and position = 1;
+select ok(
+  (public.get_live_duel(pg_temp.duel()) ->> 'remainingMs')::integer between 50500 and 51100,
+  'una pausa larga solo devuelve 1 s: el reloj sigue corriendo si te vas'
+);
+update public.live_duels set status = 'finished' where id = pg_temp.duel();
 
 -- Caducar, rechazar y cancelar -----------------------------------------------------------------------
 select set_config('test.live', public.invite_live_duel('00000000-0000-0000-0000-00000000000b', 'easy')::text, true);

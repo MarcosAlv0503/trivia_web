@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import type { TitleLevel } from "@trivia/game-core";
+import { LIVE, type OutcomeKind, type TitleLevel } from "@trivia/game-core";
+import { AnalogClock } from "@/components/analog-clock";
 import { buttonClassName } from "@/components/button";
 import { Mascot } from "@/components/mascot";
 import { QuestionCard } from "@/components/question-card";
 import { Wheel } from "@/components/wheel";
 import { AnswerFeedback } from "@/features/game/answer-feedback";
+import { MatchOutcome } from "@/features/game/match-outcome";
 import { Avatar } from "@/features/profile/avatar";
 import { TitleIcon } from "@/components/title-icon";
 import { LevelBadge } from "@/features/progress/level-badge";
@@ -58,6 +60,8 @@ export function Showcase() {
   const [feedback, setFeedback] = useState<{ id: number; points: number } | null>(null);
   const tProgress = useTranslations("Progress");
   const [xp, setXp] = useState<{ id: number; gained: number; total: number } | null>(null);
+  const [outcome, setOutcome] = useState<{ kind: OutcomeKind; names?: string[] } | null>(null);
+  const [clockMs, setClockMs] = useState(42_000);
 
   function spin() {
     setSpinning(true);
@@ -201,6 +205,58 @@ export function Showcase() {
             </li>
           ))}
         </ul>
+      </section>
+
+      <section className="grid gap-4">
+        <h2 className="text-2xl font-bold">Duelo relámpago: reloj</h2>
+        <div className="flex flex-wrap items-center gap-6">
+          <AnalogClock
+            remainingMs={clockMs}
+            totalMs={LIVE.matchMs}
+            questionLeft={0.6}
+            warning={clockMs <= LIVE.warningMs}
+            label={`${Math.ceil(clockMs / 1000)} s`}
+          />
+          <input
+            type="range"
+            min={0}
+            max={LIVE.matchMs}
+            step={500}
+            value={clockMs}
+            onChange={(e) => setClockMs(Number(e.target.value))}
+            aria-label="Tiempo restante"
+            className="w-48 accent-accent"
+          />
+          <span className="font-display text-2xl font-bold">{Math.ceil(clockMs / 1000)} s</span>
+        </div>
+      </section>
+
+      <section className="grid gap-4">
+        <h2 className="text-2xl font-bold">Finales de partida</h2>
+        <div className="flex flex-wrap gap-3">
+          {(
+            [
+              ["Victoria", "victory"],
+              ["Victoria en local", "victory", ["Bea"]],
+              ["Derrota", "defeat"],
+              ["Empate", "draw"],
+              ["Empate legendario", "legendaryDraw"],
+              ["Empate legendario en local", "legendaryDraw", ["Ana", "Bea"]],
+            ] as const
+          ).map(([label, kind, names]) => (
+            <button
+              key={label}
+              type="button"
+              className={buttonClassName("secondary")}
+              onClick={() => setOutcome({ kind, names: names && [...names] })}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        {outcome && (
+          <MatchOutcome kind={outcome.kind} names={outcome.names} onDone={() => setOutcome(null)} />
+        )}
       </section>
 
       <section className="grid gap-4">

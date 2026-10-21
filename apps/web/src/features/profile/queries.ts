@@ -15,7 +15,7 @@ export const getOwnProfile = cache(async () => {
   if (!claims) return null;
   const { data } = await supabase
     .from("profiles")
-    .select("username, avatar_id, locale, xp")
+    .select("username, avatar_id, locale, xp, show_online")
     .eq("id", claims.sub)
     .maybeSingle();
   return data;

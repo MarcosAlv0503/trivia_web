@@ -142,3 +142,17 @@ export const DuelIcon = (p: IconProps) => (
     <Sword angle={45} />
   </Svg>
 );
+
+/** Reloj con un rayo: duelo relámpago. */
+export const LiveIcon = (p: IconProps) => (
+  <Svg {...p} stroke="var(--color-sticker)" strokeWidth="1.3" strokeLinejoin="round">
+    <circle cx="10.5" cy="13" r="8.8" fill="var(--color-surface-2)" />
+    <path
+      d="M10.5 13V7.6M10.5 13l3 1.8"
+      stroke="var(--color-fg)"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
+    <path d="M19.6 1.6 13.7 9.8h3.6l-1.5 6.4 6.4-8.7h-3.7z" fill="var(--color-play)" />
+  </Svg>
+);

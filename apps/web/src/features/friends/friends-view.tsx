@@ -10,8 +10,10 @@ import { DifficultyPicker, SegmentedPicker } from "@/features/game/difficulty-pi
 import { Avatar } from "@/features/profile/avatar";
 import { LevelBadge } from "@/features/progress/level-badge";
 import { createClient } from "@/lib/supabase/client";
-import type { FriendLists, Player, SearchResult } from "./types";
-import { CloseIcon } from "@/components/icons";
+import { LiveChallenge } from "@/features/live/live-challenge";
+import { PresenceDot } from "@/features/live/presence-dot";
+import type { Friend, FriendLists, Player, SearchResult } from "./types";
+import { CloseIcon, LiveIcon } from "@/components/icons";
 
 const SEARCH_DELAY_MS = 300;
 
@@ -179,13 +181,16 @@ export function FriendsView({ lists }: { lists: FriendLists }) {
   );
 }
 
-/** Amigo con las acciones Retar (eligiendo dificultad y rondas) y Eliminar (con confirmación). */
+/**
+ * Amigo con las acciones Retar (eligiendo dificultad y rondas), Duelo relámpago (si está en línea) y Eliminar (con
+ * confirmación).
+ */
 function FriendRow({
   player,
   busy,
   onRemove,
 }: {
-  player: Player;
+  player: Friend;
   busy: boolean;
   onRemove: () => void;
 }) {
@@ -193,7 +198,7 @@ function FriendRow({
   const tDuel = useTranslations("Duel");
   const router = useRouter();
   const [supabase] = useState(createClient);
-  const [mode, setMode] = useState<"idle" | "challenge" | "remove">("idle");
+  const [mode, setMode] = useState<"idle" | "challenge" | "live" | "remove">("idle");
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
   const [rounds, setRounds] = useState<DuelRounds>(DUEL.defaultRounds);
   const [starting, setStarting] = useState(false);
@@ -212,12 +217,29 @@ function FriendRow({
 
   return (
     <div className="flex flex-col gap-3 rounded-2xl bg-surface p-2 sticker">
-      <div className="flex items-center gap-3 pr-1">
-        <Avatar id={player.avatarId} size={44} />
-        <span className="font-display text-lg font-bold">{player.username}</span>
-        <LevelBadge xp={player.xp} />
+      {/* En pantallas estrechas, las acciones bajan a su propia línea. */}
+      <div className="flex flex-wrap items-center gap-3 pr-1">
+        <Avatar id={player.avatarId} size={44} className="shrink-0" />
+        <div className="flex min-w-28 flex-1 flex-col">
+          <span className="flex min-w-0 items-center gap-2">
+            <span className="truncate font-display text-lg font-bold">{player.username}</span>
+            <LevelBadge xp={player.xp} />
+          </span>
+          <PresenceDot presence={player.presence} />
+        </div>
         {mode === "idle" && (
-          <div className="ml-auto flex gap-2">
+          <div className="ml-auto flex shrink-0 gap-2">
+            {player.presence === "online" && (
+              <button
+                type="button"
+                onClick={() => setMode("live")}
+                aria-label={t("liveChallenge")}
+                title={t("liveChallenge")}
+                className={buttonClassName("secondary", "px-2.5 py-2")}
+              >
+                <LiveIcon size={24} />
+              </button>
+            )}
             <button
               type="button"
               onClick={() => setMode("challenge")}
@@ -279,6 +301,8 @@ function FriendRow({
           </div>
         </div>
       )}
+
+      {mode === "live" && <LiveChallenge friend={player} onCancel={() => setMode("idle")} />}
 
       {mode === "remove" && (
         <div className="flex flex-col gap-3 px-1 pb-1">
