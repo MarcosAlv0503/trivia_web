@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { levelProgress, QUICK, titleLevel } from "@trivia/game-core";
+import { levelProgress, QUICK } from "@trivia/game-core";
 import { buttonClassName } from "@/components/button";
 import { LoginButtons } from "@/features/auth/login-buttons";
 import { SignOutButton } from "@/features/auth/sign-out-button";
@@ -13,7 +13,6 @@ import { LegalLinks } from "@/features/legal/legal-links";
 import { Avatar } from "@/features/profile/avatar";
 import { getAuthContext, getOwnProfile } from "@/features/profile/queries";
 import { DuelIcon, FriendsIcon, QuickIcon } from "@/components/icons";
-import { TitleIcon } from "@/components/title-icon";
 
 export default async function HomePage({
   searchParams,
@@ -75,10 +74,7 @@ export default async function HomePage({
           <Avatar id={profile.avatar_id} size={36} />
           <span className="flex flex-col leading-tight">
             <span className="font-display font-bold">{profile.username}</span>
-            <span className="flex items-center gap-1 text-sm font-bold text-fg-muted">
-              <TitleIcon level={titleLevel(level)} size={18} />
-              {tProgress("level", { level })}
-            </span>
+            <span className="text-sm font-bold text-fg-muted">{tProgress("level", { level })}</span>
           </span>
         </Link>
       </div>
