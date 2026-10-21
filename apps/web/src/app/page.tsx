@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { QUICK } from "@trivia/game-core";
+import { levelProgress, QUICK, titleLevel } from "@trivia/game-core";
 import { buttonClassName } from "@/components/button";
 import { LoginButtons } from "@/features/auth/login-buttons";
 import { SignOutButton } from "@/features/auth/sign-out-button";
@@ -10,10 +10,10 @@ import type { DuelSummary } from "@/features/duel/types";
 import type { FriendLists } from "@/features/friends/types";
 import { HomeIntro } from "@/features/home/home-intro";
 import { LegalLinks } from "@/features/legal/legal-links";
-import { LevelCard } from "@/features/progress/level-card";
 import { Avatar } from "@/features/profile/avatar";
 import { getAuthContext, getOwnProfile } from "@/features/profile/queries";
 import { DuelIcon, FriendsIcon, QuickIcon } from "@/components/icons";
+import { TitleIcon } from "@/components/title-icon";
 
 export default async function HomePage({
   searchParams,
@@ -41,14 +41,16 @@ export default async function HomePage({
   const profile = await getOwnProfile();
   if (!profile) redirect("/onboarding");
   const { supabase } = await getAuthContext();
-  const [t, tQuick, tDuel, { data: duels }, { data: friends }] = await Promise.all([
+  const [t, tProgress, tQuick, tDuel, { data: duels }, { data: friends }] = await Promise.all([
     getTranslations("Home"),
+    getTranslations("Progress"),
     getTranslations("Quick"),
     getTranslations("Duel"),
     supabase.rpc("list_duels"),
     supabase.rpc("list_friends"),
   ]);
   const incoming = (friends as unknown as FriendLists | null)?.incoming.length ?? 0;
+  const { level } = levelProgress(profile.xp);
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col items-center gap-8 p-6">
@@ -71,11 +73,16 @@ export default async function HomePage({
           aria-label={t("profileLink")}
         >
           <Avatar id={profile.avatar_id} size={36} />
-          <span className="font-display font-bold">{profile.username}</span>
+          <span className="flex flex-col leading-tight">
+            <span className="font-display font-bold">{profile.username}</span>
+            <span className="flex items-center gap-1 text-sm font-bold text-fg-muted">
+              <TitleIcon level={titleLevel(level)} size={18} />
+              {tProgress("level", { level })}
+            </span>
+          </span>
         </Link>
       </div>
       <HomeIntro />
-      <LevelCard xp={profile.xp} />
 
       {/* Una tarjeta por modo de juego. */}
       <section className="flex w-full flex-col gap-3 rounded-card bg-surface p-5 sticker">

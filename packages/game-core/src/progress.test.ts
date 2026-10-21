@@ -1,21 +1,22 @@
 import { describe, expect, it } from "vitest";
-import { levelProgress, titleLevel, xpForLevel } from "./progress";
+import { levelCost, levelProgress, titleLevel, xpForLevel } from "./progress";
 
 describe("niveles", () => {
-  it("cada nivel pide 100 XP más que el anterior", () => {
-    expect([1, 2, 3, 10, 50].map(xpForLevel)).toEqual([0, 100, 300, 4500, 122500]);
+  it("cada nivel cuesta un 13 % más que el anterior, empezando en 50 XP", () => {
+    expect([1, 2, 3, 10].map(levelCost)).toEqual([50, 56, 64, 150]);
+    expect([1, 2, 3, 5, 10, 20, 50].map(xpForLevel)).toEqual([0, 50, 106, 242, 771, 3538, 153031]);
   });
 
   it("sube justo al llegar al umbral", () => {
-    expect(levelProgress(0)).toEqual({ level: 1, current: 0, needed: 100 });
-    expect(levelProgress(99)).toEqual({ level: 1, current: 99, needed: 100 });
-    expect(levelProgress(100)).toEqual({ level: 2, current: 0, needed: 200 });
-    expect(levelProgress(4499).level).toBe(9);
-    expect(levelProgress(4500)).toEqual({ level: 10, current: 0, needed: 1000 });
+    expect(levelProgress(0)).toEqual({ level: 1, current: 0, needed: 50 });
+    expect(levelProgress(49)).toEqual({ level: 1, current: 49, needed: 50 });
+    expect(levelProgress(50)).toEqual({ level: 2, current: 0, needed: 56 });
+    expect(levelProgress(770).level).toBe(9);
+    expect(levelProgress(771)).toEqual({ level: 10, current: 0, needed: 150 });
   });
 
-  it("coincide con xpForLevel en todos los umbrales hasta el 300", () => {
-    for (let level = 1; level <= 300; level++) {
+  it("coincide con xpForLevel en todos los umbrales hasta el 150", () => {
+    for (let level = 1; level <= 150; level++) {
       expect(levelProgress(xpForLevel(level)).level).toBe(level);
       expect(levelProgress(xpForLevel(level) - 1).level).toBe(Math.max(1, level - 1));
     }

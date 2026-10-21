@@ -46,24 +46,24 @@ from generate_series(0, 3) as p;
 
 select is(pg_temp.xp('00000000-0000-0000-0000-00000000000a'), 0, 'sin terminar no hay XP');
 update public.quick_matches set finished_at = now() where id = '00000000-0000-0000-0000-0000000000f1';
-select is(pg_temp.xp('00000000-0000-0000-0000-00000000000a'), 47,
-  'al terminar: los puntos del anfitrión (15 + 12) + 20; los del invitado no cuentan');
+select is(pg_temp.xp('00000000-0000-0000-0000-00000000000a'), 23,
+  'al terminar: la mitad de los puntos del anfitrión (15 + 12) + 10; los del invitado no cuentan');
 update public.quick_matches set finished_at = now() + interval '1 minute' where id = '00000000-0000-0000-0000-0000000000f1';
-select is(pg_temp.xp('00000000-0000-0000-0000-00000000000a'), 47, 'tocar de nuevo la partida no suma otra vez');
+select is(pg_temp.xp('00000000-0000-0000-0000-00000000000a'), 23, 'tocar de nuevo la partida no suma otra vez');
 
 select pg_temp.as_user('00000000-0000-0000-0000-00000000000a');
 select is(public.get_quick_match('00000000-0000-0000-0000-0000000000f1') -> 'xp',
-  '{"gained": 47, "total": 47}'::jsonb, 'get_quick_match devuelve lo ganado y el total tras la partida');
+  '{"gained": 23, "total": 23}'::jsonb, 'get_quick_match devuelve lo ganado y el total tras la partida');
 
 -- Duelos -------------------------------------------------------------------------------------------
 select pg_temp.duel('00000000-0000-0000-0000-0000000000d1', '{15,10,0}', '{10,10,10}');
 update public.duels set status = 'finished', end_reason = 'completed', finished_at = now(),
   winner_id = '00000000-0000-0000-0000-00000000000b'
 where id = '00000000-0000-0000-0000-0000000000d1';
-select is(pg_temp.xp('00000000-0000-0000-0000-00000000000a'), 47 + 25 + 20, 'duelo perdido: puntos + 20');
+select is(pg_temp.xp('00000000-0000-0000-0000-00000000000a'), 23 + 25 + 20, 'duelo perdido: puntos + 20');
 select is(pg_temp.xp('00000000-0000-0000-0000-00000000000b'), 30 + 20 + 30, 'duelo ganado: puntos + 20 + 30');
 select is(public.get_duel('00000000-0000-0000-0000-0000000000d1') -> 'xpGain',
-  '{"gained": 45, "total": 92}'::jsonb, 'get_duel devuelve lo ganado por quien consulta');
+  '{"gained": 45, "total": 68}'::jsonb, 'get_duel devuelve lo ganado por quien consulta');
 select is((public.get_duel('00000000-0000-0000-0000-0000000000d1') -> 'opponent' ->> 'xp')::integer, 80,
   'get_duel incluye la XP del rival (para su nivel)');
 
@@ -71,7 +71,7 @@ select pg_temp.duel('00000000-0000-0000-0000-0000000000d2', '{10,null,null}', '{
 update public.duels set status = 'finished', end_reason = 'surrender', finished_at = now(),
   winner_id = '00000000-0000-0000-0000-00000000000b'
 where id = '00000000-0000-0000-0000-0000000000d2';
-select is(pg_temp.xp('00000000-0000-0000-0000-00000000000a'), 92 + 10, 'rendirse: solo los puntos, sin los 20');
+select is(pg_temp.xp('00000000-0000-0000-0000-00000000000a'), 68 + 10, 'rendirse: solo los puntos, sin los 20');
 select is(pg_temp.xp('00000000-0000-0000-0000-00000000000b'), 80 + 30, 'ganar por rendición: + 30');
 
 select pg_temp.duel('00000000-0000-0000-0000-0000000000d3', '{10,null,null}', '{10,null,null}');

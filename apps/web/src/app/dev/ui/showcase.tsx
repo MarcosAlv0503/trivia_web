@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
+import type { TitleLevel } from "@trivia/game-core";
 import { buttonClassName } from "@/components/button";
 import { Mascot } from "@/components/mascot";
 import { QuestionCard } from "@/components/question-card";
 import { Wheel } from "@/components/wheel";
 import { AnswerFeedback } from "@/features/game/answer-feedback";
 import { Avatar } from "@/features/profile/avatar";
+import { TitleIcon } from "@/components/title-icon";
 import { LevelBadge } from "@/features/progress/level-badge";
 import { LevelCard } from "@/features/progress/level-card";
 import { XpGain } from "@/features/progress/xp-gain";
@@ -45,12 +48,15 @@ const AVATAR_IDS = [
   "axolotl-coral-cap",
 ];
 
+const TITLE_LEVELS: TitleLevel[] = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
+
 export function Showcase() {
   const [selected, setSelected] = useState<string>();
   const [target, setTarget] = useState<number | null>(null);
   const [spinning, setSpinning] = useState(false);
   // `id` cambia en cada pulsación para volver a montar la animación aunque se repita el mismo caso.
   const [feedback, setFeedback] = useState<{ id: number; points: number } | null>(null);
+  const tProgress = useTranslations("Progress");
   const [xp, setXp] = useState<{ id: number; gained: number; total: number } | null>(null);
 
   function spin() {
@@ -162,9 +168,9 @@ export function Showcase() {
         <h2 className="text-2xl font-bold">XP y niveles</h2>
         <div className="flex flex-wrap gap-3">
           {[
-            ["Sin subir (+60)", 60, 160],
-            ["Sube de nivel (+80)", 80, 320],
-            ["Título nuevo (+90)", 90, 1010],
+            ["Sin subir (+20)", 20, 140],
+            ["Sube de nivel (+40)", 40, 180],
+            ["Título nuevo (+30)", 30, 250],
           ].map(([label, gained, total]) => (
             <button
               key={label}
@@ -181,10 +187,20 @@ export function Showcase() {
         {xp && <XpGain key={xp.id} gained={xp.gained} total={xp.total} />}
         <LevelCard xp={1010} />
         <div className="flex gap-2">
-          {[0, 320, 4500, 122500].map((value) => (
+          {[0, 320, 4500, 153031].map((value) => (
             <LevelBadge key={value} xp={value} />
           ))}
         </div>
+        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {TITLE_LEVELS.map((level) => (
+            <li key={level} className="flex items-center gap-2 font-bold">
+              <TitleIcon level={level} size={44} />
+              <span>
+                {level} · {tProgress(`titles.${level}`)}
+              </span>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="grid gap-4">

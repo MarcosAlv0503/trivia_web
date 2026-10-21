@@ -1,25 +1,36 @@
 // XP y niveles. El servidor suma la XP (supabase/migrations/*_xp_and_levels.sql); el nivel y el título se derivan
 // de ese total aquí, para mostrarlos.
 
-/** Pasar del nivel n al n+1 cuesta n × xpStep. Título nuevo cada `titleEvery` niveles hasta `lastTitleLevel`. */
+/**
+ * Pasar del nivel 1 al 2 cuesta `firstLevelXp` y cada nivel siguiente un `growth` más (13 %): fácil al principio
+ * y cada vez más duro. Título nuevo cada `titleEvery` niveles hasta `lastTitleLevel`.
+ */
 export const LEVELS = {
-  xpStep: 100,
+  firstLevelXp: 50,
+  growth: 1.13,
   titleEvery: 5,
   lastTitleLevel: 50,
 } as const;
 
+/** XP que cuesta pasar del nivel `level` al siguiente. */
+export function levelCost(level: number) {
+  return Math.round(LEVELS.firstLevelXp * LEVELS.growth ** (level - 1));
+}
+
 /** XP total necesaria para llegar al nivel `level` (el 1 es gratis). */
 export function xpForLevel(level: number) {
-  return (LEVELS.xpStep * level * (level - 1)) / 2;
+  let total = 0;
+  for (let n = 1; n < level; n++) total += levelCost(n);
+  return total;
 }
 
 /** Nivel, XP dentro del nivel y XP que pide el nivel para subir al siguiente. */
 export function levelProgress(xp: number) {
-  // Inversa de xpForLevel; se corrige el redondeo de la raíz.
-  let level = Math.max(1, Math.floor((1 + Math.sqrt(1 + (8 * xp) / LEVELS.xpStep)) / 2));
-  while (xpForLevel(level + 1) <= xp) level++;
-  while (level > 1 && xpForLevel(level) > xp) level--;
-  return { level, current: xp - xpForLevel(level), needed: level * LEVELS.xpStep };
+  // Al ser exponencial, incluso millones de XP son pocas vueltas.
+  let level = 1;
+  let floor = 0;
+  while (floor + levelCost(level) <= xp) floor += levelCost(level++);
+  return { level, current: xp - floor, needed: levelCost(level) };
 }
 
 export type TitleLevel = 1 | 5 | 10 | 15 | 20 | 25 | 30 | 35 | 40 | 45 | 50;
