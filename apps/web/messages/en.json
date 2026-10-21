@@ -33,6 +33,17 @@
       "50": "Lagoon oracle"
     }
   },
+  "Stats": {
+    "title": "Stats",
+    "totalAnswered": "Answered: {count}",
+    "totalHitRate": "Correct: {rate}%",
+    "answered": "{count} answered",
+    "rate": "{rate}%",
+    "best": "Your strength",
+    "worst": "Your weak spot",
+    "notPlayed": "Not played yet",
+    "barLabel": "Correct answers in {category} ({count} answered)"
+  },
   "Auth": {
     "signInWith": "Sign in with {provider}",
     "signOut": "Sign out",
@@ -117,7 +128,8 @@
     "exit": "Exit",
     "exitConfirm": "Leave the game? You’ll lose your progress.",
     "keepPlaying": "Keep playing",
-    "next": "Next"
+    "next": "Next",
+    "hitRate": "{rate}% of players get this right"
   },
   "Friends": {
     "title": "Friends",

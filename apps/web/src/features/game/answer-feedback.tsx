@@ -8,7 +8,8 @@ import { playSound, vibrate } from "./sfx";
 import { QuickIcon, SparkleIcon, StarIcon } from "@/components/icons";
 
 type Props = {
-  result: { isCorrect: boolean; points: number } | null;
+  /** `hitRate`: % de jugadores que aciertan la pregunta (null u omitido = no se muestra). */
+  result: { isCorrect: boolean; points: number; hitRate?: number | null } | null;
   /** Se agotó el tiempo sin elegir respuesta. */
   timedOut: boolean;
 };
@@ -127,6 +128,12 @@ export function AnswerFeedback({ result, timedOut }: Props) {
             {t("correct")} {t("points", { points: result!.points })}
           </motion.p>
         </>
+      )}
+
+      {result?.hitRate != null && (
+        <p className="relative z-20 mt-2 text-sm font-bold text-fg-muted">
+          {t("hitRate", { rate: result.hitRate })}
+        </p>
       )}
     </div>
   );

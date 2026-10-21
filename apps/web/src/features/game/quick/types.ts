@@ -38,4 +38,6 @@ export type AnswerResult = {
   isCorrect: boolean;
   points: number;
   finished: boolean;
+  /** % de jugadores que la aciertan; null si aún tiene pocas respuestas. */
+  hitRate: number | null;
 };

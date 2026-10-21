@@ -909,7 +909,17 @@ export type Database = {
       };
     };
     Views: {
-      [_ in never]: never;
+      question_answers: {
+        Row: {
+          guest: boolean | null;
+          is_correct: boolean | null;
+          picked: number | null;
+          player_id: string | null;
+          question_id: string | null;
+        };
+        ComputedFields: never;
+        Relationships: [];
+      };
     };
     Functions: {
       admin_review_question: {
@@ -950,6 +960,7 @@ export type Database = {
         Returns: boolean;
       };
       cancel_live_duel: { Args: { duel_id: string }; Returns: undefined };
+      category_stats: { Args: Record<PropertyKey, never>; Returns: Json };
       check_rate_limit: {
         Args: { limited_action: string; max_hits: number; per: string };
         Returns: undefined;
@@ -1088,6 +1099,7 @@ export type Database = {
         Returns: undefined;
       };
       presence_of: { Args: { target: string; viewer: string }; Returns: string };
+      question_hit_rate: { Args: { question_id: string }; Returns: number };
       remember_guest: {
         Args: { guest_avatar_id: string; guest_name: string };
         Returns: {

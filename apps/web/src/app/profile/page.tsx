@@ -7,16 +7,18 @@ import { getActiveAvatarIds, getAuthContext, requireProfile } from "@/features/p
 import { LegalLinks } from "@/features/legal/legal-links";
 import { DevicePreferences } from "@/features/preferences/device-preferences";
 import { LevelCard } from "@/features/progress/level-card";
+import { CategoryStats, type CategoryStat } from "@/features/stats/category-stats";
 import { OnlineToggle } from "@/features/presence/online-toggle";
 import { PushToggle } from "@/features/pwa/push-toggle";
 
 export default async function ProfilePage() {
   const profile = await requireProfile();
   const { supabase, claims } = await getAuthContext();
-  const [t, avatarIds, { data: isAdmin }] = await Promise.all([
+  const [t, avatarIds, { data: isAdmin }, { data: stats }] = await Promise.all([
     getTranslations("Profile"),
     getActiveAvatarIds(),
     supabase.rpc("is_admin"),
+    supabase.rpc("category_stats"),
   ]);
 
   return (
@@ -25,8 +27,9 @@ export default async function ProfilePage() {
         <BackLink href="/" label={t("back")} />
         <h1 className="text-3xl font-bold">{t("editTitle")}</h1>
       </div>
-      <div className="w-full max-w-md">
+      <div className="flex w-full max-w-md flex-col gap-4">
         <LevelCard xp={profile.xp} />
+        {stats && <CategoryStats stats={stats as unknown as CategoryStat[]} />}
       </div>
       <ProfileForm
         mode="edit"

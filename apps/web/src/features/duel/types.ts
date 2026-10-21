@@ -72,4 +72,6 @@ export type DuelAnswerResult = {
   points: number;
   turnEnded: boolean;
   finished: boolean;
+  /** % de jugadores que la aciertan; null si aún tiene pocas respuestas. */
+  hitRate: number | null;
 };

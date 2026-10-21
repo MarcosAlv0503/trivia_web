@@ -33,6 +33,17 @@
       "50": "Oráculo de la laguna"
     }
   },
+  "Stats": {
+    "title": "Estadísticas",
+    "totalAnswered": "Respondidas: {count}",
+    "totalHitRate": "Aciertos: {rate} %",
+    "answered": "{count, plural, one {# respondida} other {# respondidas}}",
+    "rate": "{rate} %",
+    "best": "Tu fuerte",
+    "worst": "Tu punto débil",
+    "notPlayed": "Sin jugar",
+    "barLabel": "Aciertos en {category} ({count, plural, one {# respondida} other {# respondidas}})"
+  },
   "Auth": {
     "signInWith": "Entrar con {provider}",
     "signOut": "Cerrar sesión",
@@ -117,7 +128,8 @@
     "exit": "Salir",
     "exitConfirm": "¿Salir de la partida? Perderás el progreso.",
     "keepPlaying": "Seguir jugando",
-    "next": "Siguiente"
+    "next": "Siguiente",
+    "hitRate": "Acierta el {rate} % de los jugadores"
   },
   "Friends": {
     "title": "Amigos",

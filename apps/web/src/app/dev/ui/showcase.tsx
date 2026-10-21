@@ -15,6 +15,7 @@ import { TitleIcon } from "@/components/title-icon";
 import { LevelBadge } from "@/features/progress/level-badge";
 import { LevelCard } from "@/features/progress/level-card";
 import { XpGain } from "@/features/progress/xp-gain";
+import { CategoryStats } from "@/features/stats/category-stats";
 
 // Datos de ejemplo solo para desarrollo (sin i18n a propósito). Los colores de categoría
 // aprobados en la Fase 1; en la Fase 2 vivirán en la tabla de categorías.
@@ -163,8 +164,43 @@ export function Showcase() {
         </div>
         <AnswerFeedback
           key={feedback?.id}
-          result={feedback && { isCorrect: feedback.points > 0, points: feedback.points }}
+          result={
+            feedback && { isCorrect: feedback.points > 0, points: feedback.points, hitRate: 34 }
+          }
           timedOut={false}
+        />
+      </section>
+
+      <section className="grid max-w-md gap-4">
+        <h2 className="text-2xl font-bold">Estadísticas</h2>
+        <CategoryStats
+          stats={[
+            { id: "geography", name: "Geografía", color: "#2ECC8F", answered: 42, correct: 35 },
+            { id: "history", name: "Historia", color: "#D9964A", answered: 30, correct: 12 },
+            {
+              id: "science",
+              name: "Ciencia y Naturaleza",
+              color: "#2EC4E6",
+              answered: 25,
+              correct: 15,
+            },
+            {
+              id: "art-literature",
+              name: "Arte y Literatura",
+              color: "#9B7BFF",
+              answered: 1,
+              correct: 1,
+            },
+            {
+              id: "entertainment",
+              name: "Entretenimiento",
+              color: "#FF7A45",
+              answered: 18,
+              correct: 10,
+            },
+            { id: "sports", name: "Deportes", color: "#F5C431", answered: 0, correct: 0 },
+            { id: "technology", name: "Tecnología", color: "#5C7CFA", answered: 12, correct: 8 },
+          ]}
         />
       </section>
 
