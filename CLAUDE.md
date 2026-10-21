@@ -79,7 +79,7 @@ Supabase local con la CLI (`supabase start`, requiere Docker). Migraciones versi
 - **Fase 5 — Hábito y progresión (ACTUAL; se retoma por la tarea 2).** Tareas en orden:
   1. XP y niveles con títulos (hecho, 2026-10-21; pendiente de que el usuario lo pruebe: `/dev/ui` > "XP y niveles").
   2. Estadísticas por categoría y % de acierto global de cada pregunta (hecho, 2026-10-21; pendiente de que el usuario lo pruebe: perfil, `/dev/ui` > "Estadísticas" y tras responder).
-  3. Modo práctica.
+  3. Modo práctica (aplazado el 2026-10-21; se hará más adelante).
   4. Reto diario compartible (mismas preguntas para todos, resultado en cuadritos de color de categoría).
   5. Racha diaria con "regeneración" (recuperarla con un reto extra en 24 h).
   6. Modo Aguante (hasta fallar 3).
