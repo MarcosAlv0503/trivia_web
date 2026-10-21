@@ -71,7 +71,8 @@ select set_config('test.reported', (
   select question_id::text from public.question_reports where reporter_id = '00000000-0000-0000-0000-00000000000a'
 ), true);
 
--- Reportar desde un duelo (jugada creada a mano: el flujo del duelo ya tiene sus tests).
+-- Reportar desde un duelo (jugada creada a mano: el flujo del duelo ya tiene sus tests). Con otra pregunta que la
+-- reportada arriba: la partida rápida las elige al azar y podría haber salido la misma.
 insert into public.duels (id, challenger_id, opponent_id, difficulty)
 values ('00000000-0000-0000-0000-0000000000d1', '00000000-0000-0000-0000-00000000000a',
         '00000000-0000-0000-0000-00000000000b', 'easy');
@@ -79,7 +80,7 @@ insert into public.duel_rounds (duel_id, round, category_id)
 values ('00000000-0000-0000-0000-0000000000d1', 1, 'geography');
 insert into public.duel_plays (duel_id, round, slot, player_id, question_id, locale, answer_order, answered_at)
 select '00000000-0000-0000-0000-0000000000d1', 1, 1, '00000000-0000-0000-0000-00000000000b', id, 'en', '{1,2,3}', now()
-from public.questions where external_id = 'r-7';
+from public.questions where external_id like 'r-%' and id <> current_setting('test.reported')::uuid limit 1;
 
 set local role authenticated;
 select lives_ok(
