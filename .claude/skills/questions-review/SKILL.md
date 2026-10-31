@@ -3,10 +3,10 @@ name: questions-review
 description: Revisa preguntas (nuevas, reportadas por jugadores o por estadísticas, de actualidad a punto de caducar y una muestra de las aprobadas) y las aprueba, corrige o rechaza. Pensado para ejecutarse programado.
 argument-hint: "[cantidad=15]"
 disable-model-invocation: true
-allowed-tools: Bash(pnpm -s questions *) WebSearch WebFetch Read Edit(./.content/**) Write(./.content/**)
+allowed-tools: Bash(pnpm -s questions *) WebSearch WebFetch Agent Read Edit(./.content/**) Write(./.content/**)
 ---
 
-Revisa preguntas del juego siguiendo `.claude/skills/questions-generate/criteria.md` (léelo antes de empezar). Trabaja sin pedir confirmación: es una tarea desatendida. Argumentos: `$ARGUMENTS` (cantidad, por defecto 15).
+Revisa preguntas del juego siguiendo `.claude/skills/questions-generate/criteria.md` (léelo antes de empezar). Trabaja sin pedir confirmación (es una tarea desatendida), salvo para cambiar preguntas ya aprobadas o rechazadas en producción (paso 7). Argumentos: `$ARGUMENTS` (cantidad, por defecto 15).
 
 Las preguntas se aprueban solas. Una persona solo revisa las dudas muy serias que dos revisiones independientes no resuelven.
 
@@ -40,4 +40,8 @@ Las preguntas se aprueban solas. Una persona solo revisa las dudas muy serias qu
    ```
    En `fixed.translations` incluye solo los idiomas que cambian: los demás se conservan.
 6. **Aplica** con `pnpm -s questions apply-reviews .content/reviews.json`.
-7. **Termina** con un resumen de una línea: aprobadas, corregidas, rechazadas y enviadas a revisión humana.
+7. **Cambios que necesitan confirmación.** En producción, `apply-reviews` aplica solo lo que afecta a borradores y confirmar una aprobada sin cambios. Lo que rechace, corrija, renueve o mande a revisión humana una pregunta ya aprobada o rechazada queda **sin aplicar** en `.content/reviews-to-confirm.json`, y el comando lo lista. Si pasa:
+   - Enséñaselo al usuario, pregunta por pregunta: qué cambia (antes y después) y por qué.
+   - Pregunta si lo aplicas y **espera su sí explícito**. Nunca ejecutes `--confirmed` sin él, ni en una ejecución programada: ahí deja los cambios pendientes y dilo en el resumen.
+   - Con su sí: `pnpm -s questions apply-reviews .content/reviews-to-confirm.json --confirmed` (además pedirá permiso; si solo aprueba algunos, quita los demás del archivo antes).
+8. **Termina** con un resumen de una línea: aprobadas, corregidas, rechazadas, enviadas a revisión humana y pendientes de confirmación.

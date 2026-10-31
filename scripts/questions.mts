@@ -8,9 +8,11 @@
 //   untranslatable <idioma> <archivo>  marca como no traducibles los externalId del archivo (array)
 //   apply-reviews <archivo>         importa las correcciones y aplica los veredictos
 // Los archivos de trabajo van a `.content/` (ignorada por git): el repo es público y llevan las respuestas.
+// En producción, import y apply-reviews no cambian una pregunta aprobada o rechazada: la apartan en
+// `.content/*-to-confirm.json` y solo se aplica repitiendo con `--confirmed` (que `.claude/settings.json` obliga a aprobar a mano).
 import { randomUUID } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { importQuestions, rpc } from "./lib/supabase-admin.mts";
+import { importQuestions, rpc, select } from "./lib/supabase-admin.mts";
 
 type Translation = { prompt: string; correct: string; wrong: string[] };
 type Question = {
@@ -43,7 +45,11 @@ const TOPICAL_SHARE = 0.1;
 
 const args = process.argv.slice(2);
 const local = args.includes("--local") || !process.env.SUPABASE_URL;
-const [command, ...rest] = args.filter((a) => a !== "--local");
+const guarded = !local && !args.includes("--confirmed");
+const [command, ...rest] = args.filter((a) => a !== "--local" && a !== "--confirmed");
+/** Pregunta existente que ya no es borrador: en producción, cambiarla exige `--confirmed`. */
+const isProtected = (q: Question | undefined): q is Question =>
+  guarded && !!q && q.status !== "draft";
 
 const exportAll = () => rpc<Question[]>("export_questions", {}, local);
 const readJson = <T,>(file: string) => JSON.parse(readFileSync(file, "utf8")) as T;
@@ -70,9 +76,22 @@ const isActiveTopical = (q: Question) =>
   q.expiresAt !== null &&
   new Date(q.expiresAt) > new Date();
 
+// Aparta lo que necesita confirmación y explica cómo aplicarlo.
+function hold(name: string, held: unknown[], description: string[]) {
+  if (!held.length) return;
+  console.log(
+    `\n${held.length} cambios en preguntas ya aprobadas o rechazadas, SIN APLICAR (necesitan confirmación):`,
+  );
+  for (const line of description) console.log(line);
+  console.log(`Para aplicarlos: pnpm -s questions ${command} ${writeWork(name, held)} --confirmed`);
+}
+
 async function status() {
-  const all = await exportAll();
-  const categories = [...new Set(all.map((q) => q.category))].sort();
+  const [all, categoryRows] = await Promise.all([
+    exportAll(),
+    select<{ id: string }[]>("categories?select=id&is_active=eq.true&order=sort_order", local),
+  ]);
+  const categories = categoryRows.map((c) => c.id);
   const cells: { category: string; difficulty: string; pending: number; approved: number }[] = [];
   for (const category of categories) {
     for (const difficulty of DIFFICULTIES) {
@@ -178,12 +197,41 @@ async function toReview(limit: number) {
   console.log(`${picked.length} preguntas por revisar → ${writeWork("to-review.json", picked)}`);
 }
 
+// Si import_questions cambiaría algo de `current`: escribe todos los campos y sustituye cada idioma recibido.
+function importChanges(item: Record<string, unknown>, current: Question) {
+  const topical = (item.topical as boolean | undefined) ?? false;
+  // Sin expiresAt, import_questions renueva la caducidad de una de actualidad.
+  const expiresAt = (item.expiresAt as string | undefined) ?? (topical ? "renovada" : null);
+  return (
+    item.category !== current.category ||
+    item.difficulty !== current.difficulty ||
+    item.source !== current.source ||
+    topical !== current.topical ||
+    expiresAt !== current.expiresAt ||
+    Object.keys((item.translations as object | undefined) ?? {}).some(
+      (locale) => locale in current.translations,
+    )
+  );
+}
+
 async function importFile(file: string) {
   const items = readJson<Record<string, unknown>[]>(file).map(({ status: _ignored, ...item }) => ({
     ...item,
     externalId: item.externalId ?? `ai-${randomUUID()}`,
   }));
-  console.log(`${await importQuestions(items, local)} preguntas importadas como borrador.`);
+  const all = guarded ? await exportAll() : [];
+  const isHeld = (item: Record<string, unknown>) => {
+    const current = all.find((q) => q.externalId === item.externalId);
+    return isProtected(current) && importChanges(item, current);
+  };
+  const ready = items.filter((item) => !isHeld(item));
+  console.log(`${await importQuestions(ready, local)} preguntas importadas como borrador.`);
+  const held = items.filter(isHeld);
+  hold(
+    "import-to-confirm.json",
+    held,
+    held.map((item) => `- ${item.externalId}`),
+  );
 }
 
 async function untranslatable(locale: string, file: string) {
@@ -201,9 +249,38 @@ type Review = {
   fixed?: Partial<Question> & Pick<Question, "translations">;
 };
 
+const formatTranslation = (t: Translation) =>
+  `«${t.prompt}» correcta: ${t.correct} | incorrectas: ${t.wrong.join(" / ")}`;
+
+// Qué cambiaría la revisión, para que una persona lo confirme.
+function describeReview(r: Review, q: Question) {
+  const status = { approve: "approved", reject: "rejected", human: "draft (revisión humana)" };
+  const lines = [
+    `- ${r.externalId} [${q.status} → ${status[r.verdict as keyof typeof status] ?? r.verdict}] «${q.translations[sourceLocale(q)]!.prompt}»`,
+  ];
+  if (r.note) lines.push(`    nota: ${r.note}`);
+  if (r.expiresAt) lines.push(`    caducidad: ${q.expiresAt} → ${r.expiresAt}`);
+  const { translations = {}, ...fields } = r.fixed ?? {};
+  for (const [key, value] of Object.entries(fields)) {
+    const old = q[key as keyof Question];
+    if (value !== old) lines.push(`    ${key}: ${String(old)} → ${String(value)}`);
+  }
+  for (const [locale, t] of Object.entries(translations)) {
+    const old = q.translations[locale];
+    lines.push(`    ${locale} antes: ${old ? formatTranslation(old) : "(no existía)"}`);
+    lines.push(`    ${locale} ahora: ${formatTranslation(t)}`);
+  }
+  return lines.join("\n");
+}
+
 async function applyReviews(file: string) {
-  const reviews = readJson<Review[]>(file);
-  const all = reviews.some((r) => r.fixed) ? await exportAll() : [];
+  const received = readJson<Review[]>(file);
+  const all = guarded || received.some((r) => r.fixed) ? await exportAll() : [];
+  const find = (id: string) => all.find((q) => q.externalId === id);
+  // Confirmar una aprobada sin cambios solo cierra sus reportes; todo lo demás sobre una aprobada o rechazada se aparta.
+  const isHeld = (r: Review) =>
+    isProtected(find(r.externalId)) && (r.verdict !== "approve" || !!r.fixed || !!r.expiresAt);
+  const reviews = received.filter((r) => !isHeld(r));
   // Una corrección parte de la pregunta actual: basta con indicar lo que cambia (al menos las traducciones).
   const fixes = reviews.flatMap((r) => {
     const current = all.find((q) => q.externalId === r.externalId);
@@ -219,6 +296,12 @@ async function applyReviews(file: string) {
   const verdicts = reviews.map(({ fixed: _fixed, ...r }) => r);
   console.log(
     `${await rpc<number>("review_questions", { items: verdicts }, local)} revisiones aplicadas.`,
+  );
+  const held = received.filter(isHeld);
+  hold(
+    "reviews-to-confirm.json",
+    held,
+    held.map((r) => describeReview(r, find(r.externalId)!)),
   );
 }
 

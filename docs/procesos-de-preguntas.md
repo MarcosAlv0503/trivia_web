@@ -119,7 +119,7 @@ Se usan las **tareas locales** de la app **Claude Code Desktop**. Se ejecutan en
    - **Carpeta:** la del repo (`trivia_web`).
    - **Worktree:** **desactivado.** Una copia aislada del repo no tiene `node_modules`, y el script no podría conectar con Supabase.
    - **Schedule:** ver la tabla de abajo.
-3. Pulsa **Run now** una vez y quédate mirando. Cada vez que pida permiso para un comando o herramienta, elige **always allow**. Las siguientes ejecuciones ya no preguntarán. Si no lo haces, una ejecución programada se quedará parada esperando tu permiso.
+3. Pulsa **Run now** una vez y quédate mirando. Cada vez que pida permiso para un comando o herramienta, elige **always allow**. Las siguientes ejecuciones ya no preguntarán. Si no lo haces, una ejecución programada se quedará parada esperando tu permiso. **Excepción:** los comandos con `--confirmed` preguntan siempre (apartado 7); nunca los apruebes para siempre.
 
 ### Calendario recomendado (ajústalo a tu cuota)
 
@@ -187,7 +187,13 @@ SUPABASE_URL=https://<proyecto>.supabase.co
 SUPABASE_SECRET_KEY=<clave secreta>   # nunca en el repo, nunca en el cliente
 ```
 
-Con ellas definidas, **todo** lo que hagan los procesos va a ese proyecto (con `--local`, a la BD local). Con producción montada, el contenido vive allí: las variables van en el bloque `env` de `.claude/settings.local.json` (local e ignorado por git), así las usan las tareas programadas y cualquier sesión de Claude Code en esta carpeta. Pasos: [produccion.md](produccion.md) > "Después del primer despliegue".
+Con ellas definidas, **todo** lo que hagan los procesos va a ese proyecto (con `--local`, a la BD local). Con producción montada, el contenido vive allí: las variables van en el bloque `env` de `.claude/settings.local.json` (local e ignorado por git), así las usan las tareas programadas y cualquier sesión de Claude Code en esta carpeta. Pasos: [produccion.md](produccion.md) > "Después del primer despliegue". Así está desde el 2026-10-31: lo generado sube a producción como borrador y la revisión lo aprueba allí (Supabase local no hace falta para los procesos).
+
+**Antes de una carga grande, haz una copia:** `pnpm db:backup` ([produccion.md](produccion.md) > "Copias de seguridad").
+
+**Lo ya aprobado no se toca sin tu confirmación.** En producción, `pnpm questions import` y `apply-reviews` aplican solos lo nuevo (borradores, traducciones que faltan, veredictos sobre borradores), pero un cambio a una pregunta aprobada o rechazada (corregirla, rechazarla, renovarla, mandarla a revisión humana, sobrescribir una traducción) se queda **sin aplicar** en `.content/reviews-to-confirm.json` o `.content/import-to-confirm.json`. `/questions-review` te lo enseña y espera tu sí; entonces repite el comando con `--confirmed`, y Claude Code te pide además permiso para ese comando (regla de `.claude/settings.json`). En una tarea programada quedan pendientes: lánzalo a mano para verlos.
+
+`.claude/settings.json` también pide permiso para los comandos de la CLI de Supabase que tocan el proyecto remoto (`db push`, `migration repair`, `link`, cualquiera con `--linked` o `--db-url`…) y bloquea `db reset` remoto: la CLI está enlazada a producción.
 
 ---
 
@@ -274,6 +280,7 @@ Por ejemplo, el futuro texto "¿Sabías que…?". Hace falta:
 
 - **Nada de preguntas reales en el repo** (es público). Nunca hagas commit de `.content/`.
 - **La clave secreta de Supabase nunca va al repo** ni a la web.
+- **En producción, nada que borre o altere lo ya aprobado sin confirmación** (apartado 7): no quites la salvaguarda de `questions.mts` ni las reglas de `.claude/settings.json`, y nunca apruebes `--confirmed` para siempre.
 - **Lo generado entra siempre como borrador.** `pnpm questions import` borra cualquier `status` del archivo a propósito: no quites esa protección.
 - **La traducción conserva el orden de las respuestas incorrectas.** Las estadísticas de revisión cuentan las respuestas por su posición.
 - **Nunca se edita una migración ya subida:** los cambios de SQL van siempre en una migración nueva.

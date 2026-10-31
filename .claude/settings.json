@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(*supabase db reset*--linked*)",
+      "Bash(*supabase db reset*--db-url*)",
+      "Bash(*supabase projects delete*)",
+      "PowerShell(*supabase db reset*--linked*)",
+      "PowerShell(*supabase db reset*--db-url*)",
+      "PowerShell(*supabase projects delete*)"
+    ],
+    "ask": [
+      "Bash(* --confirmed*)",
+      "Bash(*supabase db push*)",
+      "Bash(*supabase db pull*)",
+      "Bash(*supabase migration repair*)",
+      "Bash(*supabase link*)",
+      "Bash(*supabase config push*)",
+      "Bash(*supabase functions deploy*)",
+      "Bash(*supabase functions delete*)",
+      "Bash(*supabase secrets *)",
+      "Bash(*supabase storage *)",
+      "Bash(*supabase *--linked*)",
+      "Bash(*supabase *--db-url*)",
+      "Bash(psql *)",
+      "PowerShell(* --confirmed*)",
+      "PowerShell(*supabase db push*)",
+      "PowerShell(*supabase db pull*)",
+      "PowerShell(*supabase migration repair*)",
+      "PowerShell(*supabase link*)",
+      "PowerShell(*supabase config push*)",
+      "PowerShell(*supabase functions deploy*)",
+      "PowerShell(*supabase functions delete*)",
+      "PowerShell(*supabase secrets *)",
+      "PowerShell(*supabase storage *)",
+      "PowerShell(*supabase *--linked*)",
+      "PowerShell(*supabase *--db-url*)",
+      "PowerShell(psql *)"
+    ]
+  }
+}

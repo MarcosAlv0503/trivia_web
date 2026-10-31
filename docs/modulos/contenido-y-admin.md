@@ -16,7 +16,7 @@ Cómo entran, se traducen, se revisan y se corrigen las preguntas. Tres skills d
 
 **Aprobación** (aprobado el 2026-10-18, ver [CLAUDE.md](../../CLAUDE.md)): las preguntas se aprueban solas tras la revisión automática; una duda pasa por una segunda revisión independiente y solo si persiste queda para una persona (`needs_human`). Idiomas `es` y `en`. Sin API de pago: se ejecutan con Claude Code y el plan de suscripción (no debe haber `ANTHROPIC_API_KEY` en el entorno). Objetivo de la beta: 1.500 aprobadas por idioma (pendiente de ejecutar los procesos).
 
-**Cuándo se revisa una pregunta** (`reviewReason()` y constantes de [`questions.mts`](../../scripts/questions.mts#L35)):
+**Cuándo se revisa una pregunta** (`reviewReason()` y constantes de [`questions.mts`](../../scripts/questions.mts#L37)):
 
 | Motivo (`reason`) | Condición |
 | --- | --- |
@@ -64,27 +64,29 @@ Reparto: Claude decide (escribe, juzga, traduce); `questions.mts` hace la parte 
 
 Con `--local` usa Supabase local (`pnpm exec supabase status -o json`, hace falta Docker) y también es lo que ocurre si `SUPABASE_URL` no está definida. Si lo está, usa `SUPABASE_URL` y `SUPABASE_SECRET_KEY` (con producción montada se ponen en el bloque `env` de `.claude/settings.local.json`; ver [produccion.md](../produccion.md), "Después del primer despliegue"). Los archivos de trabajo van a `.content/`.
 
+**Salvaguarda de producción** (2026-10-31; ver la regla en [CLAUDE.md](../../CLAUDE.md), "Estado y pendientes"). Fuera de `--local`, `import` y `apply-reviews` aplican solos lo nuevo y lo que afecta a borradores, pero **no** cambian una pregunta ya aprobada o rechazada: la apartan en `.content/import-to-confirm.json` o `.content/reviews-to-confirm.json`, listan qué cambiaría (antes y después) y dicen cómo aplicarlo: el mismo comando sobre ese archivo con `--confirmed`. En `apply-reviews` se aparta toda revisión de una aprobada o rechazada salvo `approve` sin `fixed` ni `expiresAt` (confirmarla tal cual, que solo cierra sus reportes); en `import`, todo lo que cambiaría algún campo o una traducción ya existente (añadir un idioma que falta pasa). [`.claude/settings.json`](../../.claude/settings.json) obliga a aprobar a mano cualquier comando con `--confirmed` (las reglas `ask` ganan a los `allowed-tools` de las skills, también en modo auto) y los de la CLI de Supabase que tocan el proyecto remoto, y bloquea `db reset` remoto. Son reglas sobre el texto del comando, no una barrera: con la clave secreta se puede todo.
+
 | Comando | Qué hace | Salida |
 | --- | --- | --- |
-| `status` | Por categoría y dificultad: aprobadas, borradores (sin `needs_human`) y `needs_human`. Después: total de aprobadas, actualidad vigentes, reportadas, aprobadas sin traducir a `es` y a `en`, y la línea "Siguiente": actualidad si las vigentes son menos del 10 % de las aprobadas; si no, la combinación con menos aprobadas más borradores | Consola |
+| `status` | Por categoría activa (tabla `categories`, en su orden) y dificultad: aprobadas, borradores (sin `needs_human`) y `needs_human`. Después: total de aprobadas, actualidad vigentes, reportadas, aprobadas sin traducir a `es` y a `en`, y la línea "Siguiente": actualidad si las vigentes son menos del 10 % de las aprobadas; si no, la combinación con menos aprobadas más borradores | Consola |
 | `existing <categoría>` | Lista las de esa categoría (`[dificultad, estado] enunciado → correcta`, con "actualidad" si procede) para no repetir al generar | Consola |
 | `to-translate <idioma> [n=30]` | Aprobadas sin ese idioma y no marcadas como no traducibles en él, con solo su traducción de origen (`es` si existe) | `.content/to-translate-<idioma>.json` |
 | `to-review [n=15]` | Hasta `n` candidatas con su `reason`, sus traducciones y sus estadísticas: primero las que tienen motivo, luego la auditoría | `.content/to-review.json` |
-| `import <archivo>` | Importa un array con `import_questions` **quitando siempre `status`** (alta como borrador; las existentes conservan el suyo) y poniendo `externalId = ai-<uuid>` si falta | Consola |
+| `import <archivo> [--confirmed]` | Importa un array con `import_questions` **quitando siempre `status`** (alta como borrador; las existentes conservan el suyo) y poniendo `externalId = ai-<uuid>` si falta. En producción aparta lo que cambiaría una aprobada o rechazada | Consola; `.content/import-to-confirm.json` |
 | `untranslatable <idioma> <archivo>` | Marca como no traducibles a ese idioma los `externalId` de un array (`mark_untranslatable`) | Consola |
-| `apply-reviews <archivo>` | Primero importa las correcciones (`fixed`), después aplica los veredictos con `review_questions` | Consola |
+| `apply-reviews <archivo> [--confirmed]` | Primero importa las correcciones (`fixed`), después aplica los veredictos con `review_questions`. En producción aparta las que cambiarían una aprobada o rechazada | Consola; `.content/reviews-to-confirm.json` |
 
-Código en [`questions.mts`](../../scripts/questions.mts): `status` (L73), `toTranslate` (L121), `reviewReason` (L137), `toReview` (L155), `importFile` (L181), `applyReviews` (L204).
+Código en [`questions.mts`](../../scripts/questions.mts): `isProtected` (L51), `hold` (L80), `status` (L89), `toTranslate` (L140), `reviewReason` (L156), `toReview` (L174), `importChanges` (L201), `importFile` (L217), `describeReview` (L256), `applyReviews` (L276).
 
 ### Skills
 
-Los tres tienen `disable-model-invocation: true` (solo se ejecutan cuando alguien los invoca, a mano o programados) y una lista `allowed-tools` con lo que pueden usar sin pedir permiso: `Bash(pnpm -s questions *)` (por eso llaman siempre con `pnpm -s`), `Read` y `Edit`/`Write` solo en `./.content/**`; generar y revisar añaden `WebSearch` y `WebFetch`. Trabajan desatendidos.
+Los tres tienen `disable-model-invocation: true` (solo se ejecutan cuando alguien los invoca, a mano o programados) y una lista `allowed-tools` con lo que pueden usar sin pedir permiso: `Bash(pnpm -s questions *)` (por eso llaman siempre con `pnpm -s`), `Read` y `Edit`/`Write` solo en `./.content/**`; generar y revisar añaden `WebSearch` y `WebFetch`, y revisar también `Agent` (segunda revisión). Trabajan desatendidos, salvo los cambios apartados por la salvaguarda de producción: la revisión los enseña, espera un sí explícito y solo entonces repite con `--confirmed` (en una ejecución programada los deja pendientes).
 
 | Skill | Argumentos | Pasos | Escribe |
 | --- | --- | --- | --- |
 | [`/questions-generate`](../../.claude/skills/questions-generate/SKILL.md) | Opcionales: categoría o `actualidad`, dificultad (`easy`, `medium`, `hard`) y cantidad (20 por defecto); sin argumentos, lo que diga "Siguiente" | Elegir qué hace falta, `existing` para no repetir, buscar noticias (actualidad), escribir, repasar contra los criterios, importar | `.content/generated.json` (solo `es`, sin `externalId` ni `status`) |
 | [`/questions-translate`](../../.claude/skills/questions-translate/SKILL.md) | `[idioma=en] [cantidad=30]` | `to-translate`, traducir de forma natural **conservando el orden de `wrong`**, anotar las no traducibles, importar y marcar | `.content/translated-<idioma>.json`, `.content/untranslatable-<idioma>.json` |
-| [`/questions-review`](../../.claude/skills/questions-review/SKILL.md) | `[cantidad=15]` | `to-review`, primera revisión (con búsqueda web siempre en actualidad y en los motivos de estadísticas), veredicto, segunda revisión de las dudas, aplicar | `.content/reviews.json` |
+| [`/questions-review`](../../.claude/skills/questions-review/SKILL.md) | `[cantidad=15]` | `to-review`, primera revisión (con búsqueda web siempre en actualidad y en los motivos de estadísticas), veredicto, segunda revisión de las dudas, aplicar, enseñar y confirmar lo apartado | `.content/reviews.json` |
 
 Veredictos de la revisión: `approve`, `approve` con `fixed` (corrige redacción, dificultad o traducción), `reject` y duda. **Segunda revisión:** por cada duda, un subagente recibe solo el enunciado, las respuestas y la ruta de los criterios (nunca el veredicto ni las razones, para que sea independiente) y devuelve `approve`, `reject` o `duda`; si también duda, el veredicto es `human` con una nota que resume las dos dudas. Es un protocolo del skill: la BD solo ve el veredicto final.
 
@@ -104,7 +106,7 @@ Formato de `reviews.json` (un objeto por pregunta):
 
 ### Carpeta `.content/`
 
-Ignorada por git (`.gitignore`): los archivos llevan las respuestas y **el repo es público**. Se crea sola en la carpeta desde la que se ejecuta el comando (la raíz del repo). Contiene `generated.json`, `to-translate-<idioma>.json`, `translated-<idioma>.json`, `untranslatable-<idioma>.json`, `to-review.json` y `reviews.json`; el camino antiguo sin panel usaba además `human.json` ([procesos-de-preguntas.md](../procesos-de-preguntas.md), apartado 6).
+Ignorada por git (`.gitignore`): los archivos llevan las respuestas y **el repo es público**. Se crea sola en la carpeta desde la que se ejecuta el comando (la raíz del repo). Contiene `generated.json`, `to-translate-<idioma>.json`, `translated-<idioma>.json`, `untranslatable-<idioma>.json`, `to-review.json`, `reviews.json` y, en producción, `import-to-confirm.json` y `reviews-to-confirm.json`; el camino antiguo sin panel usaba además `human.json` ([procesos-de-preguntas.md](../procesos-de-preguntas.md), apartado 6).
 
 ### Reportar una pregunta
 
@@ -213,8 +215,8 @@ Permisos: `review_questions` y `mark_untranslatable` solo para `service_role`; `
 - **Corregir un número de respuestas** de una pregunta en uso puede desajustar el `answer_order` de partidas en curso (ver [preguntas.md](preguntas.md), "Detalles"). Corregir solo textos, no.
 - **Nota obligatoria solo en el skill.** `review_note` es nulo si no se envía; la BD no obliga a justificar `reject` ni `human`.
 - **El límite de reportes es propio, no `check_rate_limit`:** cuenta filas de `question_reports` de las últimas 24 h dentro de `file_question_report`. Es coherente con el README, pero distinto del resto de límites (ver [base-de-datos.md](base-de-datos.md)).
-- **Skill de revisión y `Agent`.** El paso 4 de `questions-review` lanza un subagente con la herramienta Agent, pero `allowed-tools` de su cabecera no la incluye: una ejecución programada depende de haber marcado "always allow" la primera vez. El ejemplo de `claude -p` de [procesos-de-preguntas.md](../procesos-de-preguntas.md) sí la lista.
-- **Comportamientos menores de `questions.mts`:** `to-translate` también propone aprobadas de actualidad ya caducadas; `status` solo lista categorías que ya tienen preguntas (una categoría nueva sin ninguna no aparece como "Siguiente"); `["es", "en"]` está fijo en `status`; `reviewReason` no mira `reviewed_at`, así que una aprobada con estadísticas raras que la revisión deja tal cual vuelve a salir en cada ejecución (y ocupa cupo antes que la auditoría) hasta que se corrija su dificultad o cambien sus estadísticas.
+- **Comportamientos menores de `questions.mts`:** `to-translate` también propone aprobadas de actualidad ya caducadas; `["es", "en"]` está fijo en `status`; `reviewReason` no mira `reviewed_at`, así que una aprobada con estadísticas raras que la revisión deja tal cual vuelve a salir en cada ejecución (y ocupa cupo antes que la auditoría) hasta que se corrija su dificultad o cambien sus estadísticas.
 - **El panel tiene límites conocidos:** 50 preguntas por carga sin paginar (`shortcut` de la función), y la tarjeta enseña el `id` de la categoría, no su nombre.
-- **Producción:** con `SUPABASE_URL` y `SUPABASE_SECRET_KEY` en el entorno de Claude Code, **todo** lo que hacen los comandos va a producción (con `--local`, a la BD local). La clave secreta nunca va al repo ni a la web.
+- **Producción:** con `SUPABASE_URL` y `SUPABASE_SECRET_KEY` en el entorno de Claude Code, **todo** lo que hacen los comandos va a producción (con `--local`, a la BD local, sin salvaguarda). La clave secreta nunca va al repo ni a la web. Desde el 2026-10-31 el contenido se genera y aprueba directamente allí.
+- **`--confirmed` aplica el archivo entero.** Para aprobar solo una parte, quita el resto del archivo antes. Lo que quede sin confirmar no se reintenta solo (una reportada vuelve a salir en la siguiente revisión; una auditoría, cuando le toque).
 - **Escala:** cada comando descarga el banco entero con `export_questions`; basta para decenas de miles de preguntas.

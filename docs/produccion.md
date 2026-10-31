@@ -138,7 +138,7 @@ Sin la variable, el job se salta. Vercel despliega la web en paralelo, así que 
    }
    ```
 
-   Con eso, `pnpm questions …` y los skills `/questions-*` usan producción en cualquier sesión de Claude Code en esta carpeta. Para la BD local: `pnpm questions <comando> --local`. La clave secreta salta todas las protecciones: no la compartas ni la pegues en ningún otro sitio.
+   Con eso, `pnpm questions …` y los skills `/questions-*` usan producción en cualquier sesión de Claude Code en esta carpeta. Para la BD local: `pnpm questions <comando> --local`. La clave secreta salta todas las protecciones: no la compartas ni la pegues en ningún otro sitio. Antes de la primera carga grande, haz una copia ("Copias de seguridad"). Los cambios a preguntas ya aprobadas piden tu confirmación ([procesos-de-preguntas.md](procesos-de-preguntas.md), apartado 7).
 
 3. **Textos legales:** responsable y email reales en `apps/web/src/features/legal/legal.ts` (pendiente de la tarea 5).
 4. **Móvil:** instala la PWA en un Android y un iPhone reales y comprueba los avisos push (pendiente de la tarea 2).

@@ -29,6 +29,14 @@ export async function rpc<T>(fn: string, args: unknown, local: boolean): Promise
   return (await response.json()) as T;
 }
 
+// Lectura directa de una tabla, p. ej. "categories?select=id" (la clave secreta salta la RLS).
+export async function select<T>(query: string, local: boolean): Promise<T> {
+  const { url, key } = credentials(local);
+  const response = await fetch(`${url}/rest/v1/${query}`, { headers: { apikey: key } });
+  if (!response.ok) throw new Error(`${query}: ${await response.text()}`);
+  return (await response.json()) as T;
+}
+
 // Cada lote es una transacción y la importación es idempotente (por externalId): si falla, corrige y repite.
 export async function importQuestions(items: unknown[], local: boolean) {
   let imported = 0;
