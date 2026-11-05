@@ -22,19 +22,28 @@ const dumps: [string, string[]][] = [
 ];
 for (const [file, flags] of dumps) {
   // La CLI con node directamente (sin shell): la URL lleva la contraseña y caracteres especiales.
-  execFileSync(
-    process.execPath,
-    [
-      "node_modules/supabase/dist/supabase.js",
-      "db",
-      "dump",
-      ...source,
-      ...flags,
-      "-f",
-      `${dir}/${file}`,
-    ],
-    { stdio: "inherit" },
-  );
+  try {
+    execFileSync(
+      process.execPath,
+      [
+        "node_modules/supabase/dist/supabase.js",
+        "db",
+        "dump",
+        ...source,
+        ...flags,
+        "-f",
+        `${dir}/${file}`,
+      ],
+      { stdio: "inherit" },
+    );
+  } catch {
+    // Sin relanzar el error: su mensaje repite el comando, con la contraseña. Una copia a medias tampoco se conserva.
+    rmSync(dir, { recursive: true, force: true });
+    console.error(
+      `La copia ha fallado en ${file}: no se ha guardado nada (el motivo está arriba).`,
+    );
+    process.exit(1);
+  }
 }
 console.log(`Copia guardada en ${dir}`);
 
