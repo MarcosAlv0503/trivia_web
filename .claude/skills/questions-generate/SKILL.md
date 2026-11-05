@@ -12,7 +12,7 @@ Argumentos (todos opcionales): `$ARGUMENTS`
 
 1. **Qué generar.**
    - Si se indica una categoría (`geography`, `history`, `science`, `art-literature`, `entertainment`, `sports`, `technology`) o `actualidad`, usa eso. Sin dificultad, reparte entre las tres.
-   - Sin argumentos, ejecuta `pnpm -s questions status` y genera lo que indique la línea "Siguiente".
+   - Sin categoría, ejecuta `pnpm -s questions status` y reparte la cantidad: si la línea "Siguiente" pide actualidad, un 10 % (redondeando hacia arriba) es de actualidad; el resto, a partes iguales entre las combinaciones de categoría y dificultad con menos preguntas (aprobadas + borradores).
    - Cantidad por defecto: 20.
 2. **Contexto para no repetir.** Ejecuta `pnpm -s questions existing <categoría>` para cada categoría que vayas a usar. No repitas ninguna pregunta ni el mismo dato preguntado de otra forma.
 3. **Actualidad.** Busca en la web noticias de los últimos ~60 días (varias búsquedas, en español y en inglés, de distintas categorías). Quédate solo con hechos confirmados por al menos dos fuentes fiables. Asígnale a cada pregunta su categoría real y su dificultad.

@@ -73,6 +73,7 @@ En el chat de Claude Code, con la carpeta del repo abierta, escribe el comando. 
 
 ```text
 /questions-generate                          # elige solo qué hace falta (lo dice `pnpm questions status`)
+/questions-generate 42                       # 42 repartidas entre lo que menos tiene (y un 10 % de actualidad si hace falta)
 /questions-generate science                  # 20 preguntas de Ciencia, repartidas entre las tres dificultades
 /questions-generate history hard 10          # 10 preguntas difíciles de Historia
 /questions-generate actualidad 10            # 10 de actualidad (busca noticias en la web)
@@ -109,29 +110,35 @@ Se usan las **tareas locales** de la app **Claude Code Desktop**. Se ejecutan en
 
 ### Crear cada tarea
 
-1. En la app de escritorio: pestaña **Code** → **Routines** → **New routine** → **Local**.
+1. En la app de escritorio: pestaña **Code** → **Scheduled** (en la barra lateral o en su menú **More**) → **New task**. Si pregunta, elige **Set up manually** y **Local**.
 2. Rellena:
    - **Name:** p. ej. `preguntas-generar`.
-   - **Instructions:** el comando, p. ej. `/questions-generate`.
-   - **Modelo:** el selector de la instrucción.
+   - **Instructions:** el comando de la tabla de abajo, p. ej. `/questions-generate 42`.
+   - **Modo de permisos:** **Manual**, en la barra de la instrucción. No uses **Bypass permissions**: podría saltarse las confirmaciones del apartado 7.
+   - **Modelo:** el selector de la misma barra.
      - Opus razona mejor (recomendado para revisar).
      - Sonnet consume menos cuota (suficiente para generar y traducir).
-   - **Carpeta:** la del repo (`trivia_web`).
-   - **Worktree:** **desactivado.** Una copia aislada del repo no tiene `node_modules`, y el script no podría conectar con Supabase.
-   - **Schedule:** ver la tabla de abajo.
-3. Pulsa **Run now** una vez y quédate mirando. Cada vez que pida permiso para un comando o herramienta, elige **always allow**. Las siguientes ejecuciones ya no preguntarán. Si no lo haces, una ejecución programada se quedará parada esperando tu permiso. **Excepción:** los comandos con `--confirmed` preguntan siempre (apartado 7); nunca los apruebes para siempre.
+   - **Solo en este ordenador:** en **Advanced settings**, activa **Only on this computer**.
+   - **Carpeta:** en **Local folder**, la del repo (`trivia_web`).
+   - **Worktree:** **desactivado** (se cambia en **Edit**, tras crearla; viene así por defecto). Una copia aislada del repo no tiene `node_modules`, y el script no podría conectar con Supabase.
+   - **Trigger:** **Daily**, a la hora de la tabla de abajo (si no deja elegirla al crear, en **Edit**).
+3. Pulsa **Run now** una vez y quédate mirando. Cada vez que pida permiso para un comando o herramienta, elige **always allow**. Las siguientes ejecuciones ya no preguntarán (se revisa en el panel **Always allowed** de la tarea). Si no lo haces, una ejecución programada se quedará parada esperando tu permiso. **Excepción:** los comandos con `--confirmed` preguntan siempre (apartado 7); nunca los apruebes para siempre.
+
+4. **Comprueba esa primera ejecución:**
+   - Que siga los pasos del proceso. La documentación no aclara si una tarea admite `/comando` como instrucción. Si no lo reconoce, cambia la instrucción por `Lee .claude/skills/questions-generate/SKILL.md y sigue sus pasos con estos argumentos: 42` (y lo mismo con cada proceso).
+   - Que haya escrito en producción: `pnpm questions status` debe mostrar los cambios. Si la ejecución no carga el `env` de `.claude/settings.local.json`, el script usaría la BD local sin avisar.
 
 ### Calendario recomendado (ajústalo a tu cuota)
 
 | Tarea | Instrucción | Cuándo |
 | --- | --- | --- |
-| `preguntas-generar` | `/questions-generate` | Diaria, 10:07 |
-| `preguntas-revisar` | `/questions-review` | Diaria, 12:07 |
-| `preguntas-traducir` | `/questions-translate` | Diaria, 14:07 |
+| `preguntas-generar` | `/questions-generate 42` | Diaria, 10:07 |
+| `preguntas-revisar` | `/questions-review 42` | Diaria, 12:07 |
+| `preguntas-traducir` | `/questions-translate en 60` | Diaria, 14:07 |
 
 - Usa minutos que no sean en punto: las tareas programadas en punto pueden arrancar varios minutos tarde.
 - Deja tiempo entre tareas, para que la revisión vea lo recién generado y la traducción lo recién aprobado.
-- Con 20 preguntas al día, llegar a 1.500 lleva meses. Si te sobra cuota, añade más ejecuciones de generación o sube la cantidad (`/questions-generate 40`). Sube la revisión al mismo ritmo, o se acumularán borradores.
+- Con 42 preguntas al día, llegar a 1.500 lleva unas 5 semanas. Si no te da la cuota, baja las cantidades; si te sobra, súbelas. La revisión debe ir al mismo ritmo que la generación, o se acumularán borradores.
 
 ### Cómo se comportan
 

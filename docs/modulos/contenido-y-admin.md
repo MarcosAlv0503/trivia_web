@@ -84,7 +84,7 @@ Los tres tienen `disable-model-invocation: true` (solo se ejecutan cuando alguie
 
 | Skill | Argumentos | Pasos | Escribe |
 | --- | --- | --- | --- |
-| [`/questions-generate`](../../.claude/skills/questions-generate/SKILL.md) | Opcionales: categoría o `actualidad`, dificultad (`easy`, `medium`, `hard`) y cantidad (20 por defecto); sin argumentos, lo que diga "Siguiente" | Elegir qué hace falta, `existing` para no repetir, buscar noticias (actualidad), escribir, repasar contra los criterios, importar | `.content/generated.json` (solo `es`, sin `externalId` ni `status`) |
+| [`/questions-generate`](../../.claude/skills/questions-generate/SKILL.md) | Opcionales: categoría o `actualidad`, dificultad (`easy`, `medium`, `hard`) y cantidad (20 por defecto); sin categoría, reparte entre las combinaciones con menos preguntas, con un 10 % de actualidad si "Siguiente" la pide | Elegir qué hace falta, `existing` para no repetir, buscar noticias (actualidad), escribir, repasar contra los criterios, importar | `.content/generated.json` (solo `es`, sin `externalId` ni `status`) |
 | [`/questions-translate`](../../.claude/skills/questions-translate/SKILL.md) | `[idioma=en] [cantidad=30]` | `to-translate`, traducir de forma natural **conservando el orden de `wrong`**, anotar las no traducibles, importar y marcar | `.content/translated-<idioma>.json`, `.content/untranslatable-<idioma>.json` |
 | [`/questions-review`](../../.claude/skills/questions-review/SKILL.md) | `[cantidad=15]` | `to-review`, primera revisión (con búsqueda web siempre en actualidad y en los motivos de estadísticas), veredicto, segunda revisión de las dudas, aplicar, enseñar y confirmar lo apartado | `.content/reviews.json` |
 
